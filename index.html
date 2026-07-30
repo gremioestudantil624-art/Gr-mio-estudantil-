@@ -10,18 +10,14 @@
 
   <style>
     :root {
-      /* NOVA PALETA DE CORES (PRETO & DOURADO) */
       --preto: #111111;
       --preto-secundario: #1C1C1C;
       --cinza-escuro: #2D2D2D;
-
       --dourado: #F4B400;
       --dourado-claro: #FFD54A;
-
       --branco: #FFFFFF;
       --cinza-claro: #F5F5F5;
       --cinza: #BDBDBD;
-
       --verde-sucesso: #22C55E;
       --vermelho: #EF4444;
       --azul-info: #3B82F6;
@@ -29,14 +25,12 @@
       --gradiente-header: linear-gradient(135deg, #111111 0%, #2D2D2D 100%);
       --gradiente-sidebar: linear-gradient(180deg, #111111 0%, #1C1C1C 100%);
       --gradiente-botao: linear-gradient(135deg, #F4B400 0%, #FFD54A 100%);
-      --gradiente-card: linear-gradient(135deg, #1C1C1C 0%, #2D2D2D 100%);
 
       --bg-color: #F4F5F7;
       --card-bg: #FFFFFF;
       --text-color: #1A1A1A;
       --text-muted: #6B7280;
       --border-color: #E5E7EB;
-      --sidebar-bg: #111111;
     }
 
     body.dark-mode {
@@ -45,7 +39,6 @@
       --text-color: #FFFFFF;
       --text-muted: #A3A3A3;
       --border-color: #303030;
-      --sidebar-bg: #0D0D0D;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -108,9 +101,7 @@
       box-shadow: 0 4px 10px rgba(244, 180, 0, 0.25);
     }
 
-    .nav-btn:hover i, .nav-btn.active i {
-      color: var(--preto);
-    }
+    .nav-btn:hover i, .nav-btn.active i { color: var(--preto); }
 
     .nav-btn.admin-btn {
       margin-top: auto;
@@ -118,10 +109,7 @@
       color: var(--dourado);
       border: 1px dashed var(--dourado);
     }
-    .nav-btn.admin-btn:hover {
-      background: var(--gradiente-botao);
-      color: var(--preto);
-    }
+    .nav-btn.admin-btn:hover { background: var(--gradiente-botao); color: var(--preto); }
 
     .theme-toggle-btn {
       background: rgba(255,255,255,0.05);
@@ -226,10 +214,13 @@
     .room-btn { padding: 10px; background: rgba(0,0,0,0.04); border: none; border-radius: 6px; cursor: pointer; text-align: left; font-size: 0.85rem; color: var(--text-color); }
     .room-btn.active { background: var(--preto-secundario); color: var(--dourado); font-weight: 700; border-left: 3px solid var(--dourado); }
     .chat-main { flex: 1; display: flex; flex-direction: column; }
-    .chat-messages { flex: 1; overflow-y: auto; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 10px; }
+    .chat-header-status { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; background: rgba(0,0,0,0.04); border-radius: 6px; margin-bottom: 8px; font-size: 0.78rem; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 6px; }
     .chat-msg { margin-bottom: 12px; padding: 10px 14px; border-radius: 10px; max-width: 80%; background: var(--cinza-escuro); color: var(--branco); }
     .chat-msg.me { margin-left: auto; background: var(--gradiente-botao); color: var(--preto); font-weight: 500; }
     .chat-msg .meta { font-size: 0.72rem; display: flex; justify-content: space-between; gap: 12px; margin-bottom: 4px; opacity: 0.85; }
+    .chat-msg .msg-footer { display: flex; justify-content: flex-end; align-items: center; gap: 4px; font-size: 0.7rem; margin-top: 4px; opacity: 0.8; }
+    .typing-indicator { font-size: 0.75rem; color: var(--dourado); font-style: italic; height: 18px; margin-bottom: 4px; }
 
     .badge-status { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
     .badge-em_andamento { background: var(--dourado); color: var(--preto); }
@@ -381,9 +372,14 @@
               <button class="room-btn" onclick="switchChatRoom('financeiro', this)"># Financeiro</button>
             </div>
             <div class="chat-main">
+              <div class="chat-header-status">
+                <span><i class="ph ph-circle" style="color:var(--verde-sucesso); fill:var(--verde-sucesso);"></i> Integrantes Online: <strong id="chat-online-count">1</strong></span>
+                <span style="color:var(--text-muted); font-size: 0.72rem;">Sincronizado ao vivo</span>
+              </div>
               <div class="chat-messages" id="chatMessages"></div>
+              <div class="typing-indicator" id="chatTypingIndicator"></div>
               <form id="chatForm" style="display:flex; gap:8px;">
-                <input type="text" id="chatInput" class="form-control" style="margin-bottom:0;" placeholder="Digite sua mensagem ao vivo..." required>
+                <input type="text" id="chatInput" class="form-control" style="margin-bottom:0;" placeholder="Digite sua mensagem ao vivo..." oninput="handleTyping()" required>
                 <button type="submit" class="btn"><i class="ph ph-paper-plane-right"></i></button>
               </form>
             </div>
@@ -395,6 +391,19 @@
         <div class="grid-2">
           <div class="card">
             <h3><i class="ph ph-chart-pie"></i> Relatório Financeiro</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(0,0,0,0.05); padding: 12px; border-radius: 8px;">
+              <div>
+                <span style="font-size:0.8rem; color:var(--text-muted);">Total em Caixa:</span>
+                <h2 id="fin-total-caixa" style="color:var(--verde-sucesso); font-size: 1.4rem;">R$ 0,00</h2>
+              </div>
+              <div style="text-align: right;">
+                <span style="font-size:0.8rem; color:var(--text-muted);">Proporção:</span>
+                <div style="font-size: 0.85rem; font-weight: bold;">
+                  <span style="color:var(--verde-sucesso);" id="pct-receita">0% Entradas</span> | 
+                  <span style="color:var(--vermelho);" id="pct-despesa">0% Saídas</span>
+                </div>
+              </div>
+            </div>
             <div style="height: 200px;"><canvas id="financeiroChart"></canvas></div>
           </div>
           <div class="card">
@@ -452,7 +461,7 @@
               <input type="text" id="adm-membro-nome" class="form-control" placeholder="Nome Completo">
               <input type="text" id="adm-membro-cargo" class="form-control" placeholder="Cargo no Grêmio">
               <input type="text" id="adm-membro-turma" class="form-control" placeholder="Turma / Ano">
-              <input type="text" id="adm-membro-avatar" class="form-control" placeholder="URL do Foto/Avatar (Opcional)">
+              <input type="text" id="adm-membro-avatar" class="form-control" placeholder="URL da Foto/Avatar (Opcional)">
               <button class="btn" onclick="saveMembroItem()"><i class="ph ph-floppy-disk"></i> Salvar Integrante</button>
               <hr style="margin:15px 0; border:none; border-top:1px solid var(--border-color);">
               <h4>Membros Cadastrados</h4>
@@ -484,13 +493,6 @@
               <h4>Histórico de Transações</h4>
               <ul id="adm-fin-list" style="list-style:none; margin-top:10px;"></ul>
             </div>
-
-            <div class="card">
-              <h3><i class="ph ph-gear"></i> Configurações do Sistema</h3>
-              <label style="font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; display:block;">URL do Logo do Grêmio</label>
-              <input type="text" id="adm-cfg-logo" class="form-control" placeholder="https://exemplo.com/logo.png">
-              <button class="btn" onclick="salvarConfiguracoes()"><i class="ph ph-floppy-disk"></i> Salvar Configurações</button>
-            </div>
           </div>
         </div>
       </section>
@@ -500,11 +502,11 @@
   <div id="toast-container"></div>
 
   <script>
-    // ESTADO DA APLICAÇÃO (LOCAL STORAGE)
     const APP_KEY = "GREMIO_APP_DATA_V1";
     let currentChatRoom = 'geral';
     let currentDate = new Date();
     let chartInstance = null;
+    let typingTimeout = null;
 
     let db = {
       user: null,
@@ -514,7 +516,6 @@
       eventos: [],
       financeiro: [],
       chat: { geral: [], eventos: [], financeiro: [] },
-      config: { logo: '' },
       adminAuth: false
     };
 
@@ -523,12 +524,14 @@
       if (data) {
         db = JSON.parse(data);
       } else {
-        // Dados de exemplo iniciais
         db.mural = [{ id: 1, titulo: "Boas-vindas!", texto: "Sejam bem-vindos ao novo portal do Grêmio Estudantil.", data: new Date().toLocaleDateString() }];
         db.membros = [{ id: 1, nome: "Ana Silva", cargo: "Presidente", turma: "3º Ano A", avatar: "" }];
         db.projetos = [{ id: 1, nome: "Torneio Interclasses", desc: "Organização do torneio esportivo escolar.", status: "em_andamento" }];
         db.eventos = [{ id: 1, titulo: "Reunião Geral", data: new Date().toISOString().split('T')[0], desc: "Alinhamento das próximas metas." }];
-        db.financeiro = [{ id: 1, desc: "Venda de Rifas", valor: 150.00, tipo: "receita" }];
+        db.financeiro = [
+          { id: 1, desc: "Venda de Rifas", valor: 300.00, tipo: "receita" },
+          { id: 2, desc: "Material de Apoio", valor: 50.00, tipo: "despesa" }
+        ];
         saveData();
       }
     }
@@ -547,7 +550,7 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
-    // NAVEGAÇÃO & UI
+    // UI & MENU
     function switchTab(tabId, btn) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -564,7 +567,7 @@
       document.body.classList.toggle('dark-mode');
     }
 
-    // USUÁRIO & PERFIL
+    // USUÁRIO
     function checkUser() {
       if (!db.user) {
         document.getElementById('welcome-screen').style.display = 'flex';
@@ -597,12 +600,23 @@
       }
     }
 
-    // CHAT
+    // CHAT (RECURSOS: EXCLUIR, DIGITANDO, VISUALIZADO, ONLINE)
     function switchChatRoom(room, btn) {
       currentChatRoom = room;
       document.querySelectorAll('.room-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderChat();
+    }
+
+    function handleTyping() {
+      const indicator = document.getElementById('chatTypingIndicator');
+      if (db.user) {
+        indicator.innerText = `${db.user.nome} está digitando...`;
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+          indicator.innerText = '';
+        }, 1500);
+      }
     }
 
     document.getElementById('chatForm').onsubmit = function(e) {
@@ -614,28 +628,55 @@
       if (!db.chat[currentChatRoom]) db.chat[currentChatRoom] = [];
       
       db.chat[currentChatRoom].push({
+        id: Date.now(),
         autor: db.user.nome,
         turma: db.user.turma,
         texto: text,
-        hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        visualizado: true
       });
 
       input.value = '';
+      document.getElementById('chatTypingIndicator').innerText = '';
       saveData();
     };
+
+    function apagarMensagemChat(msgId) {
+      if (confirm("Deseja apagar esta mensagem do chat?")) {
+        db.chat[currentChatRoom] = db.chat[currentChatRoom].filter(m => m.id !== msgId);
+        saveData();
+        showToast("Mensagem apagada!");
+      }
+    }
 
     function renderChat() {
       const chatContainer = document.getElementById('chatMessages');
       chatContainer.innerHTML = '';
       const msgs = db.chat[currentChatRoom] || [];
 
+      // Contagem Simulada de Pessoas Online
+      const onlineCount = Math.max(1, db.membros.length);
+      document.getElementById('chat-online-count').innerText = onlineCount;
+
       msgs.forEach(m => {
         const isMe = db.user && db.user.nome === m.autor;
         const msgDiv = document.createElement('div');
         msgDiv.className = `chat-msg ${isMe ? 'me' : ''}`;
         msgDiv.innerHTML = `
-          <div class="meta"><strong>${m.autor} (${m.turma})</strong> <span>${m.hora}</span></div>
+          <div class="meta">
+            <strong>${m.autor} (${m.turma})</strong>
+            <div>
+              <span>${m.hora}</span>
+              <button onclick="apagarMensagemChat(${m.id})" style="background:none; border:none; color:inherit; cursor:pointer; margin-left:6px; opacity:0.7;" title="Apagar">
+                <i class="ph ph-trash"></i>
+              </button>
+            </div>
+          </div>
           <div>${m.texto}</div>
+          <div class="msg-footer">
+            <span style="font-size:0.65rem;">Visualizado por todos</span>
+            <i class="ph ph-checks" style="color:var(--azul-info); font-size:0.9rem;"></i>
+          </div>
         `;
         chatContainer.appendChild(msgDiv);
       });
@@ -679,26 +720,35 @@
     document.getElementById('btnNextMonth').onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); };
     document.getElementById('btnToday').onclick = () => { currentDate = new Date(); renderCalendar(); };
 
-    // FINANCEIRO (GRÁFICO)
+    // FINANCEIRO (TOTAL EM CAIXA + PORCENTAGENS)
     function renderFinanceiro() {
       let receita = 0, despesa = 0;
       const list = document.getElementById('public-financeiro-list');
       list.innerHTML = '';
 
       db.financeiro.forEach(f => {
-        if (f.tipo === 'receita') receita += parseFloat(f.valor);
-        else despesa += parseFloat(f.valor);
+        const val = parseFloat(f.valor) || 0;
+        if (f.tipo === 'receita') receita += val;
+        else despesa += val;
 
         list.innerHTML += `<li style="padding:8px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
           <span>${f.desc}</span>
           <strong style="color:${f.tipo === 'receita' ? 'var(--verde-sucesso)' : 'var(--vermelho)'}">
-            ${f.tipo === 'receita' ? '+' : '-'} R$ ${parseFloat(f.valor).toFixed(2)}
+            ${f.tipo === 'receita' ? '+' : '-'} R$ ${val.toFixed(2)}
           </strong>
         </li>`;
       });
 
-      const saldo = receita - despesa;
-      document.getElementById('dash-saldo').innerText = `R$ ${saldo.toFixed(2)}`;
+      const saldoTotal = receita - despesa;
+      const movimentadoTotal = receita + despesa;
+      
+      const pctReceita = movimentadoTotal > 0 ? ((receita / movimentadoTotal) * 100).toFixed(1) : 0;
+      const pctDespesa = movimentadoTotal > 0 ? ((despesa / movimentadoTotal) * 100).toFixed(1) : 0;
+
+      document.getElementById('dash-saldo').innerText = `R$ ${saldoTotal.toFixed(2)}`;
+      document.getElementById('fin-total-caixa').innerText = `R$ ${saldoTotal.toFixed(2)}`;
+      document.getElementById('pct-receita').innerText = `${pctReceita}% Entradas`;
+      document.getElementById('pct-despesa').innerText = `${pctDespesa}% Saídas`;
 
       const ctx = document.getElementById('financeiroChart').getContext('2d');
       if (chartInstance) chartInstance.destroy();
@@ -706,7 +756,7 @@
       chartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: ['Entradas', 'Saídas'],
+          labels: [`Entradas (${pctReceita}%)`, `Saídas (${pctDespesa}%)`],
           datasets: [{
             data: [receita, despesa],
             backgroundColor: ['#22C55E', '#EF4444']
@@ -719,7 +769,7 @@
     // ADMIN PAINEL
     function autenticarAdmin() {
       const pass = document.getElementById('adminPasswordInput').value;
-      if (pass === "gremio123") { // Senha Padrão
+      if (pass === "gremio123") {
         db.adminAuth = true;
         document.getElementById('admin-login-card').style.display = 'none';
         document.getElementById('admin-panel').style.display = 'block';
@@ -833,16 +883,9 @@
       }
     }
 
-    function salvarConfiguracoes() {
-      const logoUrl = document.getElementById('adm-cfg-logo').value;
-      db.config.logo = logoUrl;
-      saveData();
-      showToast("Configurações salvas!");
-    }
-
-    // FILTROS & BUSCAS
+    // FILTROS
     function filterList(elementId, query) {
-      const q = query.toLowerCase();
+      const q.toLowerCase();
       document.querySelectorAll(`#${elementId} li`).forEach(li => {
         li.style.display = li.innerText.toLowerCase().includes(q) ? '' : 'none';
       });
@@ -855,14 +898,9 @@
       });
     }
 
-    // RENDERIZADOR GERAL DE DADOS
+    // RENDERIZADOR GERAL
     function render() {
       checkUser();
-
-      // Atualizar Logo
-      if (db.config.logo) {
-        document.getElementById('app-logo-header').src = db.config.logo;
-      }
 
       // KPIs Dashboard
       document.getElementById('kpi-membros').innerText = db.membros.length;
@@ -877,7 +915,7 @@
         <span style="font-size:0.7rem; color:var(--text-muted);">${ultMural.data}</span>
       ` : '<p style="color:var(--text-muted);">Nenhum aviso no momento.</p>';
 
-      // Mural Público
+      // Mural Público & Admin
       const muralPublic = document.getElementById('public-mural-list');
       const muralAdm = document.getElementById('adm-mural-list');
       muralPublic.innerHTML = ''; muralAdm.innerHTML = '';
@@ -907,7 +945,7 @@
         projPublic.innerHTML += `<div class="card" style="margin-bottom:10px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <h4>${p.nome}</h4>
-                <span class="badge-status ${badgeClass}">${statusText}</span>
+            <span class="badge-status ${badgeClass}">${statusText}</span>
           </div>
           <p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">${p.desc}</p>
         </div>`;
@@ -963,7 +1001,6 @@
       renderFinanceiro();
     }
 
-    // INICIALIZAÇÃO DA APLICAÇÃO
     window.onload = function() {
       loadData();
       render();
