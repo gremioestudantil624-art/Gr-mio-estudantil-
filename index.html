@@ -8,6 +8,9 @@
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
   <style>
     :root {
       --preto: #111111;
@@ -347,7 +350,7 @@
 
       <section id="tab-calendario" class="tab-content">
         <div class="card">
-          <div style="display:flex; justify-space-between; align-items:center;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
             <h3 id="calendarMonthYear"><i class="ph ph-calendar"></i> Calendário</h3>
             <div>
               <button class="btn btn-sm" id="btnPrevMonth"><i class="ph ph-caret-left"></i></button>
@@ -421,9 +424,9 @@
           <button class="btn" onclick="autenticarAdmin()" style="width:100%; justify-content:center;"><i class="ph ph-key"></i> Entrar na Área Restrita</button>
         </div>
 
-        <div id="admin-panel" style="display:none;">
+               <div id="admin-panel" style="display:none;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 style="color:var(--text-ccolor:var(--text-color);"><i class="ph ph-shield-check" style="color: var(--dourado);"></i> Painel de Gerenciamento</h2>
+            <h2 style="color:var(--text-color);"><i class="ph ph-shield-check" style="color: var(--dourado);"></i> Painel de Gerenciamento</h2>
             <button class="btn btn-warning btn-sm" onclick="deslogarAdmin()"><i class="ph ph-sign-out"></i> Sair do Admin</button>
           </div>
 
@@ -502,7 +505,23 @@
   <div id="toast-container"></div>
 
   <script>
-    const APP_KEY = "GREMIO_APP_DATA_V1";
+    // --- Configuração do Firebase ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2rnMOi-YMH9LthRFf9KCICFtKpGvDm78",
+      authDomain: "fala--estudante.firebaseapp.com",
+      databaseURL: "https://fala--estudante-default-rtdb.firebaseio.com",
+      projectId: "fala--estudante",
+      storageBucket: "fala--estudante.firebasestorage.app",
+      messagingSenderId: "424257046289",
+      appId: "1:424257046289:web:b56419eae80e7773c06eb0",
+      measurementId: "G-72YGM447NB"
+    };
+
+    // Inicialização do Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Variáveis Globais de Estado
     let currentChatRoom = 'geral';
     let currentDate = new Date();
     let chartInstance = null;
@@ -519,26 +538,45 @@
       adminAuth: false
     };
 
+    // Sincronização de dados em Tempo Real com o Firebase
     function loadData() {
-      const data = localStorage.getItem(APP_KEY);
-      if (data) {
-        db = JSON.parse(data);
-      } else {
-        db.mural = [{ id: 1, titulo: "Boas-vindas!", texto: "Sejam bem-vindos ao novo portal do Grêmio Estudantil.", data: new Date().toLocaleDateString() }];
-        db.membros = [{ id: 1, nome: "Ana Silva", cargo: "Presidente", turma: "3º Ano A", avatar: "" }];
-        db.projetos = [{ id: 1, nome: "Torneio Interclasses", desc: "Organização do torneio esportivo escolar.", status: "em_andamento" }];
-        db.eventos = [{ id: 1, titulo: "Reunião Geral", data: new Date().toISOString().split('T')[0], desc: "Alinhamento das próximas metas." }];
-        db.financeiro = [
-          { id: 1, desc: "Venda de Rifas", valor: 300.00, tipo: "receita" },
-          { id: 2, desc: "Material de Apoio", valor: 50.00, tipo: "despesa" }
-        ];
-        saveData();
+      database.ref('gremio_data').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          // Mantém o perfil do usuário salvo localmente para este navegador
+          const localUser = db.user; 
+          db = data;
+          if (localUser) db.user = localUser;
+          if (!db.chat) db.chat = { geral: [], eventos: [], financeiro: [] };
+        } else {
+          db.mural = [{ id: 1, titulo: "Boas-vindas!", texto: "Sejam bem-vindos ao novo portal do Grêmio Estudantil.", data: new Date().toLocaleDateString() }];
+          db.membros = [{ id: 1, nome: "Ana Silva", cargo: "Presidente", turma: "3º Ano A", avatar: "" }];
+          db.projetos = [{ id: 1, nome: "Torneio Interclasses", desc: "Organização do torneio esportivo escolar.", status: "em_andamento" }];
+          db.eventos = [{ id: 1, titulo: "Reunião Geral", data: new Date().toISOString().split('T')[0], desc: "Alinhamento das próximas metas." }];
+          db.financeiro = [
+            { id: 1, desc: "Venda de Rifas", valor: 300.00, tipo: "receita" },
+            { id: 2, desc: "Material de Apoio", valor: 50.00, tipo: "despesa" }
+          ];
+          db.chat = { geral: [], eventos: [], financeiro: [] };
+          saveData();
+        }
+        render();
+      });
+
+      // Carrega usuário individual de cada aparelho (localStorage)
+      const savedUser = localStorage.getItem('GREMIO_USER');
+      if (savedUser) {
+        db.user = JSON.parse(savedUser);
       }
     }
 
+    // Salvar dados no Banco Nuvem (Firebase)
     function saveData() {
-      localStorage.setItem(APP_KEY, JSON.stringify(db));
-      render();
+      // Cria uma cópia sem enviar a credencial local de usuário ou de admin
+      const dataToSave = { ...db };
+      delete dataToSave.user;
+      delete dataToSave.adminAuth;
+      database.ref('gremio_data').set(dataToSave);
     }
 
     function showToast(msg) {
@@ -593,14 +631,14 @@
       if (!nome || !turma) return alert("Por favor, preencha Nome e Turma.");
 
       db.user = { nome, cargo, turma };
-      saveData();
+      localStorage.setItem('GREMIO_USER', JSON.stringify(db.user));
       checkUser();
     };
 
     function logoutUser() {
       if (confirm("Deseja alterar seu usuário?")) {
         db.user = null;
-        saveData();
+        localStorage.removeItem('GREMIO_USER');
         checkUser();
       }
     }
@@ -630,6 +668,7 @@
       const text = input.value.trim();
       if (!text || !db.user) return;
 
+      if (!db.chat) db.chat = {};
       if (!db.chat[currentChatRoom]) db.chat[currentChatRoom] = [];
       
       db.chat[currentChatRoom].push({
@@ -658,9 +697,9 @@
       const chatContainer = document.getElementById('chatMessages');
       if (!chatContainer) return;
       chatContainer.innerHTML = '';
-      const msgs = db.chat[currentChatRoom] || [];
+      const msgs = (db.chat && db.chat[currentChatRoom]) ? db.chat[currentChatRoom] : [];
 
-      const onlineCount = Math.max(1, db.membros.length);
+      const onlineCount = Math.max(1, db.membros ? db.membros.length : 1);
       document.getElementById('chat-online-count').innerText = onlineCount;
 
       msgs.forEach(m => {
@@ -715,7 +754,7 @@
         }
 
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const dayEvents = db.eventos.filter(e => e.data === dateStr);
+        const dayEvents = (db.eventos || []).filter(e => e.data === dateStr);
 
         cell.innerHTML = `<strong>${day}</strong>` + dayEvents.map(e => `<div style="font-size:0.65rem; background:var(--dourado); color:#000; padding:2px; border-radius:3px; margin-top:2px;">${e.titulo}</div>`).join('');
         grid.appendChild(cell);
@@ -733,7 +772,7 @@
       if (!list) return;
       list.innerHTML = '';
 
-      db.financeiro.forEach(f => {
+      (db.financeiro || []).forEach(f => {
         const val = parseFloat(f.valor) || 0;
         if (f.tipo === 'receita') receita += val;
         else despesa += val;
@@ -803,6 +842,8 @@
 
       if (!titulo || !texto) return alert("Preencha todos os campos.");
 
+      if (!db.mural) db.mural = [];
+
       if (id) {
         const item = db.mural.find(m => m.id == id);
         if (item) { item.titulo = titulo; item.texto = texto; }
@@ -824,6 +865,8 @@
       const status = document.getElementById('adm-proj-status').value;
 
       if (!nome || !desc) return alert("Preencha todos os campos.");
+
+      if (!db.projetos) db.projetos = [];
 
       if (id) {
         const item = db.projetos.find(p => p.id == id);
@@ -847,6 +890,8 @@
 
       if (!nome || !cargo || !turma) return alert("Preencha os campos obrigatórios.");
 
+      if (!db.membros) db.membros = [];
+
       db.membros.push({ id: Date.now(), nome, cargo, turma, avatar });
       document.getElementById('adm-membro-nome').value = '';
       document.getElementById('adm-membro-cargo').value = '';
@@ -863,6 +908,8 @@
 
       if (!titulo || !data) return alert("Título e Data são obrigatórios.");
 
+      if (!db.eventos) db.eventos = [];
+
       db.eventos.push({ id: Date.now(), titulo, data, desc });
       document.getElementById('adm-evento-titulo').value = '';
       document.getElementById('adm-evento-data').value = '';
@@ -878,6 +925,8 @@
 
       if (!desc || isNaN(valor)) return alert("Preencha a descrição e valor válidos.");
 
+      if (!db.financeiro) db.financeiro = [];
+
       db.financeiro.push({ id: Date.now(), desc, valor, tipo });
       document.getElementById('adm-fin-desc').value = '';
       document.getElementById('adm-fin-valor').value = '';
@@ -887,9 +936,11 @@
 
     function deleteItem(type, id) {
       if (confirm("Tem certeza que deseja excluir este item?")) {
-        db[type] = db[type].filter(i => i.id != id);
-        saveData();
-        showToast("Item excluído!");
+        if (db[type]) {
+          db[type] = db[type].filter(i => i.id != id);
+          saveData();
+          showToast("Item excluído!");
+        }
       }
     }
 
@@ -913,12 +964,12 @@
       checkUser();
 
       // KPIs Dashboard
-      document.getElementById('kpi-membros').innerText = db.membros.length;
-      document.getElementById('kpi-projetos').innerText = db.projetos.length;
-      document.getElementById('kpi-eventos').innerText = db.eventos.length;
+      document.getElementById('kpi-membros').innerText = db.membros ? db.membros.length : 0;
+      document.getElementById('kpi-projetos').innerText = db.projetos ? db.projetos.length : 0;
+      document.getElementById('kpi-eventos').innerText = db.eventos ? db.eventos.length : 0;
 
       // Último Comunicado Dashboard
-      const ultMural = db.mural[db.mural.length - 1];
+      const ultMural = (db.mural && db.mural.length > 0) ? db.mural[db.mural.length - 1] : null;
       document.getElementById('dash-ultimo-comunicado').innerHTML = ultMural ? `
         <h4 style="color:var(--dourado);">${ultMural.titulo}</h4>
         <p style="font-size:0.85rem; margin-top:5px;">${ultMural.texto}</p>
@@ -931,7 +982,7 @@
       if (muralPublic) muralPublic.innerHTML = ''; 
       if (muralAdm) muralAdm.innerHTML = '';
 
-      db.mural.forEach(m => {
+      (db.mural || []).forEach(m => {
         if (muralPublic) {
           muralPublic.innerHTML += `<li style="padding:12px 0; border-bottom:1px solid var(--border-color);">
             <strong style="color:var(--dourado); font-size:1rem;">${m.titulo}</strong>
@@ -954,7 +1005,7 @@
       if (projPublic) projPublic.innerHTML = ''; 
       if (projAdm) projAdm.innerHTML = '';
 
-      db.projetos.forEach(p => {
+      (db.projetos || []).forEach(p => {
         const badgeClass = `badge-${p.status}`;
         const statusText = p.status === 'em_andamento' ? 'Em Andamento' : p.status === 'concluido' ? 'Concluído' : 'Planejamento';
 
@@ -982,7 +1033,7 @@
       if (membroPublic) membroPublic.innerHTML = ''; 
       if (membroAdm) membroAdm.innerHTML = '';
 
-      db.membros.forEach(m => {
+      (db.membros || []).forEach(m => {
         if (membroPublic) {
           membroPublic.innerHTML += `<li style="padding:10px; border-bottom:1px solid var(--border-color); display:flex; align-items:center; gap:12px;">
             <div class="avatar-circle" style="${m.avatar ? `background-image:url('${m.avatar}')` : ''}">${!m.avatar ? m.nome.substring(0,2).toUpperCase() : ''}</div>
@@ -1005,7 +1056,7 @@
       const eventoAdm = document.getElementById('adm-evento-list');
       if (eventoAdm) {
         eventoAdm.innerHTML = '';
-        db.eventos.forEach(e => {
+        (db.eventos || []).forEach(e => {
           eventoAdm.innerHTML += `<li style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <span>${e.titulo} (${e.data})</span>
             <button class="btn btn-danger btn-sm" onclick="deleteItem('eventos', ${e.id})"><i class="ph ph-trash"></i></button>
@@ -1017,7 +1068,7 @@
       const finAdm = document.getElementById('adm-fin-list');
       if (finAdm) {
         finAdm.innerHTML = '';
-        db.financeiro.forEach(f => {
+        (db.financeiro || []).forEach(f => {
           finAdm.innerHTML += `<li style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <span>${f.desc} (R$ ${parseFloat(f.valor).toFixed(2)})</span>
             <button class="btn btn-danger btn-sm" onclick="deleteItem('financeiro', ${f.id})"><i class="ph ph-trash"></i></button>
@@ -1030,9 +1081,9 @@
       renderFinanceiro();
     }
 
+    // Inicialização ao carregar a página
     window.onload = function() {
       loadData();
-      render();
     };
   </script>
 </body>
