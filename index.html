@@ -1,600 +1,495 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADM.INOVA — Mostra Digital de Administração e Empreendedorismo</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              navy: '#101B35',
-              institutional: '#244B82',
-              vibrant: '#3988E8',
-              cyan: '#63C5E8',
-              lightbg: '#F8FAFC'
-            }
-          }
-        }
-      }
-    </script>
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel Standalone para JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- QRCode Generator -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1769aa">
+  <title>ADM.PROJETOS | Catálogo Digital</title>
+  <style>
+    :root {
+      --navy: #12345a;
+      --blue: #1769aa;
+      --blue2: #2d83c7;
+      --pale: #eaf4fc;
+      --ink: #172b42;
+      --muted: #64748b;
+      --line: #e4ebf2;
+      --bg: #ffffff;
+      --soft: #f5f8fb;
+      --danger: #c43d4b;
+      --shadow: 0 12px 32px rgba(18, 52, 90, .08);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    .container { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    header {
+      position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.94);
+      backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
+    }
+    .nav { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--navy); }
+    .brand-mark {
+      width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px;
+      color: white; background: linear-gradient(145deg, var(--blue), var(--navy)); font-weight: 850;
+      letter-spacing: -.8px; box-shadow: 0 6px 14px rgba(23,105,170,.2);
+    }
+    .brand-name { font-weight: 850; letter-spacing: -.6px; font-size: 18px; }
+    .brand-name span { color: var(--blue); }
+    .brand-sub { display: block; color: var(--muted); font-size: 10px; font-weight: 600; letter-spacing: .4px; margin-top: 2px; }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .btn {
+      border: 0; border-radius: 11px; padding: 11px 16px; font-weight: 700; font-size: 13px;
+      transition: .2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary { background: var(--blue); color: white; box-shadow: 0 5px 14px rgba(23,105,170,.16); }
+    .btn-primary:hover { background: var(--navy); transform: translateY(-1px); }
+    .btn-light { color: var(--blue); background: var(--pale); }
+    .btn-light:hover { background: #dceefa; }
+    .btn-outline { background: white; color: var(--navy); border: 1px solid var(--line); }
+    .btn-outline:hover { border-color: #9fc6e6; background: var(--soft); }
+    .btn-danger { background: #fff0f1; color: var(--danger); }
+    .btn-small { padding: 8px 11px; font-size: 12px; }
+    .hero { padding: 76px 0 54px; position: relative; overflow: hidden; }
+    .hero::after {
+      content: ""; position: absolute; width: 420px; height: 420px; right: -160px; top: -190px;
+      border-radius: 50%; background: radial-gradient(circle, rgba(45,131,199,.12), transparent 68%); pointer-events: none;
+    }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 22px; height: 2px; background: var(--blue); border-radius: 5px; }
+    h1 { color: var(--navy); font-size: clamp(38px, 6vw, 62px); line-height: 1.04; letter-spacing: -2.5px; max-width: 760px; margin: 19px 0 18px; }
+    h1 span { color: var(--blue); }
+    .hero-copy { color: var(--muted); font-size: 16px; line-height: 1.8; max-width: 650px; margin: 0 0 26px; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 32px; }
+    .meta-chip { background: var(--soft); color: #53677c; border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; font-size: 11px; font-weight: 700; }
+    .section { padding: 35px 0 80px; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 22px; margin-bottom: 25px; }
+    .section-kicker { color: var(--blue); text-transform: uppercase; letter-spacing: 1.4px; font-size: 10px; font-weight: 850; }
+    h2 { margin: 8px 0 0; color: var(--navy); font-size: clamp(25px, 3vw, 34px); letter-spacing: -.9px; }
+    .section-desc { color: var(--muted); font-size: 13px; margin: 8px 0 0; line-height: 1.6; }
+    .tools { display: flex; gap: 10px; margin-bottom: 22px; }
+    .search-wrap { flex: 1; position: relative; }
+    .search-wrap span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #8192a5; font-size: 17px; }
+    .search-wrap input, .tools select {
+      width: 100%; height: 46px; border: 1px solid var(--line); border-radius: 12px; background: white;
+      color: var(--ink); outline: none; padding: 0 14px;
+    }
+    .search-wrap input { padding-left: 42px; }
+    .search-wrap input:focus, .tools select:focus, .field input:focus, .field textarea:focus, .field select:focus { border-color: #7bb4df; box-shadow: 0 0 0 3px rgba(45,131,199,.1); }
+    .tools select { width: 190px; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .project-card {
+      border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: white;
+      transition: .22s ease; box-shadow: 0 3px 12px rgba(18,52,90,.025); display: flex; flex-direction: column;
+    }
+    .project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: #c9deef; }
+    .cover { height: 190px; background: linear-gradient(135deg, #eaf4fc, #f7fafc); overflow: hidden; position: relative; }
+    .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cover-placeholder { height: 100%; display: grid; place-items: center; color: #80a9c9; font-size: 38px; font-weight: 800; }
+    .project-body { padding: 18px; display: flex; flex-direction: column; flex: 1; }
+    .category { display: inline-flex; width: fit-content; background: var(--pale); color: var(--blue); padding: 5px 9px; border-radius: 7px; font-size: 10px; font-weight: 800; }
+    .project-body h3 { color: var(--navy); margin: 12px 0 8px; font-size: 18px; letter-spacing: -.3px; }
+    .project-body p { color: var(--muted); font-size: 12px; line-height: 1.7; margin: 0 0 18px; }
+    .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; }
+    .details-link { color: var(--blue); font-weight: 800; font-size: 12px; border: 0; background: none; padding: 7px 0; }
+    .details-link:hover { color: var(--navy); }
+    .empty {
+      border: 1px dashed #cbd9e6; background: #fbfdff; border-radius: var(--radius); padding: 58px 20px;
+      text-align: center; grid-column: 1 / -1;
+    }
+    .empty-icon { width: 58px; height: 58px; display: grid; place-items: center; margin: 0 auto 15px; border-radius: 18px; background: var(--pale); color: var(--blue); font-size: 25px; }
+    .empty h3 { color: var(--navy); margin: 0 0 7px; font-size: 17px; }
+    .empty p { color: var(--muted); font-size: 13px; margin: 0; }
+    footer { border-top: 1px solid var(--line); padding: 25px 0; color: var(--muted); font-size: 11px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 15px; flex-wrap: wrap; }
+    .footer-inner strong { color: var(--navy); }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(11,31,52,.48); z-index: 50; display: none; align-items: center; justify-content: center; padding: 18px; }
+    .modal-backdrop.show { display: flex; }
+    .modal { width: min(650px, 100%); max-height: min(90vh, 850px); overflow: auto; background: white; border-radius: 20px; box-shadow: 0 24px 70px rgba(0,0,0,.2); }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 20px 22px; border-bottom: 1px solid var(--line); }
+    .modal-head h3 { margin: 0; color: var(--navy); font-size: 18px; }
+    .close { border: 0; width: 34px; height: 34px; border-radius: 9px; background: var(--soft); color: var(--muted); font-size: 20px; }
+    .modal-content { padding: 22px; }
+    .detail-cover { width: 100%; max-height: 260px; object-fit: cover; border-radius: 13px; margin-bottom: 18px; background: var(--pale); }
+    .detail-title { font-size: 25px; margin: 12px 0 10px; color: var(--navy); }
+    .detail-text { color: #526579; font-size: 14px; line-height: 1.8; white-space: pre-wrap; }
+    .detail-label { color: var(--navy); font-size: 12px; font-weight: 850; margin: 18px 0 6px; }
+    .admin-login { width: min(410px, 100%); margin: 0 auto; }
+    .admin-login p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .field { margin-bottom: 15px; }
+    .field label { display: block; color: #40556b; font-size: 12px; font-weight: 800; margin-bottom: 7px; }
+    .field input, .field textarea, .field select {
+      width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; outline: none; color: var(--ink); background: white;
+    }
+    .field textarea { min-height: 95px; resize: vertical; line-height: 1.5; }
+    .field small { color: var(--muted); font-size: 10px; display: block; margin-top: 6px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 9px; padding-top: 8px; }
+    .admin-panel { width: min(760px, 100%); }
+    .admin-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .admin-top h4 { margin: 0; color: var(--navy); font-size: 17px; }
+    .admin-list { display: grid; gap: 9px; }
+    .admin-item { display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
+    .admin-thumb { width: 54px; height: 48px; border-radius: 8px; object-fit: cover; background: var(--pale); flex: 0 0 auto; }
+    .admin-item-info { min-width: 0; flex: 1; }
+    .admin-item-info strong { display: block; color: var(--navy); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .admin-item-info span { color: var(--muted); font-size: 10px; }
+    .admin-item-actions { display: flex; gap: 6px; }
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); background: var(--navy); color: white; padding: 12px 17px; border-radius: 11px; font-size: 12px; font-weight: 700; opacity: 0; pointer-events: none; transition: .25s; z-index: 100; box-shadow: var(--shadow); }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .hidden { display: none !important; }
+    @media (max-width: 800px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hero { padding-top: 55px; } }
+    @media (max-width: 560px) {
+      .container { width: min(100% - 28px, 1120px); }
+      .nav { min-height: 66px; }
+      .brand-mark { width: 38px; height: 38px; }
+      .brand-sub { display: none; }
+      .nav-actions .btn { padding: 9px 11px; font-size: 11px; }
+      .hero { padding: 48px 0 35px; }
+      h1 { letter-spacing: -1.6px; }
+      .hero-copy { font-size: 14px; }
+      .section { padding-bottom: 55px; }
+      .section-head { align-items: start; flex-direction: column; }
+      .tools { flex-direction: column; }
+      .tools select { width: 100%; }
+      .grid { grid-template-columns: 1fr; gap: 14px; }
+      .cover { height: 205px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .admin-item { flex-wrap: wrap; }
+      .admin-item-actions { width: 100%; justify-content: flex-end; }
+    }
+  </style>
 </head>
-<body class="bg-lightbg text-slate-800 font-sans antialiased">
-    <div id="root"></div>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#">
+        <div class="brand-mark">ADM</div>
+        <div><div class="brand-name">ADM<span>.PROJETOS</span></div><span class="brand-sub">ADMINISTRAÇÃO & EMPREENDEDORISMO</span></div>
+      </a>
+      <div class="nav-actions">
+        <button class="btn btn-light" id="adminOpenBtn">⚙ Administrador</button>
+      </div>
+    </div>
+  </header>
 
-    <script type="text/babel">
-        function App() {
-            const [currentView, setCurrentView] = React.useState('catalog');
-            const [platforms, setPlatforms] = React.useState(() => {
-                const saved = localStorage.getItem('admin_inova_platforms');
-                return saved ? JSON.parse(saved) : [];
-            });
-            const [isAdminLoggedIn, setIsAdminLoggedIn] = React.useState(() => {
-                return localStorage.getItem('admin_inova_logged') === 'true';
-            });
-            const [showLoginModal, setShowLoginModal] = React.useState(false);
-            const [loginUser, setLoginUser] = React.useState('');
-            const [loginPass, setLoginPass] = React.useState('');
-            const [loginError, setLoginError] = React.useState('');
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="eyebrow">CETI JOSÉ MARQUES · DAY ESCOLAR</div>
+        <h1>Projetos que transformam <span>ideias em soluções.</span></h1>
+        <p class="hero-copy">Um catálogo dos projetos e plataformas desenvolvidos no curso de Administração com ênfase em Empreendedorismo. Conheça nossas criações e explore cada solução.</p>
+        <a href="#projetos" class="btn btn-primary">Explorar projetos <span>→</span></a>
+        <div class="hero-meta">
+          <span class="meta-chip">Administração</span>
+          <span class="meta-chip">Empreendedorismo</span>
+          <span class="meta-chip">Tecnologia e inovação</span>
+        </div>
+      </div>
+    </section>
 
-            const [form, setForm] = React.useState({
-                title: '',
-                description: '',
-                problem: '',
-                objective: '',
-                developers: '',
-                url: '',
-                imageUrl: '',
-                status: 'Disponível'
-            });
-            const [editingId, setEditingId] = React.useState(null);
+    <section class="section" id="projetos">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">CATÁLOGO DIGITAL</div>
+            <h2>Nossos projetos</h2>
+            <p class="section-desc">Explore os projetos cadastrados e acesse suas plataformas.</p>
+          </div>
+          <div id="projectCount" class="meta-chip">0 projetos</div>
+        </div>
+        <div class="tools">
+          <div class="search-wrap"><span>⌕</span><input id="searchInput" type="search" placeholder="Pesquisar projeto pelo nome..."></div>
+          <select id="categoryFilter" aria-label="Filtrar por categoria"><option value="">Todas as categorias</option></select>
+        </div>
+        <div class="grid" id="projectGrid"></div>
+      </div>
+    </section>
+  </main>
 
-            React.useEffect(() => {
-                localStorage.setItem('admin_inova_platforms', JSON.stringify(platforms));
-            }, [platforms]);
+  <footer>
+    <div class="container footer-inner">
+      <div><strong>ADM.PROJETOS</strong> · CETI José Marques</div>
+      <div>Administração com ênfase em Empreendedorismo</div>
+    </div>
+  </footer>
 
-            React.useEffect(() => {
-                localStorage.setItem('admin_inova_logged', isAdminLoggedIn);
-            }, [isAdminLoggedIn]);
+  <!-- Modal de detalhes -->
+  <div class="modal-backdrop" id="detailsModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
+      <div class="modal-head"><h3>Detalhes do projeto</h3><button class="close" data-close="detailsModal" aria-label="Fechar">×</button></div>
+      <div class="modal-content" id="detailsContent"></div>
+    </div>
+  </div>
 
-            React.useEffect(() => {
-                setTimeout(() => {
-                    if (window.lucide) {
-                        window.lucide.createIcons();
-                    }
-                }, 100);
-            }, [currentView, platforms, isAdminLoggedIn, showLoginModal]);
+  <!-- Modal administrativo -->
+  <div class="modal-backdrop" id="adminModal">
+    <div class="modal admin-panel" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+      <div class="modal-head"><h3 id="adminTitle">Área administrativa</h3><button class="close" data-close="adminModal" aria-label="Fechar">×</button></div>
+      <div class="modal-content">
+        <div class="admin-login" id="loginView">
+          <div class="eyebrow">ACESSO RESTRITO</div>
+          <h2 style="font-size:25px;margin:10px 0 5px">Entrar como administrador</h2>
+          <p>Área exclusiva para cadastrar, editar e remover projetos do catálogo.</p>
+          <form id="loginForm">
+            <div class="field"><label for="adminPassword">Senha administrativa</label><input id="adminPassword" type="password" autocomplete="current-password" placeholder="Digite a senha" required></div>
+            <button class="btn btn-primary" style="width:100%" type="submit">Entrar no painel</button>
+          </form>
+          <p style="font-size:10px;margin-top:14px">A senha inicial pode ser alterada no código, na constante <strong>ADMIN_PASSWORD</strong>.</p>
+        </div>
 
-            const handleLogin = (e) => {
-                e.preventDefault();
-                if (loginUser === 'admin' && loginPass === 'admin2026') {
-                    setIsAdminLoggedIn(true);
-                    setShowLoginModal(false);
-                    setLoginError('');
-                    setLoginUser('');
-                    setLoginPass('');
-                    setCurrentView('admin');
-                } else {
-                    setLoginError('Usuário ou senha incorretos.');
-                }
-            };
+        <div id="dashboardView" class="hidden">
+          <div class="admin-top">
+            <div><h4>Gerenciar projetos</h4><span class="section-desc" id="adminProjectCount">0 projetos cadastrados</span></div>
+            <button class="btn btn-primary btn-small" id="newProjectBtn">＋ Novo projeto</button>
+          </div>
+          <div class="admin-list" id="adminList"></div>
+          <div style="display:flex;justify-content:flex-end;margin-top:17px">
+            <button class="btn btn-outline btn-small" id="logoutBtn">Sair do administrador</button>
+          </div>
+        </div>
 
-            const handleLogout = () => {
-                setIsAdminLoggedIn(false);
-                setCurrentView('catalog');
-            };
+        <div id="projectFormView" class="hidden">
+          <div class="admin-top"><div><h4 id="formTitle">Cadastrar projeto</h4><span class="section-desc">Preencha as informações do projeto.</span></div></div>
+          <form id="projectForm">
+            <input type="hidden" id="projectId">
+            <div class="field"><label for="projectName">Nome do projeto *</label><input id="projectName" maxlength="90" required placeholder="Ex.: Plataforma de gestão"></div>
+            <div class="form-grid">
+              <div class="field"><label for="projectCategory">Categoria</label><input id="projectCategory" maxlength="40" placeholder="Ex.: Gestão, Educação, Tecnologia"></div>
+              <div class="field"><label for="projectDevelopers">Desenvolvedores (opcional)</label><input id="projectDevelopers" maxlength="120" placeholder="Nome dos responsáveis"></div>
+            </div>
+            <div class="field"><label for="projectShort">Descrição resumida *</label><textarea id="projectShort" maxlength="240" required placeholder="Uma apresentação breve para o card do catálogo."></textarea></div>
+            <div class="field"><label for="projectDescription">Descrição completa</label><textarea id="projectDescription" placeholder="Explique o que o projeto faz, seu objetivo e suas funcionalidades."></textarea></div>
+            <div class="field"><label for="projectLink">Link de acesso *</label><input id="projectLink" type="url" required placeholder="https://..."><small>Use o endereço completo da plataforma, começando com https://</small></div>
+            <div class="field"><label for="projectCover">Imagem de capa</label><input id="projectCover" type="file" accept="image/png,image/jpeg,image/webp"><small>Imagem JPG, PNG ou WEBP. Prefira arquivos leves, de até 2 MB.</small></div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" id="cancelFormBtn">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Salvar projeto</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
 
-            const handleSavePlatform = (e) => {
-                e.preventDefault();
-                if (!form.title || !form.url) {
-                    alert('Preencha pelo menos o Nome da Plataforma e o Link de Acesso.');
-                    return;
-                }
+  <script>
+    // Altere esta senha antes de usar. Esta proteção é apenas local e não é segura para um site público.
+    const ADMIN_PASSWORD = "adm2026";
+    const STORAGE_KEY = "adm_projetos_catalogo_v1";
+    let projects = loadProjects();
+    let editingCover = "";
 
-                if (editingId) {
-                    setPlatforms(platforms.map(p => p.id === editingId ? { ...form, id: editingId } : p));
-                    setEditingId(null);
-                } else {
-                    const newPlatform = {
-                        ...form,
-                        id: Date.now().toString(),
-                        createdAt: new Date().toLocaleDateString('pt-BR')
-                    };
-                    setPlatforms([newPlatform, ...platforms]);
-                }
+    function loadProjects() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+      catch { return []; }
+    }
+    function saveProjects() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+        return true;
+      } catch (error) {
+        showToast("Não foi possível salvar. A imagem pode ser muito grande.");
+        return false;
+      }
+    }
+    function escapeHTML(value = "") {
+      return String(value).replace(/[&<>"']/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[char]));
+    }
+    function safeURL(value) {
+      try {
+        const url = new URL(value);
+        return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+      } catch { return ""; }
+    }
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+    function openModal(id) { document.getElementById(id).classList.add("show"); }
+    function closeModal(id) { document.getElementById(id).classList.remove("show"); }
+    document.querySelectorAll("[data-close]").forEach(btn => btn.addEventListener("click", () => closeModal(btn.dataset.close)));
+    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.addEventListener("click", e => {
+      if (e.target === backdrop) backdrop.classList.remove("show");
+    }));
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") document.querySelectorAll(".modal-backdrop.s    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") document.querySelectorAll(".modal-backdrop.show").forEach(m => m.classList.remove("show"));
+    });
 
-                setForm({
-                    title: '',
-                    description: '',
-                    problem: '',
-                    objective: '',
-                    developers: '',
-                    url: '',
-                    imageUrl: '',
-                    status: 'Disponível'
-                });
-                setCurrentView('catalog');
-            };
+    function renderProjects() {
+      const query = document.getElementById("searchInput").value.trim().toLowerCase();
+      const category = document.getElementById("categoryFilter").value;
+      const filtered = projects.filter(p => {
+        const matchesQuery = (p.name + " " + p.short + " " + (p.category || "")).toLowerCase().includes(query);
+        const matchesCategory = !category || p.category === category;
+        return matchesQuery && matchesCategory;
+      });
+      document.getElementById("projectCount").textContent = `${projects.length} ${projects.length === 1 ? "projeto" : "projetos"}`;
+      const grid = document.getElementById("projectGrid");
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="empty"><div class="empty-icon">▤</div><h3>${projects.length ? "Nenhum projeto encontrado" : "O catálogo está sendo preparado"}</h3><p>${projects.length ? "Tente mudar a pesquisa ou o filtro de categoria." : "Os projetos cadastrados pelo administrador aparecerão aqui."}</p></div>`;
+        return;
+      }
+      grid.innerHTML = filtered.map(p => `
+        <article class="project-card">
+          <div class="cover">${p.cover ? `<img src="${p.cover}" alt="Capa de ${escapeHTML(p.name)}">` : `<div class="cover-placeholder">ADM.</div>`}</div>
+          <div class="project-body">
+            ${p.category ? `<span class="category">${escapeHTML(p.category)}</span>` : ""}
+            <h3>${escapeHTML(p.name)}</h3>
+            <p>${escapeHTML(p.short)}</p>
+            <div class="card-bottom"><button class="details-link" data-details="${escapeHTML(p.id)}">Ver detalhes →</button><span style="color:#9aa9b8;font-size:10px">Projeto</span></div>
+          </div>
+        </article>`).join("");
+      grid.querySelectorAll("[data-details]").forEach(btn => btn.addEventListener("click", () => showDetails(btn.dataset.details)));
+    }
+    function renderCategories() {
+      const select = document.getElementById("categoryFilter");
+      const current = select.value;
+      const categories = [...new Set(projects.map(p => p.category).filter(Boolean))].sort((a,b) => a.localeCompare(b, "pt-BR"));
+      select.innerHTML = `<option value="">Todas as categorias</option>` + categories.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
+      if (categories.includes(current)) select.value = current;
+    }
+    function showDetails(id) {
+      const p = projects.find(item => item.id === id);
+      if (!p) return;
+      const link = safeURL(p.link);
+      document.getElementById("detailsContent").innerHTML = `
+        ${p.cover ? `<img class="detail-cover" src="${p.cover}" alt="Capa de ${escapeHTML(p.name)}">` : ""}
+        ${p.category ? `<span class="category">${escapeHTML(p.category)}</span>` : ""}
+        <h2 class="detail-title" id="detailsTitle">${escapeHTML(p.name)}</h2>
+        <div class="detail-text">${escapeHTML(p.description || p.short)}</div>
+        ${p.developers ? `<div class="detail-label">DESENVOLVEDORES</div><div class="detail-text">${escapeHTML(p.developers)}</div>` : ""}
+        <div style="margin-top:22px">${link ? `<a class="btn btn-primary" href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer">Acessar plataforma ↗</a>` : `<span class="meta-chip">Link indisponível</span>`}</div>`;
+      openModal("detailsModal");
+    }
 
-            const handleEdit = (p) => {
-                setForm(p);
-                setEditingId(p.id);
-                setCurrentView('admin');
-            };
+    document.getElementById("searchInput").addEventListener("input", renderProjects);
+    document.getElementById("categoryFilter").addEventListener("change", renderProjects);
 
-            const handleDelete = (id) => {
-                if (confirm('Tem certeza que deseja excluir esta plataforma?')) {
-                    setPlatforms(platforms.filter(p => p.id !== id));
-                }
-            };
+    // Área administrativa
+    const adminOpenBtn = document.getElementById("adminOpenBtn");
+    adminOpenBtn.addEventListener("click", () => {
+      showAdminView(sessionStorage.getItem("adm_admin_session") === "yes" ? "dashboard" : "login");
+      openModal("adminModal");
+    });
+    function showAdminView(view) {
+      document.getElementById("loginView").classList.toggle("hidden", view !== "login");
+      document.getElementById("dashboardView").classList.toggle("hidden", view !== "dashboard");
+      document.getElementById("projectFormView").classList.toggle("hidden", view !== "form");
+      if (view === "dashboard") renderAdminList();
+    }
+    document.getElementById("loginForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const password = document.getElementById("adminPassword").value;
+      if (password === ADMIN_PASSWORD) {
+        sessionStorage.setItem("adm_admin_session", "yes");
+        document.getElementById("adminPassword").value = "";
+        showAdminView("dashboard");
+        showToast("Acesso administrativo liberado.");
+      } else {
+        showToast("Senha incorreta.");
+      }
+    });
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      sessionStorage.removeItem("adm_admin_session");
+      showAdminView("login");
+      showToast("Você saiu do painel.");
+    });
+    function renderAdminList() {
+      document.getElementById("adminProjectCount").textContent = `${projects.length} ${projects.length === 1 ? "projeto cadastrado" : "projetos cadastrados"}`;
+      const list = document.getElementById("adminList");
+      if (!projects.length) {
+        list.innerHTML = `<div class="empty" style="padding:35px 15px"><div class="empty-icon">＋</div><h3>Nenhum projeto cadastrado</h3><p>Use “Novo projeto” para adicionar o primeiro item ao catálogo.</p></div>`;
+        return;
+      }
+      list.innerHTML = projects.map(p => `
+        <div class="admin-item">
+          ${p.cover ? `<img class="admin-thumb" src="${p.cover}" alt="">` : `<div class="admin-thumb" style="display:grid;place-items:center;color:var(--blue);font-weight:800">ADM</div>`}
+          <div class="admin-item-info"><strong>${escapeHTML(p.name)}</strong><span>${escapeHTML(p.category || "Sem categoria")}</span></div>
+          <div class="admin-item-actions">
+            <button class="btn btn-outline btn-small" data-edit="${escapeHTML(p.id)}">Editar</button>
+            <button class="btn btn-danger btn-small" data-delete="${escapeHTML(p.id)}">Excluir</button>
+          </div>
+        </div>`).join("");
+      list.querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => openProjectForm(btn.dataset.edit)));
+      list.querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", () => deleteProject(btn.dataset.delete)));
+    }
+    document.getElementById("newProjectBtn").addEventListener("click", () => openProjectForm());
+    document.getElementById("cancelFormBtn").addEventListener("click", () => showAdminView("dashboard"));
 
-            const generateQRCodeDataURL = (text) => {
-                try {
-                    const qr = qrcode(0, 'L');
-                    qr.addData(text);
-                    qr.make();
-                    return qr.createDataURL(4);
-                } catch (e) {
-                    return '';
-                }
-            };
+    function openProjectForm(id = "") {
+      const p = projects.find(item => item.id === id);
+      document.getElementById("projectForm").reset();
+      document.getElementById("projectId").value = p ? p.id : "";
+      document.getElementById("formTitle").textContent = p ? "Editar projeto" : "Cadastrar projeto";
+      document.getElementById("projectName").value = p?.name || "";
+      document.getElementById("projectCategory").value = p?.category || "";
+      document.getElementById("projectDevelopers").value = p?.developers || "";
+      document.getElementById("projectShort").value = p?.short || "";
+      document.getElementById("projectDescription").value = p?.description || "";
+      document.getElementById("projectLink").value = p?.link || "";
+      editingCover = p?.cover || "";
+      showAdminView("form");
+    }
+    function deleteProject(id) {
+      const p = projects.find(item => item.id === id);
+      if (!p || !confirm(`Deseja realmente excluir "${p.name}"?`)) return;
+      projects = projects.filter(item => item.id !== id);
+      if (saveProjects()) {
+        renderCategories(); renderProjects(); renderAdminList(); showToast("Projeto excluído.");
+      }
+    }
+    function readImage(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) return resolve(editingCover);
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return reject(new Error("Escolha uma imagem JPG, PNG ou WEBP."));
+        if (file.size > 2 * 1024 * 1024) return reject(new Error("A imagem deve ter no máximo 2 MB."));
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
+        reader.readAsDataURL(file);
+      });
+    }
+    document.getElementById("projectForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const id = document.getElementById("projectId").value;
+      const name = document.getElementById("projectName").value.trim();
+      const short = document.getElementById("projectShort").value.trim();
+      const link = safeURL(document.getElementById("projectLink").value.trim());
+      if (!link) { showToast("Informe um link válido começando com https://"); return; }
+      const file = document.getElementById("projectCover").files[0];
+      try {
+        const cover = await readImage(file);
+        const project = {
+          id: id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
+          name,
+          category: document.getElementById("projectCategory").value.trim(),
+          developers: document.getElementById("projectDevelopers").value.trim(),
+          short,
+          description: document.getElementById("projectDescription").value.trim(),
+          link,
+          cover
+        };
+        if (id) projects = projects.map(p => p.id === id ? project : p);
+        else projects.unshift(project);
+        if (saveProjects()) {
+          renderCategories(); renderProjects(); showAdminView("dashboard");
+          showToast(id ? "Projeto atualizado com sucesso." : "Projeto cadastrado com sucesso.");
+        }
+      } catch (error) { showToast(error.message || "Erro ao salvar projeto."); }
+    });
 
-            return (
-                <div className="min-h-screen flex bg-white">
-                    {/* Menu Lateral Esquerdo */}
-                    <aside className="w-64 bg-navy text-white flex flex-col justify-between hidden md:flex shrink-0 shadow-lg">
-                        <div>
-                            <div className="p-6 border-b border-white/10">
-                                <div className="flex items-center space-x-3">
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-vibrant to-cyan flex items-center justify-center font-bold text-white text-xl shadow-md">
-                                        AI
-                                    </div>
-                                    <div>
-                                        <h1 className="font-bold text-lg tracking-wide text-white">ADM.INOVA</h1>
-                                        <p className="text-xs text-cyan">CETI José Marques</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <nav className="p-4 space-y-2">
-                                <button 
-                                    onClick={() => setCurrentView('catalog')}
-                                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all ${currentView === 'catalog' ? 'bg-vibrant text-white shadow-lg' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}>
-                                    <i data-lucide="layout-grid" className="w-5 h-5"></i>
-                                    <span>Catálogo de Plataformas</span>
-                                </button>
-                                <button 
-                                    onClick={() => {
-                                        if (isAdminLoggedIn) {
-                                            setCurrentView('admin');
-                                        } else {
-                                            setShowLoginModal(true);
-                                        }
-                                    }}
-                                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all ${currentView === 'admin' ? 'bg-vibrant text-white shadow-lg' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}>
-                                    <i data-lucide="shield-check" className="w-5 h-5"></i>
-                                    <span>Painel Administrativo</span>
-                                </button>
-                            </nav>
-                        </div>
-                        <div className="p-4 border-t border-white/10">
-                            {isAdminLoggedIn ? (
-                                <button 
-                                    onClick={handleLogout}
-                                    className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white text-sm font-medium transition-colors">
-                                    <i data-lucide="log-out" className="w-4 h-4"></i>
-                                    <span>Sair do Admin</span>
-                                </button>
-                            ) : (
-                                <button 
-                                    onClick={() => setShowLoginModal(true)}
-                                    className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-institutional/40 hover:bg-institutional text-cyan hover:text-white text-sm font-medium transition-colors border border-institutional">
-                                    <i data-lucide="lock" className="w-4 h-4"></i>
-                                    <span>Área do Administrador</span>
-                                </button>
-                            )}
-                        </div>
-                    </aside>
-
-                    {/* Conteúdo Principal */}
-                    <div className="flex-1 flex flex-col min-w-0">
-                        {/* Header Superior Mobile & Desktop */}
-                        <header className="h-20 bg-white border-b border-slate-100 flex items-center justify-between px-6 sticky top-0 z-30 shadow-sm">
-                            <div className="flex items-center space-x-4">
-                                <div className="md:hidden flex items-center space-x-2">
-                                    <div className="w-8 h-8 rounded-lg bg-vibrant flex items-center justify-center font-bold text-white text-sm">
-                                        AI
-                                    </div>
-                                    <span className="font-bold text-navy">ADM.INOVA</span>
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-extrabold text-navy">Mostra Digital de Administração e Empreendedorismo</h2>
-                                    <p className="text-xs text-slate-500">CETI José Marques • Administração com ênfase em Empreendedorismo</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                                {currentView !== 'admin' && (
-                                    <button 
-                                        onClick={() => {
-                                            if (isAdminLoggedIn) setCurrentView('admin');
-                                            else setShowLoginModal(true);
-                                        }}
-                                        className="flex items-center space-x-2 px-4 py-2 bg-navy text-white text-sm font-semibold rounded-xl hover:bg-institutional transition-all shadow-md">
-                                        <i data-lucide={isAdminLoggedIn ? "settings" : "lock"} className="w-4 h-4 text-cyan"></i>
-                                        <span>{isAdminLoggedIn ? "Painel Admin" : "Entrar Admin"}</span>
-                                    </button>
-                                )}
-                            </div>
-                        </header>
-
-                        {/* Corpo Principal */}
-                        <main className="flex-1 p-6 md:p-10 max-w-7xl w-full mx-auto">
-                            {currentView === 'catalog' && (
-                                <div className="space-y-8">
-                                    {/* Hero Banner */}
-                                    <div className="bg-gradient-to-r from-navy via-institutional to-vibrant rounded-3xl p-8 md:p-12 text-white shadow-xl relative overflow-hidden">
-                                        <div className="relative z-10 max-w-2xl">
-                                            <span className="inline-block px-3 py-1 rounded-full bg-cyan/20 text-cyan text-xs font-bold tracking-wider uppercase mb-4 border border-cyan/30">
-                                                Day Escolar 2026
-                                            </span>
-                                            <h3 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-                                                Ideias que se transformam em soluções.
-                                            </h3>
-                                            <p className="text-slate-200 text-sm md:text-base leading-relaxed mb-6">
-                                                Catálogo oficial das plataformas, sistemas e simuladores desenvolvidos pelos estudantes de Administração com ênfase em Empreendedorismo.
-                                            </p>
-                                            <div className="flex items-center space-x-6 text-sm">
-                                                <div className="flex items-center space-x-2">
-                                                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-bold text-cyan">
-                                                        {platforms.length}
-                                                    </div>
-                                                    <span className="text-slate-300 font-medium">Plataformas Cadastradas</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Lista / Cards de Plataformas */}
-                                    <div>
-                                        <div className="flex items-center justify-between mb-6">
-                                            <h4 className="text-2xl font-bold text-navy">Plataformas em Destaque</h4>
-                                            <span className="text-sm font-medium text-slate-500">{platforms.length} {platforms.length === 1 ? 'projeto cadastrado' : 'projetos cadastrados'}</span>
-                                        </div>
-
-                                        {platforms.length === 0 ? (
-                                            <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
-                                                <div className="w-16 h-16 bg-blue-50 text-vibrant rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                                    <i data-lucide="folder-open" className="w-8 h-8"></i>
-                                                </div>
-                                                <h5 className="text-lg font-bold text-navy mb-2">Nenhuma plataforma cadastrada ainda</h5>
-                                                <p className="text-slate-500 text-sm max-w-md mx-auto mb-6">
-                                                    O administrador do sistema ainda não cadastrou os projetos do ano. Faça login no painel administrativo para adicionar as plataformas.
-                                                </p>
-                                                <button 
-                                                    onClick={() => setShowLoginModal(true)}
-                                                    className="inline-flex items-center space-x-2 px-5 py-2.5 bg-vibrant text-white font-semibold rounded-xl hover:bg-institutional transition-all shadow-md text-sm">
-                                                    <i data-lucide="shield-check" className="w-4 h-4"></i>
-                                                    <span>Acessar Painel do Administrador</span>
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                {platforms.map(p => {
-                                                    const qrDataUrl = generateQRCodeDataURL(p.url);
-                                                    return (
-                                                        <div key={p.id} className="bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden">
-                                                            {p.imageUrl ? (
-                                                                <div className="h-48 w-full bg-slate-100 overflow-hidden relative">
-                                                                    <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover" />
-                                                                </div>
-                                                            ) : (
-                                                                <div className="h-40 w-full bg-gradient-to-br from-navy to-institutional flex items-center justify-center text-white p-6 relative">
-                                                                    <div className="text-center">
-                                                                        <i data-lucide="globe" className="w-10 h-10 mx-auto mb-2 text-cyan"></i>
-                                                                        <span className="font-bold text-sm tracking-wide">{p.title}</span>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                            <div className="p-6 flex-1 flex flex-col justify-between">
-                                                                <div>
-                                                                    <div className="flex items-center justify-between mb-2">
-                                                                        <span className="px-2.5 py-1 bg-blue-50 text-vibrant text-xs font-semibold rounded-md">
-                                                                            {p.status || 'Disponível'}
-                                                                        </span>
-                                                                        <span className="text-xs text-slate-400">{p.createdAt}</span>
-                                                                    </div>
-                                                                    <h5 className="text-lg font-bold text-navy mb-2">{p.title}</h5>
-                                                                    <p className="text-slate-600 text-xs line-clamp-3 mb-4 leading-relaxed">
-                                                                        {p.description || 'Nenhuma descrição informada.'}
-                                                                    </p>
-
-                                                                    {p.developers && (
-                                                                        <div className="flex items-center space-x-2 text-xs text-slate-500 mb-4 bg-slate-50 p-2 rounded-lg">
-                                                                            <i dat                                                                        <div className="flex items-center space-x-2 text-xs text-slate-500 mb-4 bg-slate-50 p-2 rounded-lg">
-                                                                            <i data-lucide="users" className="w-4 h-4 text-vibrant"></i>
-                                                                            <span className="truncate"><strong>Desenvolvedores:</strong> {p.developers}</span>
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-
-                                                                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                                                                    {qrDataUrl && (
-                                                                        <div className="w-12 h-12 bg-white p-1 rounded border border-slate-200 shadow-sm">
-                                                                            <img src={qrDataUrl} alt="QR Code" className="w-full h-full" />
-                                                                        </div>
-                                                                    )}
-                                                                    <a 
-                                                                        href={p.url} 
-                                                                        target="_blank" 
-                                                                        rel="noopener noreferrer"
-                                                                        className="flex-1 ml-4 inline-flex items-center justify-center space-x-2 px-4 py-2.5 bg-vibrant hover:bg-institutional text-white font-semibold rounded-xl text-xs transition-colors shadow-sm">
-                                                                        <span>Acessar Plataforma</span>
-                                                                        <i data-lucide="external-link" className="w-3.5 h-3.5"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {currentView === 'admin' && isAdminLoggedIn && (
-                                <div className="space-y-8">
-                                    <div className="flex items-center justify-between pb-6 border-b border-slate-100">
-                                        <div>
-                                            <h3 className="text-2xl font-bold text-navy">Painel Administrativo</h3>
-                                            <p className="text-sm text-slate-500">Cadastre e gerencie as plataformas e sistemas da mostra.</p>
-                                        </div>
-                                        <button 
-                                            onClick={() => {
-                                                setForm({
-                                                    title: '',
-                                                    description: '',
-                                                    problem: '',
-                                                    objective: '',
-                                                    developers: '',
-                                                    url: '',
-                                                    imageUrl: '',
-                                                    status: 'Disponível'
-                                                });
-                                                setEditingId(null);
-                                            }}
-                                            className="px-4 py-2 bg-vibrant text-white text-sm font-semibold rounded-xl hover:bg-institutional transition-all shadow-sm">
-                                            + Nova Plataforma
-                                        </button>
-                                    </div>
-
-                                    {/* Formulário de Cadastro / Edição */}
-                                    <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
-                                        <h4 className="text-lg font-bold text-navy mb-6">
-                                            {editingId ? 'Editar Plataforma' : 'Cadastrar Nova Plataforma'}
-                                        </h4>
-                                        <form onSubmit={handleSavePlatform} className="space-y-6">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <div>
-                                                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nome da Plataforma *</label>
-                                                    <input 
-                                                        type="text" 
-                                                        value={form.title}
-                                                        onChange={e => setForm({...form, title: e.target.value})}
-                                                        placeholder="Ex: GestorPro Simulações"
-                                                        required
-                                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-vibrant"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Link Externo da Plataforma (URL) *</label>
-                                                    <input 
-                                                        type="url" 
-                                                        value={form.url}
-                                                        onChange={e => setForm({...form, url: e.target.value})}
-                                                        placeholder="https://exemplo.com"
-                                                        required
-                                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-vibrant"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <div>
-                                                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Desenvolvedores (Estudantes)</label>
-                                                    <input 
-                                                        type="text" 
-                                                        value={form.developers}
-                                                        onChange={e => setForm({...form, developers: e.target.value})}
-                                                        placeholder="Ex: Ana Silva, Carlos Eduardo"
-                                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-vibrant"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Status do Projeto</label>
-                                                    <select 
-                                                        value={form.status}
-                                                        onChange={e => setForm({...form, status: e.target.value})}
-                                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-vibrant">
-                                                        <option value="Disponível">Disponível</option>
-                                                        <option value="Em Desenvolvimento">Em Desenvolvimento</option>
-                                                        <option value="Experimental">Experimental</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">URL da Imagem de Capa (Opcional)</label>
-                                                <input 
-                                                    type="url" 
-                                                    value={form.imageUrl}
-                                                    onChange={e => setForm({...form, imageUrl: e.target.value})}
-                                                    placeholder="https://exemplo.com/imagem.png"
-                                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-vibrant"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Descrição Completa</label>
-                                                <textarea 
-                                                    rows="3"
-                                                    value={form.description}
-                                                    onChange={e => setForm({...form, description: e.target.value})}
-                                                    placeholder="Descreva o objetivo e funcionamento da plataforma..."
-                                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-vibrant"
-                                                ></textarea>
-                                            </div>
-
-                                            <div className="flex justify-end space-x-4 pt-4 border-t border-slate-100">
-                                                {editingId && (
-                                                    <button 
-                                                        type="button" 
-                                                        onClick={() => {
-                                                            setEditingId(null);
-                                                            setForm({
-                                                                title: '',
-                                                                description: '',
-                                                                problem: '',
-                                                                objective: '',
-                                                                developers: '',
-                                                                url: '',
-                                                                imageUrl: '',
-                                                                status: 'Disponível'
-                                                            });
-                                                        }}
-                                                        className="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition-colors">
-                                                        Cancelar
-                                                    </button>
-                                                )}
-                                                <button 
-                                                    type="submit" 
-                                                    className="px-6 py-2.5 bg-navy hover:bg-institutional text-white font-semibold rounded-xl text-sm transition-all shadow-md">
-                                                    {editingId ? 'Salvar Alterações' : 'Cadastrar Plataforma'}
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-
-                                    {/* Lista de Gerenciamento */}
-                                    <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
-                                        <h4 className="text-lg font-bold text-navy mb-6">Plataformas Cadastradas ({platforms.length})</h4>
-                                        {platforms.length === 0 ? (
-                                            <p className="text-slate-500 text-sm">Nenhuma plataforma cadastrada no momento.</p>
-                                        ) : (
-                                            <div className="divide-y divide-slate-100">
-                                                {platforms.map(p => (
-                                                    <div key={p.id} className="py-4 flex items-center justify-between">
-                                                        <div>
-                                                            <h5 className="font-bold text-navy text-base">{p.title}</h5>
-                                                            <p className="text-xs text-slate-500 truncate max-w-md">{p.url}</p>
-                                                        </div>
-                                                        <div className="flex items-center space-x-3">
-                                                            <button 
-                                                                onClick={() => handleEdit(p)}
-                                                                className="px-3 py-1.5 bg-blue-50 text-vibrant hover:bg-blue-100 font-semibold text-xs rounded-lg transition-colors">
-                                                                Editar
-                                                            </button>
-                                                            <button 
-                                                                onClick={() => handleDelete(p.id)}
-                                                                className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 font-semibold text-xs rounded-lg transition-colors">
-                                                                Excluir
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-                        </main>
-
-                        {/* Rodapé */}
-                        <footer className="bg-white border-t border-slate-100 py-6 px-8 text-center text-xs text-slate-400">
-                            <p>ADM.INOVA — Mostra Digital de Administração e Empreendedorismo • CETI José Marques</p>
-                        </footer>
-                    </div>
-
-                    {/* Modal de Login Admin */}
-                    {showLoginModal && (
-                        <div className="fixed inset-0 bg-navy/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
-                                <div className="text-center mb-6">
-                                    <div className="w-12 h-12 bg-vibrant/10 text-vibrant rounded-2xl flex items-center justify-center mx-auto mb-3">
-                                        <i data-lucide="shield-check" className="w-6 h-6"></i>
-                                    </div>
-                                    <h3 className="text-xl font-bold text-navy">Área do Administrador</h3>
-                                    <p className="text-xs text-slate-500 mt-1">Insira suas credenciais para gerenciar as plataformas</p>
-                                </div>
-
-                                {loginError && (
-                                    <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl text-xs font-medium text-center">
-                                        {loginError}
-                                    </div>
-                                )}
-
-                                <form onSubmit={handleLogin} className="space-y-4">
-                                    <div>
-                                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Usuário</label>
-                                        <input 
-                                            type="text" 
-                                            value={loginUser}
-                                            onChange={e => setLoginUser(e.target.value)}
-                                            placeholder="admin"
-                                            required
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-vibrant"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Senha</label>
-                                        <input 
-                                            type="password" 
-                                            value={loginPass}
-                                            onChange={e => setLoginPass(e.target.value)}
-                                            placeholder="••••••••"
-                                            required
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-vibrant"
-                                        />
-                                    </div>
-                                    <div className="flex space-x-3 pt-2">
-                                        <button 
-                                            type="button"
-                                            onClick={() => setShowLoginModal(false)}
-                                            className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 t                                            <button 
-                                                type="button"
-                                                onClick={() => setShowLoginModal(false)}
-                                                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition-colors">
-                                                Cancelar
-                                            </button>
-                                            <button 
-                                                type="submit"
-                                                className="flex-1 py-3 bg-navy hover:bg-institutional text-white font-semibold rounded-xl text-sm transition-all shadow-md">
-                                                Entrar
-                                            </button>
-                                        </div>
-                                        <p className="text-center text-[10px] text-slate-400 mt-4">
-                                            Dica padrão: usuário <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-600 font-mono">admin</code> e senha <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-600 font-mono">admin2026</code>
-                                        </p>
-                                    </form>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                );
-            }
-
-            ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-        </script>
-    </body>
+    renderCategories();
+    renderProjects();
+  </script>
+</body>
 </html>
