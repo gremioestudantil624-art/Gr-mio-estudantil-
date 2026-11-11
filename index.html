@@ -18,7 +18,7 @@
                         primary: '#155EEF',
                         darkBlue: '#0B3B91',
                         softBlue: '#EAF1FF',
-                        lightBg: '#F4F6FA',
+                        lightBg: '#FFFFFF', // Fundo estritamente branco conforme solicitado
                         customText: '#202B3C'
                     }
                 }
@@ -26,29 +26,33 @@
         }
     </script>
 </head>
-<body class="bg-lightBg text-customText font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-white text-customText font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Tela de Login do Empreendedor / Administrador -->
-    <div id="login-screen" class="fixed inset-0 bg-darkBlue/90 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-8 space-y-6">
+    <!-- Tela de Login / Seleção de Empreendedor -->
+    <div id="login-screen" class="fixed inset-0 bg-darkBlue/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-8 space-y-6 border border-blue-100">
             <div class="text-center">
-                <div class="bg-softBlue text-primary w-12 h-12 rounded-2xl mx-auto flex items-center justify-center text-xl mb-3">
+                <div class="bg-gradient-to-tr from-darkBlue to-primary text-white w-14 h-14 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 shadow-lg">
                     <i class="fa-solid fa-lock"></i>
                 </div>
-                <h3 class="font-bold text-darkBlue text-xl">Área Restrita do Empreendedor</h3>
-                <p class="text-xs text-gray-500 mt-1">Acesso seguro e confidencial para gestão financeira.</p>
+                <h3 class="font-bold text-darkBlue text-xl">Acesso Restrito & Confidencial</h3>
+                <p class="text-xs text-gray-500 mt-1">Cada empreendedor possui seus dados financeiros protegidos (LGPD).</p>
             </div>
             
             <form onsubmit="fazerLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">E-mail ou Usuário</label>
-                    <input type="text" id="login-user" required value="gustavo@varzeabranca.com" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Selecione o Empreendedor</label>
+                    <select id="login-perfil" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                        <option value="gustavo">Gustavo Paes (Doces & Sabores VB)</option>
+                        <option value="maria">Maria Rita (Ateliê Arte & Charme)</option>
+                        <option value="carlos">Carlos Silva (Moda & Estilo VB)</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Senha de Acesso</label>
-                    <input type="password" id="login-pass" required value="123456" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                    <input type="password" id="login-pass" required value="123456" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                 </div>
-                <button type="submit" class="w-full bg-primary hover:bg-darkBlue text-white font-semibold py-3 rounded-xl transition shadow-sm text-sm">
+                <button type="submit" class="w-full bg-gradient-to-r from-darkBlue to-primary hover:opacity-95 text-white font-semibold py-3 rounded-xl transition shadow-md text-sm">
                     Entrar no Painel Privado
                 </button>
             </form>
@@ -59,84 +63,84 @@
     <div class="flex h-screen overflow-hidden relative">
         
         <!-- Overlay para fechar o menu no celular -->
-        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
+        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden"></div>
 
-        <!-- Menu Lateral (Responsivo: Gaveta no mobile, fixo no desktop) -->
-        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 bg-white border-r border-gray-200 z-40">
-            <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+        <!-- Menu Lateral com Degradê em Azul -->
+        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 bg-gradient-to-b from-darkBlue to-primary text-white border-r border-blue-800 z-40 shadow-xl">
+            <div class="p-6 border-b border-blue-600/40 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="bg-primary text-white p-2.5 rounded-xl shadow-md">
+                    <div class="bg-white/10 backdrop-blur-md text-white p-2.5 rounded-xl shadow-inner border border-white/20">
                         <i class="fa-solid fa-store text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="font-bold text-lg text-darkBlue leading-tight">Vitrine VB</h1>
-                        <span class="text-xs text-gray-500 font-medium">Várzea Branca</span>
+                        <h1 class="font-bold text-lg text-white leading-tight">Vitrine VB</h1>
+                        <span class="text-xs text-blue-200 font-medium">Várzea Branca • PI</span>
                     </div>
                 </div>
                 <!-- Botão fechar no mobile -->
-                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-gray-600">
+                <button onclick="toggleSidebar()" class="md:hidden text-blue-200 hover:text-white">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
             <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Comércio Público</p>
-                <a href="#" onclick="switchTab('inicio'); toggleSidebarMobile();" id="menu-inicio" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors bg-softBlue text-primary">
+                <p class="px-3 text-[11px] font-bold text-blue-200 uppercase tracking-wider mb-2">Comércio Público</p>
+                <a href="#" onclick="switchTab('inicio'); toggleSidebarMobile();" id="menu-inicio" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all bg-white/15 text-white shadow-sm">
                     <i class="fa-solid fa-house w-5"></i>
                     <span>Início & Catálogo</span>
                 </a>
 
-                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2">Gestão Confidencial</p>
-                <a href="#" onclick="verificarAcesso('painel'); toggleSidebarMobile();" id="menu-painel" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <p class="px-3 text-[11px] font-bold text-blue-200 uppercase tracking-wider mt-6 mb-2">Gestão Confidencial</p>
+                <a href="#" onclick="verificarAcesso('painel'); toggleSidebarMobile();" id="menu-painel" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
                     <i class="fa-solid fa-chart-pie w-5"></i>
                     <span>Painel do Empreendedor</span>
                 </a>
-                <a href="#" onclick="verificarAcesso('produtos'); toggleSidebarMobile();" id="menu-produtos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="verificarAcesso('produtos'); toggleSidebarMobile();" id="menu-produtos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
                     <i class="fa-solid fa-box-open w-5"></i>
                     <span>Meus Produtos</span>
                 </a>
-                <a href="#" onclick="verificarAcesso('lancamentos'); toggleSidebarMobile();" id="menu-lancamentos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="verificarAcesso('lancamentos'); toggleSidebarMobile();" id="menu-lancamentos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
                     <i class="fa-solid fa-file-invoice-dollar w-5"></i>
                     <span>Lançamentos</span>
                 </a>
-                <a href="#" onclick="verificarAcesso('relatorios'); toggleSidebarMobile();" id="menu-relatorios" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="verificarAcesso('relatorios'); toggleSidebarMobile();" id="menu-relatorios" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
                     <i class="fa-solid fa-chart-line w-5"></i>
                     <span>Relatórios Financeiros</span>
                 </a>
-                <a href="#" onclick="verificarAcesso('calculadora'); toggleSidebarMobile();" id="menu-calculadora" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="verificarAcesso('calculadora'); toggleSidebarMobile();" id="menu-calculadora" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
                     <i class="fa-solid fa-calculator w-5"></i>
                     <span>Calculadora de Lucro</span>
                 </a>
             </nav>
 
-            <div class="p-4 border-t border-gray-100">
-                <div class="bg-softBlue p-3 rounded-xl flex items-center justify-between">
+            <div class="p-4 border-t border-blue-600/40">
+                <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl flex items-center justify-between border border-white/10">
                     <div class="flex items-center space-x-3 overflow-hidden">
-                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">
+                        <div class="w-8 h-8 rounded-full bg-white text-darkBlue flex items-center justify-center font-bold text-xs shadow-md">
                             GP
                         </div>
                         <div class="overflow-hidden">
-                            <p class="text-xs font-bold text-darkBlue truncate" id="user-name-display">Visitante</p>
-                            <p class="text-[10px] text-gray-500 truncate" id="user-status-display">Modo Público</p>
+                            <p class="text-xs font-bold text-white truncate" id="user-name-display">Visitante</p>
+                            <p class="text-[10px] text-blue-200 truncate" id="user-status-display">Modo Público</p>
                         </div>
                     </div>
-                    <button onclick="abrirLogin()" id="btn-auth-action" class="text-xs text-primary font-bold hover:underline" title="Fazer login"><i class="fa-solid fa-right-to-bracket"></i></button>
+                    <button onclick="abrirLogin()" id="btn-auth-action" class="text-xs text-white font-bold hover:bg-white/20 p-2 rounded-lg transition" title="Fazer login"><i class="fa-solid fa-right-to-bracket"></i></button>
                 </div>
             </div>
         </aside>
 
         <!-- Conteúdo Principal -->
-        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-white">
             
-            <!-- Barra Superior (Mobile e Desktop header) -->
-            <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4 md:px-6 z-10">
+            <!-- Barra Superior (Header) -->
+            <header class="bg-white border-b border-gray-100 h-16 flex items-center justify-between px-4 md:px-6 z-10 shadow-xs">
                 <div class="flex items-center space-x-3">
-                    <!-- Botão Hambúrguer para abrir o menu no mobile -->
-                    <button onclick="toggleSidebar()" class="md:hidden text-gray-600 hover:text-primary text-lg p-2">
+                    <!-- Botão Hambúrguer para celular -->
+                    <button onclick="toggleSidebar()" class="md:hidden text-darkBlue hover:text-primary text-xl p-2">
                         <i class="fa-solid fa-bars"></i>
                     </button>
                     <div class="flex items-center space-x-2 md:hidden">
-                        <div class="bg-primary text-white p-1.5 rounded-lg text-sm">
+                        <div class="bg-gradient-to-r from-darkBlue to-primary text-white p-2 rounded-lg text-sm shadow-md">
                             <i class="fa-solid fa-store"></i>
                         </div>
                         <span class="font-bold text-darkBlue text-sm">Vitrine VB</span>
@@ -144,46 +148,47 @@
                 </div>
 
                 <div class="hidden md:block">
-                    <h2 id="page-title" class="font-bold text-darkBlue text-lg">Catálogo de Produtos e Negócios</h2>
-                    <p class="text-xs text-gray-500">Conectando negócios, valorizando nossa cidade.</p>
+                    <h2 id="page-title" class="font-bold text-darkBlue text-base">Plataforma Digital de Comércio e Gestão Local</h2>
+                    <p class="text-[11px] text-gray-400">Desenvolvido com ênfase em Empreendedorismo e Gestão Empresarial.</p>
                 </div>
 
                 <div class="flex items-center space-x-3">
-                    <button onclick="verificarAcesso('painel')" class="bg-primary hover:bg-darkBlue text-white text-xs font-semibold px-3 py-2 md:px-4 md:py-2.5 rounded-xl transition shadow-sm flex items-center space-x-2">
+                    <button onclick="verificarAcesso('painel')" class="bg-gradient-to-r from-darkBlue to-primary hover:opacity-95 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-md flex items-center space-x-2">
                         <i class="fa-solid fa-user-gear"></i>
-                        <span class="hidden sm:inline">Área do Empreendedor</span>
+                        <span class="hidden sm:inline">Painel do Empreendedor</span>
                         <span class="sm:hidden">Gestão</span>
                     </button>
                 </div>
             </header>
 
             <!-- Área de Abas Dinâmicas -->
-            <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-lightBg">
+            <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-white space-y-6">
                 
                 <!-- ABA 1: INÍCIO E CATÁLOGO PÚBLICO -->
                 <section id="tab-inicio" class="tab-content space-y-6">
-                    <div class="bg-gradient-to-r from-darkBlue to-primary text-white p-6 md:p-8 rounded-2xl shadow-lg relative overflow-hidden">
-                        <div class="relative z-10 max-w-2xl">
-                            <span class="bg-white/20 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Comércio Local</span>
-                            <h2 class="text-2xl md:text-3xl font-extrabold mt-3 mb-2">Descubra e valorize quem empreende em Várzea Branca</h2>
-                            <p class="text-gray-100 text-sm md:text-base mb-6">Encontre produtos incríveis, serviços essenciais e fortaleça a economia da nossa cidade.</p>
+                    <!-- Banner com Degradê Profissional -->
+                    <div class="bg-gradient-to-r from-darkBlue via-blue-700 to-primary text-white p-6 md:p-10 rounded-3xl shadow-xl relative overflow-hidden">
+                        <div class="relative z-10 max-w-3xl">
+                            <span class="bg-white/20 backdrop-blur-md text-[11px] font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-white/20">Projeto Destaque • Feira de Profissões</span>
+                            <h2 class="text-2xl md:text-4xl font-extrabold mt-4 mb-3">Conectando pequenos negócios, valorizando nossa cidade</h2>
+                            <p class="text-blue-100 text-sm md:text-base mb-6 leading-relaxed">Uma solução tecnológica integrada que une vitrine pública digital e inteligência financeira para impulsionar os empreendedores de Várzea Branca.</p>
                             
-                            <!-- Barra de Pesquisa -->
-                            <div class="bg-white p-2 rounded-xl shadow-md flex items-center space-x-2">
-                                <i class="fa-solid fa-search text-gray-400 pl-3"></i>
-                                <input type="text" id="searchInput" onkeyup="filterCatalog()" placeholder="O que você está procurando? (Ex: Bolo, Roupas...)" class="w-full text-sm text-customText focus:outline-none bg-transparent py-2">
+                            <!-- Barra de Pesquisa Avançada -->
+                            <div class="bg-white p-2.5 rounded-2xl shadow-lg flex items-center space-x-2 border border-white/30">
+                                <i class="fa-solid fa-search text-primary pl-3"></i>
+                                <input type="text" id="searchInput" onkeyup="filterCatalog()" placeholder="Pesquise por produto, serviço ou nome da loja..." class="w-full text-sm text-customText focus:outline-none bg-transparent py-2">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Filtros por Categoria -->
-                    <div class="flex items-center space-x-2 overflow-x-auto pb-2">
-                        <button onclick="filterCategory('todos')" class="cat-btn bg-primary text-white text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition shadow-sm">Todos</button>
-                        <button onclick="filterCategory('Alimentação')" class="cat-btn bg-white hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition border border-gray-200">Alimentação</button>
-                        <button onclick="filterCategory('Vestuário')" class="cat-btn bg-white hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition border border-gray-200">Vestuário</button>
-                        <button onclick="filterCategory('Beleza')" class="cat-btn bg-white hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition border border-gray-200">Beleza</button>
-                        <button onclick="filterCategory('Serviços')" class="cat-btn bg-white hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition border border-gray-200">Serviços</button>
-                        <button onclick="filterCategory('Artesanato')" class="cat-btn bg-white hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition border border-gray-200">Artesanato</button>
+                    <!-- Filtros por Categoria com Degradê no ativo -->
+                    <div class="flex items-center space-x-2 overflow-x-auto pb-2 pt-2">
+                        <button onclick="filterCategory('todos')" class="cat-btn bg-gradient-to-r from-darkBlue to-primary text-white text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition shadow-md">Todos</button>
+                        <button onclick="filterCategory('Alimentação')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Alimentação</button>
+                        <button onclick="filterCategory('Vestuário')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Vestuário</button>
+                        <button onclick="filterCategory('Beleza')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Beleza</button>
+                        <button onclick="filterCategory('Serviços')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Serviços</button>
+                        <button onclick="filterCategory('Artesanato')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Artesanato</button>
                     </div>
 
                     <!-- Grid de Produtos -->
@@ -197,32 +202,32 @@
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>
                             <h3 class="text-xl font-bold text-darkBlue">Painel de Gestão Financeira</h3>
-                            <p class="text-xs text-gray-500">Área confidencial e restrita ao empreendedor autenticado.</p>
+                            <p class="text-xs text-gray-500">Dados confidenciais protegidos por autenticação de usuário.</p>
                         </div>
-                        <button onclick="switchTab('lancamentos')" class="bg-primary hover:bg-darkBlue text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
+                        <button onclick="switchTab('lancamentos')" class="bg-gradient-to-r from-darkBlue to-primary text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
                             <i class="fa-solid fa-plus"></i>
                             <span>Novo Lançamento</span>
                         </button>
                     </div>
 
-                    <!-- Cards de Resumo -->
+                    <!-- Cards de Resumo com Degradês Suaves -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <div class="bg-gradient-to-br from-white to-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm">
                             <p class="text-xs font-medium text-gray-500">Receita Total</p>
                             <h4 id="resumo-receita" class="text-2xl font-bold text-darkBlue mt-1">R$ 0,00</h4>
                             <span class="text-[11px] text-emerald-600 font-semibold mt-2 inline-block"><i class="fa-solid fa-arrow-trend-up"></i> Vendas registradas</span>
                         </div>
-                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <div class="bg-gradient-to-br from-white to-red-50/50 p-5 rounded-2xl border border-red-100 shadow-sm">
                             <p class="text-xs font-medium text-gray-500">Custos & Despesas</p>
                             <h4 id="resumo-despesas" class="text-2xl font-bold text-red-600 mt-1">R$ 0,00</h4>
                             <span class="text-[11px] text-gray-400 font-semibold mt-2 inline-block">Gastos operacionais</span>
                         </div>
-                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <div class="bg-gradient-to-br from-white to-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm">
                             <p class="text-xs font-medium text-gray-500">Lucro Líquido</p>
                             <h4 id="resumo-lucro" class="text-2xl font-bold text-primary mt-1">R$ 0,00</h4>
                             <span class="text-[11px] text-emerald-600 font-semibold mt-2 inline-block">Resultado financeiro</span>
                         </div>
-                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <div class="bg-gradient-to-br from-white to-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm">
                             <p class="text-xs font-medium text-gray-500">Qtd. de Vendas</p>
                             <h4 id="resumo-vendas" class="text-2xl font-bold text-darkBlue mt-1">0</h4>
                             <span class="text-[11px] text-gray-400 font-semibold mt-2 inline-block">Itens comercializados</span>
@@ -230,8 +235,8 @@
                     </div>
 
                     <!-- Tabela de Movimentações Recentes -->
-                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                        <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                        <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                             <h4 class="font-bold text-darkBlue text-sm">Últimas Movimentações Confidenciais</h4>
                             <button onclick="switchTab('lancamentos')" class="text-xs font-semibold text-primary hover:underline">Ver todas</button>
                         </div>
@@ -259,9 +264,9 @@
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>
                             <h3 class="text-xl font-bold text-darkBlue">Gerenciamento de Produtos</h3>
-                            <p class="text-xs text-gray-500">Cadastre e administre o que é exibido no catálogo público.</p>
+                            <p class="text-xs text-gray-500">Cadastre e administre o que é exibido instantaneamente no catálogo público.</p>
                         </div>
-                        <button onclick="openProductModal()" class="bg-primary hover:bg-darkBlue text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
+                        <button onclick="openProductModal()" class="bg-gradient-to-r from-darkBlue to-primary text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
                             <i class="fa-solid fa-plus"></i>
                             <span>Adicionar Novo Produto</span>
                         </button>
@@ -275,14 +280,14 @@
 
                 <!-- ABA 4: LANÇAMENTOS -->
                 <section id="tab-lancamentos" class="tab-content hidden space-y-6">
-                    <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl border border-gray-200 shadow-sm">
+                    <div class="max-w-xl mx-auto bg-white p-8 rounded-3xl border border-gray-100 shadow-xl">
                         <h3 class="text-xl font-bold text-darkBlue mb-2">Novo Lançamento Financeiro</h3>
-                        <p class="text-xs text-gray-500 mb-6">Registre suas vendas, compras, despesas fixas ou custos de forma segura.</p>
+                        <p class="text-xs text-gray-500 mb-6">Registre suas vendas, compras, despesas fixas ou custos com segurança.</p>
                         
                         <form id="form-lancamento" onsubmit="adicionarLancamento(event)" class="space-y-4">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">Tipo de Movimentação</label>
-                                <select id="lanc-tipo" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                <select id="lanc-tipo" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                                     <option value="venda">Venda (Receita)</option>
                                     <option value="despesa">Despesa Operacional / Gasto</option>
                                     <option value="custo">Custo de Produção</option>
@@ -291,21 +296,21 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">Descrição</label>
-                                <input type="text" id="lanc-desc" required placeholder="Ex: Bolo de chocolate / Compra de embalagens" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                <input type="text" id="lanc-desc" required placeholder="Ex: Bolo de chocolate / Compra de embalagens" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Valor (R$)</label>
-                                    <input type="number" step="0.01" id="lanc-valor" required placeholder="0,00" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                    <input type="number" step="0.01" id="lanc-valor" required placeholder="0,00" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data</label>
-                                    <input type="date" id="lanc-data" required class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                    <input type="date" id="lanc-data" required class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">Categoria</label>
-                                <select id="lanc-categoria" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                <select id="lanc-categoria" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                                     <option value="Alimentação">Alimentação</option>
                                     <option value="Vestuário">Vestuário</option>
                                     <option value="Beleza">Beleza</option>
@@ -314,7 +319,7 @@
                                     <option value="Operacional">Operacional / Despesa Fixa</option>
                                 </select>
                             </div>
-                            <button type="submit" class="w-full bg-primary hover:bg-darkBlue text-white font-semibold py-3 rounded-xl transition shadow-sm text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-darkBlue to-primary text-white font-semibold py-3 rounded-xl transition shadow-md text-sm">
                                 Salvar Lançamento
                             </button>
                         </form>
@@ -330,7 +335,7 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <!-- Gráfico de Receitas vs Despesas -->
-                        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                             <h4 class="font-bold text-darkBlue text-sm mb-4">Receitas vs Despesas</h4>
                             <div class="h-64 flex items-center justify-center">
                                 <canvas id="chartReceitaDespesa"></canvas>
@@ -338,7 +343,7 @@
                         </div>
 
                         <!-- Gráfico por Categoria -->
-                        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                             <h4 class="font-bold text-darkBlue text-sm mb-4">Movimentações por Categoria</h4>
                             <div class="h-64 flex items-center justify-center">
                                 <canvas id="chartCategoria"></canvas>
@@ -349,32 +354,32 @@
 
                 <!-- ABA 6: CALCULADORA DE LUCRO -->
                 <section id="tab-calculadora" class="tab-content hidden space-y-6">
-                    <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl border border-gray-200 shadow-sm">
+                    <div class="max-w-xl mx-auto bg-white p-8 rounded-3xl border border-gray-100 shadow-xl">
                         <div class="flex items-center space-x-3 mb-4">
-                            <div class="bg-softBlue text-primary p-3 rounded-xl">
+                            <div class="bg-gradient-to-tr from-darkBlue to-primary text-white p-3 rounded-2xl shadow-md">
                                 <i class="fa-solid fa-calculator text-xl"></i>
                             </div>
                             <div>
                                 <h3 class="text-xl font-bold text-darkBlue">Calculadora de Lucro</h3>
-                                <p class="text-xs text-gray-500">Descubra exatamente quanto sobra por produto vendido.</p>
+                                <p class="text-xs text-gray-500">Precificação inteligente para o seu negócio.</p>
                             </div>
                         </div>
 
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">Preço de Venda (R$)</label>
-                                <input type="number" step="0.01" id="calc-preco" oninput="calcularLucro()" placeholder="Ex: 50.00" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                <input type="number" step="0.01" id="calc-preco" oninput="calcularLucro()" placeholder="Ex: 50.00" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">Custo de Aquisição ou Produção (R$)</label>
-                                <input type="number" step="0.01" id="calc-custo" oninput="calcularLucro()" placeholder="Ex: 20.00" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                <input type="number" step="0.01" id="calc-custo" oninput="calcularLucro()" placeholder="Ex: 20.00" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">Despesas Operacionais Proporcionais (R$)</label>
-                                <input type="number" step="0.01" id="calc-despesa" oninput="calcularLucro()" placeholder="Ex: 5.00" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                <input type="number" step="0.01" id="calc-despesa" oninput="calcularLucro()" placeholder="Ex: 5.00" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                             </div>
 
-                            <div class="bg-softBlue p-5 rounded-xl border border-blue-100 mt-6 space-y-2">
+                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-2xl border border-blue-100 mt-6 space-y-2">
                                 <div class="flex justify-between items-center text-sm">
                                     <span class="text-gray-600 font-medium">Lucro Líquido Unitário:</span>
                                     <span id="res-lucro-valor" class="font-bold text-darkBlue text-lg">R$ 0,00</span>
@@ -393,9 +398,9 @@
     </div>
 
     <!-- Modal Adicionar Produto -->
-    <div id="productModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl overflow-hidden">
-            <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+    <div id="productModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center z-50 p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+            <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                 <h3 class="font-bold text-darkBlue text-lg">Novo Produto / Serviço</h3>
                 <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fa-solid fa-xmark text-lg"></i>
@@ -404,20 +409,20 @@
             <form id="form-produto" onsubmit="salvarProduto(event)" class="p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Nome do Estabelecimento / Loja</label>
-                    <input type="text" id="prod-loja" required placeholder="Ex: Doces & Sabores VB" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                    <input type="text" id="prod-loja" required placeholder="Ex: Doces & Sabores VB" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Nome do Produto ou Serviço</label>
-                    <input type="text" id="prod-nome" required placeholder="Ex: Bolo Caseiro de Chocolate" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                    <input type="text" id="prod-nome" required placeholder="Ex: Bolo Caseiro de Chocolate" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Preço (R$)</label>
-                        <input type="number" step="0.01" id="prod-preco" required placeholder="0,00" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                        <input type="number" step="0.01" id="prod-preco" required placeholder="0,00" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Categoria</label>
-                        <select id="prod-cat" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                        <select id="prod-cat" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                             <option value="Alimentação">Alimentação</option>
                             <option value="Vestuário">Vestuário</option>
                             <option value="Beleza">Beleza</option>
@@ -428,19 +433,19 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Descrição Detalhada</label>
-                    <textarea id="prod-desc" rows="2" placeholder="Fale um pouco sobre o produto..." class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary"></textarea>
+                    <textarea id="prod-desc" rows="2" placeholder="Fale um pouco sobre o produto..." class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary"></textarea>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Local / Endereço em Várzea Branca</label>
-                    <input type="text" id="prod-local" placeholder="Ex: Centro, Próximo à Praça Principal" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                    <input type="text" id="prod-local" placeholder="Ex: Centro, Próximo à Praça Principal" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Link da Imagem (URL ou Foto ilustrativa)</label>
-                    <input type="url" id="prod-img" placeholder="https://exemplo.com/foto.jpg" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                    <input type="url" id="prod-img" placeholder="https://exemplo.com/foto.jpg" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                 </div>
                 <div class="pt-2 flex space-x-3">
                     <button type="button" onclick="closeProductModal()" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 rounded-xl transition text-sm">Cancelar</button>
-                    <button type="submit" class="w-1/2 bg-primary hover:bg-darkBlue text-white font-semibold py-3 rounded-xl transition text-sm">Publicar</button>
+                    <button type="submit" class="w-1/2 bg-gradient-to-r from-darkBlue to-primary text-white font-semibold py-3 rounded-xl transition shadow-md text-sm">Publicar</button>
                 </div>
             </form>
         </div>
@@ -457,7 +462,8 @@
                 categoria: "Alimentação",
                 descricao: "Bolo fofinho com cobertura generosa de chocolate artesanal.",
                 localizacao: "Centro, Várzea Branca",
-                imagem: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80"
+                imagem: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80",
+                responsavel: "gustavo"
             },
             {
                 id: 2,
@@ -467,7 +473,8 @@
                 categoria: "Artesanato",
                 descricao: "Peça exclusiva feita à mão com acabamento prateado.",
                 localizacao: "Bairro Novo, Várzea Branca",
-                imagem: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80"
+                imagem: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80",
+                responsavel: "maria"
             },
             {
                 id: 3,
@@ -477,16 +484,41 @@
                 categoria: "Vestuário",
                 descricao: "Confortável e ideal para o clima da nossa cidade.",
                 localizacao: "Comercial, Várzea Branca",
-                imagem: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=600&q=80"
+                imagem: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=600&q=80",
+                responsavel: "carlos"
             }
         ];
 
-        let lancamentos = [
-            { id: 1, descricao: "Venda de Bolos", categoria: "Alimentação", data: "2026-11-01", tipo: "venda", valor: 105.00 },
-            { id: 2, descricao: "Compra de Cacau e Farinha", categoria: "Alimentação", data: "2026-11-02", tipo: "compra", valor: 40.00 },
-            { id: 3, descricao: "Taxa de Internet / Divulgação", categoria: "Operacional", data: "2026-11-05", tipo: "despesa", valor: 30.00 }
-        ];
+        // Lançamentos isolados por usuário para total confidencialidade
+        let dadosEmpreendedores = {
+            gustavo: {
+                nome: "Gustavo Paes",
+                iniciais: "GP",
+                lancamentos: [
+                    { id: 1, descricao: "Venda de Bolos de Chocolate", categoria: "Alimentação", data: "2026-11-01", tipo: "venda", valor: 105.00 },
+                    { id: 2, descricao: "Compra de Cacau e Farinha", categoria: "Alimentação", data: "2026-11-02", tipo: "compra", valor: 40.00 },
+                    { id: 3, descricao: "Taxa de Divulgação Local", categoria: "Operacional", data: "2026-11-05", tipo: "despesa", valor: 30.00 }
+                ]
+            },
+            maria: {
+                nome: "Maria Rita",
+                iniciais: "MR",
+                lancamentos: [
+                    { id: 1, descricao: "Venda de Colares Artesanais", categoria: "Artesanato", data: "2026-11-03", tipo: "venda", valor: 135.00 },
+                    { id: 2, descricao: "Aquisição de Prata e Pedras", categoria: "Artesanato", data: "2026-11-04", tipo: "compra", valor: 50.00 }
+                ]
+            },
+            carlos: {
+                nome: "Carlos Silva",
+                iniciais: "CS",
+                lancamentos: [
+                    { id: 1, descricao: "Venda de Vestidos Florais", categoria: "Vestuário", data: "2026-11-02", tipo: "venda", valor: 269.70 },
+                    { id: 2, descricao: "Frete de Mercadorias", categoria: "Operacional", data: "2026-11-06", tipo: "despesa", valor: 45.00 }
+                ]
+            }
+        };
 
+        let usuarioAtualKey = null;
         let currentCategory = 'todos';
         let chartRDInstance = null;
         let chartCatInstance = null;
@@ -530,11 +562,19 @@
 
         function fazerLogin(e) {
             e.preventDefault();
+            const perfilSelect = document.getElementById('login-perfil').value;
+            usuarioAtualKey = perfilSelect;
             usuarioAutenticado = true;
             fecharLogin();
             
-            document.getElementById('user-name-display').innerText = "Gustavo Paes";
+            const dadosUser = dadosEmpreendedores[usuarioAtualKey];
+            document.getElementById('user-name-display').innerText = dadosUser.nome;
             document.getElementById('user-status-display').innerText = "Empreendedor Logado";
+            
+            // Atualizar iniciais no avatar
+            const avatarEl = document.querySelector('aside .rounded-full');
+            if(avatarEl) avatarEl.innerText = dadosUser.iniciais;
+
             document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-right-from-bracket" title="Sair"></i>';
             document.getElementById('btn-auth-action').setAttribute('onclick', 'fazerLogout()');
 
@@ -548,8 +588,11 @@
 
         function fazerLogout() {
             usuarioAutenticado = false;
+            usuarioAtualKey = null;
             document.getElementById('user-name-display').innerText = "Visitante";
             document.getElementById('user-status-display').innerText = "Modo Público";
+            const avatarEl = document.querySelector('aside .rounded-full');
+            if(avatarEl) avatarEl.innerText = "GP";
             document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-right-to-bracket"></i>';
             document.getElementById('btn-auth-action').setAttribute('onclick', 'abrirLogin()');
             switchTab('inicio');
@@ -561,18 +604,18 @@
                 return;
             }
 
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            documen            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
             document.querySelectorAll('.nav-item').forEach(el => {
-                el.classList.remove('bg-softBlue', 'text-primary');
-                el.classList.add('text-gray-600', 'hover:bg-gray-50');
+                el.classList.remove('bg-white/15', 'text-white', 'shadow-sm');
+                el.classList.add('text-blue-100', 'hover:bg-white/10');
             });
 
             const activeMenu = document.getElementById(`menu-${tabId}`);
             if (activeMenu) {
-                activeMenu.classList.remove('text-gray-600', 'hover:bg-gray-50');
-                activeMenu.classList.add('bg-softBlue', 'text-primary');
+                activeMenu.classList.remove('text-blue-100', 'hover:bg-white/10');
+                activeMenu.classList.add('bg-white/15', 'text-white', 'shadow-sm');
             }
 
             if (tabId === 'painel') atualizarPainel();
@@ -599,12 +642,12 @@
 
             filtered.forEach(p => {
                 const card = document.createElement('div');
-                card.className = 'bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between';
+                card.className = 'bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between';
                 card.innerHTML = `
                     <div>
-                        <div class="h-48 overflow-hidden bg-gray-100 relative">
+                        <div class="h-48 overflow-hidden bg-gray-50 relative">
                             <img src="${p.imagem}" alt="${p.nome}" class="w-full h-full object-cover">
-                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-darkBlue font-semibold text-[11px] px-2.5 py-1 rounded-full shadow-sm">${p.categoria}</span>
+                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-darkBlue font-semibold text-[11px] px-3 py-1 rounded-full shadow-sm">${p.categoria}</span>
                         </div>
                         <div class="p-5">
                             <p class="text-xs text-primary font-bold uppercase tracking-wider mb-1"><i class="fa-solid fa-store mr-1"></i>${p.loja}</p>
@@ -613,7 +656,7 @@
                             <p class="text-xs text-gray-400"><i class="fa-solid fa-location-dot mr-1"></i>${p.localizacao}</p>
                         </div>
                     </div>
-                    <div class="p-5 pt-0 flex items-center justify-between border-t border-gray-100 mt-4">
+                    <div class="p-5 pt-0 flex items-center justify-between border-t border-gray-50 mt-4">
                         <span class="text-lg font-extrabold text-darkBlue">R$ ${p.preco.toFixed(2)}</span>
                         <a href="https://wa.me/?text=Olá! Vi seu produto *${encodeURIComponent(p.nome)}* na Vitrine VB e gostaria de mais informações." target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
                             <i class="fa-brands fa-whatsapp text-sm"></i>
@@ -628,11 +671,11 @@
         function filterCategory(cat) {
             currentCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
-                btn.classList.add('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+                btn.classList.remove('bg-gradient-to-r', 'from-darkBlue', 'to-primary', 'text-white', 'shadow-md');
+                btn.classList.add('bg-gray-50', 'text-gray-600', 'border', 'border-gray-200');
             });
-            event.target.classList.remove('bg-white', 'text-gray-600', 'border', 'border-gray-200');
-            event.target.classList.add('bg-primary', 'text-white', 'shadow-sm');
+            event.target.classList.remove('bg-gray-50', 'text-gray-600', 'border', 'border-gray-200');
+            event.target.classList.add('bg-gradient-to-r', 'from-darkBlue', 'to-primary', 'text-white', 'shadow-md');
             
             const searchVal = document.getElementById('searchInput').value;
             renderCatalog(cat, searchVal);
@@ -644,11 +687,14 @@
         }
 
         function atualizarPainel() {
+            if (!usuarioAtualKey) return;
+            const lancamentosUser = dadosEmpreendedores[usuarioAtualKey].lancamentos;
+
             let totalReceita = 0;
             let totalDespesas = 0;
             let qtdVendas = 0;
 
-            lancamentos.forEach(l => {
+            lancamentosUser.forEach(l => {
                 if (l.tipo === 'venda') {
                     totalReceita += l.valor;
                     qtdVendas++;
@@ -667,11 +713,11 @@
             const tbody = document.getElementById('tabela-movimentacoes');
             tbody.innerHTML = '';
 
-            const ultimas = [...lancamentos].reverse().slice(0, 5);
+            const ultimas = [...lancamentosUser].reverse().slice(0, 5);
             ultimas.forEach(l => {
                 const isReceita = l.tipo === 'venda';
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50';
+                tr.className = 'hover:bg-gray-50/50';
                 tr.innerHTML = `
                     <td class="py-3 px-4 font-medium text-darkBlue">${l.descricao}</td>
                     <td class="py-3 px-4 text-gray-500">${l.categoria}</td>
@@ -691,8 +737,10 @@
 
         function adicionarLancamento(e) {
             e.preventDefault();
+            if (!usuarioAtualKey) return;
+
             const novo = {
-                id: lancamentos.length + 1,
+                id: dadosEmpreendedores[usuarioAtualKey].lancamentos.length + 1,
                 tipo: document.getElementById('lanc-tipo').value,
                 descricao: document.getElementById('lanc-desc').value,
                 valor: parseFloat(document.getElementById('lanc-valor').value),
@@ -700,31 +748,39 @@
                 categoria: document.getElementById('lanc-categoria').value
             };
 
-            lancamentos.push(novo);
+            dadosEmpreendedores[usuarioAtualKey].lancamentos.push(novo);
             document.getElementById('form-lancamento').reset();
             switchTab('painel');
         }
 
         function renderizarMeusProdutos() {
+            if (!usuarioAtualKey) return;
             const grid = document.getElementById('meus-produtos-grid');
             grid.innerHTML = '';
 
-            produtos.forEach(p => {
+            const produtosUser = produtos.filter(p => p.responsavel === usuarioAtualKey);
+
+            if (produtosUser.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400 text-sm">Nenhum produto cadastrado por você ainda.</div>`;
+                return;
+            }
+
+            produtosUser.forEach(p => {
                 const card = document.createElement('div');
-                card.className = 'bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col justify-between';
+                card.className = 'bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex flex-col justify-between';
                 card.innerHTML = `
                     <div>
-                        <div class="h-40 overflow-hidden bg-gray-100 relative">
+                        <div class="h-40 overflow-hidden bg-gray-50 relative">
                             <img src="${p.imagem}" alt="${p.nome}" class="w-full h-full object-cover">
                         </div>
                         <div class="p-4">
-                            <span class="text-[11px] font-semibold text-primary bg-softBlue px-2.5 py-1 rounded-full">${p.categoria}</span>
+                            <span class="text-[11px] font-semibold text-primary bg-blue-50 px-3 py-1 rounded-full">${p.categoria}</span>
                             <h4 class="font-bold text-darkBlue text-sm mt-2">${p.nome}</h4>
                             <p class="text-xs text-gray-500 mt-1">${p.descricao}</p>
                             <p class="text-sm font-extrabold text-darkBlue mt-3">R$ ${p.preco.toFixed(2)}</p>
                         </div>
                     </div>
-                    <div class="p-4 pt-0 border-t border-gray-100 flex justify-between items-center mt-3">
+                    <div class="p-4 pt-0 border-t border-gray-50 flex justify-between items-center mt-3">
                         <span class="text-[11px] text-gray-400"><i class="fa-solid fa-check-circle text-emerald-600 mr-1"></i>Ativo no catálogo</span>
                         <button onclick="removerProduto(${p.id})" class="text-xs text-red-500 hover:text-red-700 font-semibold"><i class="fa-solid fa-trash mr-1"></i>Remover</button>
                     </div>
@@ -745,6 +801,8 @@
 
         function salvarProduto(e) {
             e.preventDefault();
+            if (!usuarioAtualKey) return;
+
             const novoP = {
                 id: produtos.length + 1,
                 loja: document.getElementById('prod-loja').value,
@@ -753,7 +811,8 @@
                 categoria: document.getElementById('prod-cat').value,
                 descricao: document.getElementById('prod-desc').value,
                 localizacao: document.getElementById('prod-local').value || 'Várzea Branca',
-                imagem: document.getElementById('prod-img').value || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80'
+                imagem: document.getElementById('prod-img').value || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80',
+                responsavel: usuarioAtualKey
             };
 
             produtos.push(novoP);
@@ -785,11 +844,14 @@
         }
 
         function renderizarGraficos() {
+            if (!usuarioAtualKey) return;
+            const lancamentosUser = dadosEmpreendedores[usuarioAtualKey].lancamentos;
+
             let totalVendas = 0;
             let totalGastos = 0;
             let catCount = {};
 
-            lancamentos.forEach(l => {
+            lancamentosUser.forEach(l => {
                 if (l.tipo === 'venda') totalVendas += l.valor;
                 else totalGastos += l.valor;
 
