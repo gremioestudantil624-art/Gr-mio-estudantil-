@@ -1,495 +1,727 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1769aa">
-  <title>ADM.PROJETOS | Catálogo Digital</title>
-  <style>
-    :root {
-      --navy: #12345a;
-      --blue: #1769aa;
-      --blue2: #2d83c7;
-      --pale: #eaf4fc;
-      --ink: #172b42;
-      --muted: #64748b;
-      --line: #e4ebf2;
-      --bg: #ffffff;
-      --soft: #f5f8fb;
-      --danger: #c43d4b;
-      --shadow: 0 12px 32px rgba(18, 52, 90, .08);
-      --radius: 18px;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0; background: var(--bg); color: var(--ink);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    button, input, textarea, select { font: inherit; }
-    button { cursor: pointer; }
-    .container { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
-    header {
-      position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.94);
-      backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
-    }
-    .nav { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-    .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--navy); }
-    .brand-mark {
-      width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px;
-      color: white; background: linear-gradient(145deg, var(--blue), var(--navy)); font-weight: 850;
-      letter-spacing: -.8px; box-shadow: 0 6px 14px rgba(23,105,170,.2);
-    }
-    .brand-name { font-weight: 850; letter-spacing: -.6px; font-size: 18px; }
-    .brand-name span { color: var(--blue); }
-    .brand-sub { display: block; color: var(--muted); font-size: 10px; font-weight: 600; letter-spacing: .4px; margin-top: 2px; }
-    .nav-actions { display: flex; align-items: center; gap: 10px; }
-    .btn {
-      border: 0; border-radius: 11px; padding: 11px 16px; font-weight: 700; font-size: 13px;
-      transition: .2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    }
-    .btn-primary { background: var(--blue); color: white; box-shadow: 0 5px 14px rgba(23,105,170,.16); }
-    .btn-primary:hover { background: var(--navy); transform: translateY(-1px); }
-    .btn-light { color: var(--blue); background: var(--pale); }
-    .btn-light:hover { background: #dceefa; }
-    .btn-outline { background: white; color: var(--navy); border: 1px solid var(--line); }
-    .btn-outline:hover { border-color: #9fc6e6; background: var(--soft); }
-    .btn-danger { background: #fff0f1; color: var(--danger); }
-    .btn-small { padding: 8px 11px; font-size: 12px; }
-    .hero { padding: 76px 0 54px; position: relative; overflow: hidden; }
-    .hero::after {
-      content: ""; position: absolute; width: 420px; height: 420px; right: -160px; top: -190px;
-      border-radius: 50%; background: radial-gradient(circle, rgba(45,131,199,.12), transparent 68%); pointer-events: none;
-    }
-    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
-    .eyebrow::before { content: ""; width: 22px; height: 2px; background: var(--blue); border-radius: 5px; }
-    h1 { color: var(--navy); font-size: clamp(38px, 6vw, 62px); line-height: 1.04; letter-spacing: -2.5px; max-width: 760px; margin: 19px 0 18px; }
-    h1 span { color: var(--blue); }
-    .hero-copy { color: var(--muted); font-size: 16px; line-height: 1.8; max-width: 650px; margin: 0 0 26px; }
-    .hero-meta { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 32px; }
-    .meta-chip { background: var(--soft); color: #53677c; border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; font-size: 11px; font-weight: 700; }
-    .section { padding: 35px 0 80px; }
-    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 22px; margin-bottom: 25px; }
-    .section-kicker { color: var(--blue); text-transform: uppercase; letter-spacing: 1.4px; font-size: 10px; font-weight: 850; }
-    h2 { margin: 8px 0 0; color: var(--navy); font-size: clamp(25px, 3vw, 34px); letter-spacing: -.9px; }
-    .section-desc { color: var(--muted); font-size: 13px; margin: 8px 0 0; line-height: 1.6; }
-    .tools { display: flex; gap: 10px; margin-bottom: 22px; }
-    .search-wrap { flex: 1; position: relative; }
-    .search-wrap span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #8192a5; font-size: 17px; }
-    .search-wrap input, .tools select {
-      width: 100%; height: 46px; border: 1px solid var(--line); border-radius: 12px; background: white;
-      color: var(--ink); outline: none; padding: 0 14px;
-    }
-    .search-wrap input { padding-left: 42px; }
-    .search-wrap input:focus, .tools select:focus, .field input:focus, .field textarea:focus, .field select:focus { border-color: #7bb4df; box-shadow: 0 0 0 3px rgba(45,131,199,.1); }
-    .tools select { width: 190px; }
-    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-    .project-card {
-      border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: white;
-      transition: .22s ease; box-shadow: 0 3px 12px rgba(18,52,90,.025); display: flex; flex-direction: column;
-    }
-    .project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: #c9deef; }
-    .cover { height: 190px; background: linear-gradient(135deg, #eaf4fc, #f7fafc); overflow: hidden; position: relative; }
-    .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .cover-placeholder { height: 100%; display: grid; place-items: center; color: #80a9c9; font-size: 38px; font-weight: 800; }
-    .project-body { padding: 18px; display: flex; flex-direction: column; flex: 1; }
-    .category { display: inline-flex; width: fit-content; background: var(--pale); color: var(--blue); padding: 5px 9px; border-radius: 7px; font-size: 10px; font-weight: 800; }
-    .project-body h3 { color: var(--navy); margin: 12px 0 8px; font-size: 18px; letter-spacing: -.3px; }
-    .project-body p { color: var(--muted); font-size: 12px; line-height: 1.7; margin: 0 0 18px; }
-    .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; }
-    .details-link { color: var(--blue); font-weight: 800; font-size: 12px; border: 0; background: none; padding: 7px 0; }
-    .details-link:hover { color: var(--navy); }
-    .empty {
-      border: 1px dashed #cbd9e6; background: #fbfdff; border-radius: var(--radius); padding: 58px 20px;
-      text-align: center; grid-column: 1 / -1;
-    }
-    .empty-icon { width: 58px; height: 58px; display: grid; place-items: center; margin: 0 auto 15px; border-radius: 18px; background: var(--pale); color: var(--blue); font-size: 25px; }
-    .empty h3 { color: var(--navy); margin: 0 0 7px; font-size: 17px; }
-    .empty p { color: var(--muted); font-size: 13px; margin: 0; }
-    footer { border-top: 1px solid var(--line); padding: 25px 0; color: var(--muted); font-size: 11px; }
-    .footer-inner { display: flex; justify-content: space-between; gap: 15px; flex-wrap: wrap; }
-    .footer-inner strong { color: var(--navy); }
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(11,31,52,.48); z-index: 50; display: none; align-items: center; justify-content: center; padding: 18px; }
-    .modal-backdrop.show { display: flex; }
-    .modal { width: min(650px, 100%); max-height: min(90vh, 850px); overflow: auto; background: white; border-radius: 20px; box-shadow: 0 24px 70px rgba(0,0,0,.2); }
-    .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 20px 22px; border-bottom: 1px solid var(--line); }
-    .modal-head h3 { margin: 0; color: var(--navy); font-size: 18px; }
-    .close { border: 0; width: 34px; height: 34px; border-radius: 9px; background: var(--soft); color: var(--muted); font-size: 20px; }
-    .modal-content { padding: 22px; }
-    .detail-cover { width: 100%; max-height: 260px; object-fit: cover; border-radius: 13px; margin-bottom: 18px; background: var(--pale); }
-    .detail-title { font-size: 25px; margin: 12px 0 10px; color: var(--navy); }
-    .detail-text { color: #526579; font-size: 14px; line-height: 1.8; white-space: pre-wrap; }
-    .detail-label { color: var(--navy); font-size: 12px; font-weight: 850; margin: 18px 0 6px; }
-    .admin-login { width: min(410px, 100%); margin: 0 auto; }
-    .admin-login p { color: var(--muted); font-size: 13px; line-height: 1.6; }
-    .field { margin-bottom: 15px; }
-    .field label { display: block; color: #40556b; font-size: 12px; font-weight: 800; margin-bottom: 7px; }
-    .field input, .field textarea, .field select {
-      width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; outline: none; color: var(--ink); background: white;
-    }
-    .field textarea { min-height: 95px; resize: vertical; line-height: 1.5; }
-    .field small { color: var(--muted); font-size: 10px; display: block; margin-top: 6px; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
-    .form-actions { display: flex; justify-content: flex-end; gap: 9px; padding-top: 8px; }
-    .admin-panel { width: min(760px, 100%); }
-    .admin-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
-    .admin-top h4 { margin: 0; color: var(--navy); font-size: 17px; }
-    .admin-list { display: grid; gap: 9px; }
-    .admin-item { display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
-    .admin-thumb { width: 54px; height: 48px; border-radius: 8px; object-fit: cover; background: var(--pale); flex: 0 0 auto; }
-    .admin-item-info { min-width: 0; flex: 1; }
-    .admin-item-info strong { display: block; color: var(--navy); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .admin-item-info span { color: var(--muted); font-size: 10px; }
-    .admin-item-actions { display: flex; gap: 6px; }
-    .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); background: var(--navy); color: white; padding: 12px 17px; border-radius: 11px; font-size: 12px; font-weight: 700; opacity: 0; pointer-events: none; transition: .25s; z-index: 100; box-shadow: var(--shadow); }
-    .toast.show { opacity: 1; transform: translate(-50%, 0); }
-    .hidden { display: none !important; }
-    @media (max-width: 800px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hero { padding-top: 55px; } }
-    @media (max-width: 560px) {
-      .container { width: min(100% - 28px, 1120px); }
-      .nav { min-height: 66px; }
-      .brand-mark { width: 38px; height: 38px; }
-      .brand-sub { display: none; }
-      .nav-actions .btn { padding: 9px 11px; font-size: 11px; }
-      .hero { padding: 48px 0 35px; }
-      h1 { letter-spacing: -1.6px; }
-      .hero-copy { font-size: 14px; }
-      .section { padding-bottom: 55px; }
-      .section-head { align-items: start; flex-direction: column; }
-      .tools { flex-direction: column; }
-      .tools select { width: 100%; }
-      .grid { grid-template-columns: 1fr; gap: 14px; }
-      .cover { height: 205px; }
-      .form-grid { grid-template-columns: 1fr; }
-      .admin-item { flex-wrap: wrap; }
-      .admin-item-actions { width: 100%; justify-content: flex-end; }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="container nav">
-      <a class="brand" href="#">
-        <div class="brand-mark">ADM</div>
-        <div><div class="brand-name">ADM<span>.PROJETOS</span></div><span class="brand-sub">ADMINISTRAÇÃO & EMPREENDEDORISMO</span></div>
-      </a>
-      <div class="nav-actions">
-        <button class="btn btn-light" id="adminOpenBtn">⚙ Administrador</button>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="container">
-        <div class="eyebrow">CETI JOSÉ MARQUES · DAY ESCOLAR</div>
-        <h1>Projetos que transformam <span>ideias em soluções.</span></h1>
-        <p class="hero-copy">Um catálogo dos projetos e plataformas desenvolvidos no curso de Administração com ênfase em Empreendedorismo. Conheça nossas criações e explore cada solução.</p>
-        <a href="#projetos" class="btn btn-primary">Explorar projetos <span>→</span></a>
-        <div class="hero-meta">
-          <span class="meta-chip">Administração</span>
-          <span class="meta-chip">Empreendedorismo</span>
-          <span class="meta-chip">Tecnologia e inovação</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="projetos">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">CATÁLOGO DIGITAL</div>
-            <h2>Nossos projetos</h2>
-            <p class="section-desc">Explore os projetos cadastrados e acesse suas plataformas.</p>
-          </div>
-          <div id="projectCount" class="meta-chip">0 projetos</div>
-        </div>
-        <div class="tools">
-          <div class="search-wrap"><span>⌕</span><input id="searchInput" type="search" placeholder="Pesquisar projeto pelo nome..."></div>
-          <select id="categoryFilter" aria-label="Filtrar por categoria"><option value="">Todas as categorias</option></select>
-        </div>
-        <div class="grid" id="projectGrid"></div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container footer-inner">
-      <div><strong>ADM.PROJETOS</strong> · CETI José Marques</div>
-      <div>Administração com ênfase em Empreendedorismo</div>
-    </div>
-  </footer>
-
-  <!-- Modal de detalhes -->
-  <div class="modal-backdrop" id="detailsModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
-      <div class="modal-head"><h3>Detalhes do projeto</h3><button class="close" data-close="detailsModal" aria-label="Fechar">×</button></div>
-      <div class="modal-content" id="detailsContent"></div>
-    </div>
-  </div>
-
-  <!-- Modal administrativo -->
-  <div class="modal-backdrop" id="adminModal">
-    <div class="modal admin-panel" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
-      <div class="modal-head"><h3 id="adminTitle">Área administrativa</h3><button class="close" data-close="adminModal" aria-label="Fechar">×</button></div>
-      <div class="modal-content">
-        <div class="admin-login" id="loginView">
-          <div class="eyebrow">ACESSO RESTRITO</div>
-          <h2 style="font-size:25px;margin:10px 0 5px">Entrar como administrador</h2>
-          <p>Área exclusiva para cadastrar, editar e remover projetos do catálogo.</p>
-          <form id="loginForm">
-            <div class="field"><label for="adminPassword">Senha administrativa</label><input id="adminPassword" type="password" autocomplete="current-password" placeholder="Digite a senha" required></div>
-            <button class="btn btn-primary" style="width:100%" type="submit">Entrar no painel</button>
-          </form>
-          <p style="font-size:10px;margin-top:14px">A senha inicial pode ser alterada no código, na constante <strong>ADMIN_PASSWORD</strong>.</p>
-        </div>
-
-        <div id="dashboardView" class="hidden">
-          <div class="admin-top">
-            <div><h4>Gerenciar projetos</h4><span class="section-desc" id="adminProjectCount">0 projetos cadastrados</span></div>
-            <button class="btn btn-primary btn-small" id="newProjectBtn">＋ Novo projeto</button>
-          </div>
-          <div class="admin-list" id="adminList"></div>
-          <div style="display:flex;justify-content:flex-end;margin-top:17px">
-            <button class="btn btn-outline btn-small" id="logoutBtn">Sair do administrador</button>
-          </div>
-        </div>
-
-        <div id="projectFormView" class="hidden">
-          <div class="admin-top"><div><h4 id="formTitle">Cadastrar projeto</h4><span class="section-desc">Preencha as informações do projeto.</span></div></div>
-          <form id="projectForm">
-            <input type="hidden" id="projectId">
-            <div class="field"><label for="projectName">Nome do projeto *</label><input id="projectName" maxlength="90" required placeholder="Ex.: Plataforma de gestão"></div>
-            <div class="form-grid">
-              <div class="field"><label for="projectCategory">Categoria</label><input id="projectCategory" maxlength="40" placeholder="Ex.: Gestão, Educação, Tecnologia"></div>
-              <div class="field"><label for="projectDevelopers">Desenvolvedores (opcional)</label><input id="projectDevelopers" maxlength="120" placeholder="Nome dos responsáveis"></div>
-            </div>
-            <div class="field"><label for="projectShort">Descrição resumida *</label><textarea id="projectShort" maxlength="240" required placeholder="Uma apresentação breve para o card do catálogo."></textarea></div>
-            <div class="field"><label for="projectDescription">Descrição completa</label><textarea id="projectDescription" placeholder="Explique o que o projeto faz, seu objetivo e suas funcionalidades."></textarea></div>
-            <div class="field"><label for="projectLink">Link de acesso *</label><input id="projectLink" type="url" required placeholder="https://..."><small>Use o endereço completo da plataforma, começando com https://</small></div>
-            <div class="field"><label for="projectCover">Imagem de capa</label><input id="projectCover" type="file" accept="image/png,image/jpeg,image/webp"><small>Imagem JPG, PNG ou WEBP. Prefira arquivos leves, de até 2 MB.</small></div>
-            <div class="form-actions">
-              <button type="button" class="btn btn-outline" id="cancelFormBtn">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Salvar projeto</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="toast" id="toast"></div>
-
-  <script>
-    // Altere esta senha antes de usar. Esta proteção é apenas local e não é segura para um site público.
-    const ADMIN_PASSWORD = "adm2026";
-    const STORAGE_KEY = "adm_projetos_catalogo_v1";
-    let projects = loadProjects();
-    let editingCover = "";
-
-    function loadProjects() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
-      catch { return []; }
-    }
-    function saveProjects() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-        return true;
-      } catch (error) {
-        showToast("Não foi possível salvar. A imagem pode ser muito grande.");
-        return false;
-      }
-    }
-    function escapeHTML(value = "") {
-      return String(value).replace(/[&<>"']/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[char]));
-    }
-    function safeURL(value) {
-      try {
-        const url = new URL(value);
-        return ["http:", "https:"].includes(url.protocol) ? url.href : "";
-      } catch { return ""; }
-    }
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 2600);
-    }
-    function openModal(id) { document.getElementById(id).classList.add("show"); }
-    function closeModal(id) { document.getElementById(id).classList.remove("show"); }
-    document.querySelectorAll("[data-close]").forEach(btn => btn.addEventListener("click", () => closeModal(btn.dataset.close)));
-    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.addEventListener("click", e => {
-      if (e.target === backdrop) backdrop.classList.remove("show");
-    }));
-    document.addEventListener("keydown", e => {
-      if (e.key === "Escape") document.querySelectorAll(".modal-backdrop.s    document.addEventListener("keydown", e => {
-      if (e.key === "Escape") document.querySelectorAll(".modal-backdrop.show").forEach(m => m.classList.remove("show"));
-    });
-
-    function renderProjects() {
-      const query = document.getElementById("searchInput").value.trim().toLowerCase();
-      const category = document.getElementById("categoryFilter").value;
-      const filtered = projects.filter(p => {
-        const matchesQuery = (p.name + " " + p.short + " " + (p.category || "")).toLowerCase().includes(query);
-        const matchesCategory = !category || p.category === category;
-        return matchesQuery && matchesCategory;
-      });
-      document.getElementById("projectCount").textContent = `${projects.length} ${projects.length === 1 ? "projeto" : "projetos"}`;
-      const grid = document.getElementById("projectGrid");
-      if (!filtered.length) {
-        grid.innerHTML = `<div class="empty"><div class="empty-icon">▤</div><h3>${projects.length ? "Nenhum projeto encontrado" : "O catálogo está sendo preparado"}</h3><p>${projects.length ? "Tente mudar a pesquisa ou o filtro de categoria." : "Os projetos cadastrados pelo administrador aparecerão aqui."}</p></div>`;
-        return;
-      }
-      grid.innerHTML = filtered.map(p => `
-        <article class="project-card">
-          <div class="cover">${p.cover ? `<img src="${p.cover}" alt="Capa de ${escapeHTML(p.name)}">` : `<div class="cover-placeholder">ADM.</div>`}</div>
-          <div class="project-body">
-            ${p.category ? `<span class="category">${escapeHTML(p.category)}</span>` : ""}
-            <h3>${escapeHTML(p.name)}</h3>
-            <p>${escapeHTML(p.short)}</p>
-            <div class="card-bottom"><button class="details-link" data-details="${escapeHTML(p.id)}">Ver detalhes →</button><span style="color:#9aa9b8;font-size:10px">Projeto</span></div>
-          </div>
-        </article>`).join("");
-      grid.querySelectorAll("[data-details]").forEach(btn => btn.addEventListener("click", () => showDetails(btn.dataset.details)));
-    }
-    function renderCategories() {
-      const select = document.getElementById("categoryFilter");
-      const current = select.value;
-      const categories = [...new Set(projects.map(p => p.category).filter(Boolean))].sort((a,b) => a.localeCompare(b, "pt-BR"));
-      select.innerHTML = `<option value="">Todas as categorias</option>` + categories.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
-      if (categories.includes(current)) select.value = current;
-    }
-    function showDetails(id) {
-      const p = projects.find(item => item.id === id);
-      if (!p) return;
-      const link = safeURL(p.link);
-      document.getElementById("detailsContent").innerHTML = `
-        ${p.cover ? `<img class="detail-cover" src="${p.cover}" alt="Capa de ${escapeHTML(p.name)}">` : ""}
-        ${p.category ? `<span class="category">${escapeHTML(p.category)}</span>` : ""}
-        <h2 class="detail-title" id="detailsTitle">${escapeHTML(p.name)}</h2>
-        <div class="detail-text">${escapeHTML(p.description || p.short)}</div>
-        ${p.developers ? `<div class="detail-label">DESENVOLVEDORES</div><div class="detail-text">${escapeHTML(p.developers)}</div>` : ""}
-        <div style="margin-top:22px">${link ? `<a class="btn btn-primary" href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer">Acessar plataforma ↗</a>` : `<span class="meta-chip">Link indisponível</span>`}</div>`;
-      openModal("detailsModal");
-    }
-
-    document.getElementById("searchInput").addEventListener("input", renderProjects);
-    document.getElementById("categoryFilter").addEventListener("change", renderProjects);
-
-    // Área administrativa
-    const adminOpenBtn = document.getElementById("adminOpenBtn");
-    adminOpenBtn.addEventListener("click", () => {
-      showAdminView(sessionStorage.getItem("adm_admin_session") === "yes" ? "dashboard" : "login");
-      openModal("adminModal");
-    });
-    function showAdminView(view) {
-      document.getElementById("loginView").classList.toggle("hidden", view !== "login");
-      document.getElementById("dashboardView").classList.toggle("hidden", view !== "dashboard");
-      document.getElementById("projectFormView").classList.toggle("hidden", view !== "form");
-      if (view === "dashboard") renderAdminList();
-    }
-    document.getElementById("loginForm").addEventListener("submit", e => {
-      e.preventDefault();
-      const password = document.getElementById("adminPassword").value;
-      if (password === ADMIN_PASSWORD) {
-        sessionStorage.setItem("adm_admin_session", "yes");
-        document.getElementById("adminPassword").value = "";
-        showAdminView("dashboard");
-        showToast("Acesso administrativo liberado.");
-      } else {
-        showToast("Senha incorreta.");
-      }
-    });
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      sessionStorage.removeItem("adm_admin_session");
-      showAdminView("login");
-      showToast("Você saiu do painel.");
-    });
-    function renderAdminList() {
-      document.getElementById("adminProjectCount").textContent = `${projects.length} ${projects.length === 1 ? "projeto cadastrado" : "projetos cadastrados"}`;
-      const list = document.getElementById("adminList");
-      if (!projects.length) {
-        list.innerHTML = `<div class="empty" style="padding:35px 15px"><div class="empty-icon">＋</div><h3>Nenhum projeto cadastrado</h3><p>Use “Novo projeto” para adicionar o primeiro item ao catálogo.</p></div>`;
-        return;
-      }
-      list.innerHTML = projects.map(p => `
-        <div class="admin-item">
-          ${p.cover ? `<img class="admin-thumb" src="${p.cover}" alt="">` : `<div class="admin-thumb" style="display:grid;place-items:center;color:var(--blue);font-weight:800">ADM</div>`}
-          <div class="admin-item-info"><strong>${escapeHTML(p.name)}</strong><span>${escapeHTML(p.category || "Sem categoria")}</span></div>
-          <div class="admin-item-actions">
-            <button class="btn btn-outline btn-small" data-edit="${escapeHTML(p.id)}">Editar</button>
-            <button class="btn btn-danger btn-small" data-delete="${escapeHTML(p.id)}">Excluir</button>
-          </div>
-        </div>`).join("");
-      list.querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => openProjectForm(btn.dataset.edit)));
-      list.querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", () => deleteProject(btn.dataset.delete)));
-    }
-    document.getElementById("newProjectBtn").addEventListener("click", () => openProjectForm());
-    document.getElementById("cancelFormBtn").addEventListener("click", () => showAdminView("dashboard"));
-
-    function openProjectForm(id = "") {
-      const p = projects.find(item => item.id === id);
-      document.getElementById("projectForm").reset();
-      document.getElementById("projectId").value = p ? p.id : "";
-      document.getElementById("formTitle").textContent = p ? "Editar projeto" : "Cadastrar projeto";
-      document.getElementById("projectName").value = p?.name || "";
-      document.getElementById("projectCategory").value = p?.category || "";
-      document.getElementById("projectDevelopers").value = p?.developers || "";
-      document.getElementById("projectShort").value = p?.short || "";
-      document.getElementById("projectDescription").value = p?.description || "";
-      document.getElementById("projectLink").value = p?.link || "";
-      editingCover = p?.cover || "";
-      showAdminView("form");
-    }
-    function deleteProject(id) {
-      const p = projects.find(item => item.id === id);
-      if (!p || !confirm(`Deseja realmente excluir "${p.name}"?`)) return;
-      projects = projects.filter(item => item.id !== id);
-      if (saveProjects()) {
-        renderCategories(); renderProjects(); renderAdminList(); showToast("Projeto excluído.");
-      }
-    }
-    function readImage(file) {
-      return new Promise((resolve, reject) => {
-        if (!file) return resolve(editingCover);
-        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return reject(new Error("Escolha uma imagem JPG, PNG ou WEBP."));
-        if (file.size > 2 * 1024 * 1024) return reject(new Error("A imagem deve ter no máximo 2 MB."));
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
-        reader.readAsDataURL(file);
-      });
-    }
-    document.getElementById("projectForm").addEventListener("submit", async e => {
-      e.preventDefault();
-      const id = document.getElementById("projectId").value;
-      const name = document.getElementById("projectName").value.trim();
-      const short = document.getElementById("projectShort").value.trim();
-      const link = safeURL(document.getElementById("projectLink").value.trim());
-      if (!link) { showToast("Informe um link válido começando com https://"); return; }
-      const file = document.getElementById("projectCover").files[0];
-      try {
-        const cover = await readImage(file);
-        const project = {
-          id: id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
-          name,
-          category: document.getElementById("projectCategory").value.trim(),
-          developers: document.getElementById("projectDevelopers").value.trim(),
-          short,
-          description: document.getElementById("projectDescription").value.trim(),
-          link,
-          cover
-        };
-        if (id) projects = projects.map(p => p.id === id ? project : p);
-        else projects.unshift(project);
-        if (saveProjects()) {
-          renderCategories(); renderProjects(); showAdminView("dashboard");
-          showToast(id ? "Projeto atualizado com sucesso." : "Projeto cadastrado com sucesso.");
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitrine VB - Conectando negócios, valorizando nossa cidade</title>
+    <!-- Tailwind CSS para estilização moderna -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js para os gráficos financeiros -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#155EEF',
+                        darkBlue: '#0B3B91',
+                        softBlue: '#EAF1FF',
+                        lightBg: '#F4F6FA',
+                        customText: '#202B3C'
+                    }
+                }
+            }
         }
-      } catch (error) { showToast(error.message || "Erro ao salvar projeto."); }
-    });
+    </script>
+</head>
+<body class="bg-lightBg text-customText font-sans antialiased min-h-screen flex flex-col">
 
-    renderCategories();
-    renderProjects();
-  </script>
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Menu Lateral (Desktop) -->
+        <aside class="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 z-20">
+            <div class="p-6 border-b border-gray-100 flex items-center space-x-3">
+                <div class="bg-primary text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid fa-store text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-darkBlue leading-tight">Vitrine VB</h1>
+                    <span class="text-xs text-gray-500 font-medium">Várzea Branca</span>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Menu Principal</p>
+                <a href="#" onclick="switchTab('inicio')" id="menu-inicio" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors bg-softBlue text-primary">
+                    <i class="fa-solid fa-house w-5"></i>
+                    <span>Início & Catálogo</span>
+                </a>
+                <a href="#" onclick="switchTab('painel')" id="menu-painel" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                    <i class="fa-solid fa-chart-pie w-5"></i>
+                    <span>Painel do Empreendedor</span>
+                </a>
+                <a href="#" onclick="switchTab('produtos')" id="menu-produtos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                    <i class="fa-solid fa-box-open w-5"></i>
+                    <span>Meus Produtos</span>
+                </a>
+                <a href="#" onclick="switchTab('lancamentos')" id="menu-lancamentos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                    <i class="fa-solid fa-file-invoice-dollar w-5"></i>
+                    <span>Lançamentos</span>
+                </a>
+                <a href="#" onclick="switchTab('relatorios')" id="menu-relatorios" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                    <i class="fa-solid fa-chart-line w-5"></i>
+                    <span>Relatórios Financeiros</span>
+                </a>
+                <a href="#" onclick="switchTab('calculadora')" id="menu-calculadora" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                    <i class="fa-solid fa-calculator w-5"></i>
+                    <span>Calculadora de Lucro</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-gray-100">
+                <div class="bg-softBlue p-3 rounded-xl flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
+                        GA
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-xs font-bold text-darkBlue truncate">Gustavo Paes</p>
+                        <p class="text-[11px] text-gray-500 truncate">Empreendedor Local</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+            
+            <!-- Barra Superior (Mobile e Desktop header) -->
+            <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6 z-10">
+                <div class="flex items-center space-x-3 md:hidden">
+                    <div class="bg-primary text-white p-2 rounded-lg">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <span class="font-bold text-darkBlue">Vitrine VB</span>
+                </div>
+
+                <div class="hidden md:block">
+                    <h2 id="page-title" class="font-bold text-darkBlue text-lg">Catálogo de Produtos e Negócios</h2>
+                    <p class="text-xs text-gray-500">Conectando negócios, valorizando nossa cidade.</p>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <button onclick="switchTab('painel')" class="bg-primary hover:bg-darkBlue text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-user-gear"></i>
+                        <span>Área do Empreendedor</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Área de Abas Dinâmicas -->
+            <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-lightBg">
+                
+                <!-- ABA 1: INÍCIO E CATÁLOGO PÚBLICO -->
+                <section id="tab-inicio" class="tab-content space-y-6">
+                    <div class="bg-gradient-to-r from-darkBlue to-primary text-white p-8 rounded-2xl shadow-lg relative overflow-hidden">
+                        <div class="relative z-10 max-w-2xl">
+                            <span class="bg-white/20 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Comércio Local</span>
+                            <h2 class="text-3xl font-extrabold mt-3 mb-2">Descubra e valorize quem empreende em Várzea Branca</h2>
+                            <p class="text-gray-100 text-sm md:text-base mb-6">Encontre produtos incríveis, serviços essenciais e fortaleça a economia da nossa cidade.</p>
+                            
+                            <!-- Barra de Pesquisa -->
+                            <div class="bg-white p-2 rounded-xl shadow-md flex items-center space-x-2">
+                                <i class="fa-solid fa-search text-gray-400 pl-3"></i>
+                                <input type="text" id="searchInput" onkeyup="filterCatalog()" placeholder="O que você está procurando? (Ex: Bolo, Roupas, Manutenção...)" class="w-full text-sm text-customText focus:outline-none bg-transparent py-2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros por Categoria -->
+                    <div class="flex items-center space-x-2 overflow-x-auto pb-2">
+                        <button onclick="filterCategory('todos')" class="cat-btn bg-primary text-white text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition shadow-sm">Todos</button>
+                        <button onclick="filterCategory('Alimentação')" class="cat-btn bg-white hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition border border-gray-200">Alimentação</button>
+                        <button onclick="filterCategory('Vestuário')" class="cat-btn bg-white hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition border border-gray-200">Vestuário</button>
+                        <button onclick="filterCategory('Beleza')" class="cat-btn bg-white hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition border border-gray-200">Beleza</button>
+                        <button onclick="filterCategory('Serviços')" class="cat-btn bg-white hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition border border-gray-200">Serviços</button>
+                        <button onclick="filterCategory('Artesanato')" class="cat-btn bg-white hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2 rounded-xl whitespace-nowrap transition border border-gray-200">Artesanato</button>
+                    </div>
+
+                    <!-- Grid de Produtos -->
+                    <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+                </section>
+
+                <!-- ABA 2: PAINEL DO EMPREENDEDOR -->
+                <section id="tab-painel" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-darkBlue">Painel de Gestão Financeira</h3>
+                            <p class="text-xs text-gray-500">Acompanhe o desempenho do seu negócio em tempo real.</p>
+                        </div>
+                        <button onclick="switchTab('lancamentos')" class="bg-primary hover:bg-darkBlue text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Novo Lançamento</span>
+                        </button>
+                    </div>
+
+                    <!-- Cards de Resumo -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                            <p class="text-xs font-medium text-gray-500">Receita Total</p>
+                            <h4 id="resumo-receita" class="text-2xl font-bold text-darkBlue mt-1">R$ 0,00</h4>
+                            <span class="text-[11px] text-emerald-600 font-semibold mt-2 inline-block"><i class="fa-solid fa-arrow-trend-up"></i> Vendas registradas</span>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                            <p class="text-xs font-medium text-gray-500">Custos & Despesas</p>
+                            <h4 id="resumo-despesas" class="text-2xl font-bold text-red-600 mt-1">R$ 0,00</h4>
+                            <span class="text-[11px] text-gray-400 font-semibold mt-2 inline-block">Gastos operacionais</span>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                            <p class="text-xs font-medium text-gray-500">Lucro Líquido</p>
+                            <h4 id="resumo-lucro" class="text-2xl font-bold text-primary mt-1">R$ 0,00</h4>
+                            <span class="text-[11px] text-emerald-600 font-semibold mt-2 inline-block">Resultado financeiro</span>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                            <p class="text-xs font-medium text-gray-500">Qtd. de Vendas</p>
+                            <h4 id="resumo-vendas" class="text-2xl font-bold text-darkBlue mt-1">0</h4>
+                            <span class="text-[11px] text-gray-400 font-semibold mt-2 inline-block">Itens comercializados</span>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Movimentações Recentes -->
+                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+                            <h4 class="font-bold text-darkBlue text-sm">Últimas Movimentações</h4>
+                            <button onclick="switchTab('lancamentos')" class="text-xs font-semibold text-primary hover:underline">Ver todas</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-gray-50 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                                        <th class="py-3 px-4">Descrição</th>
+                                        <th class="py-3 px-4">Categoria</th>
+                                        <th class="py-3 px-4">Data</th>
+                                        <th class="py-3 px-4">Tipo</th>
+                                        <th class="py-3 px-4 text-right">Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-movimentacoes" class="divide-y divide-gray-100 text-sm">
+                                    <!-- Preenchido via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ABA 3: MEUS PRODUTOS -->
+                <section id="tab-produtos" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-darkBlue">Gerenciamento de Produtos</h3>
+                            <p class="text-xs text-gray-500">Cadastre e administre o que é exibido no catálogo público.</p>
+                        </div>
+                        <button onclick="openProductModal()" class="bg-primary hover:bg-darkBlue text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Adicionar Novo Produto</span>
+                        </button>
+                    </div>
+
+                    <!-- Lista de Produtos do Empreendedor -->
+                    <div id="meus-produtos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+                </section>
+
+                <!-- ABA 4: LANÇAMENTOS -->
+                <section id="tab-lancamentos" class="tab-content hidden space-y-6">
+                    <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl border border-gray-200 shadow-sm">
+                        <h3 class="text-xl font-bold text-darkBlue mb-2">Novo Lançamento Financeiro</h3>
+                        <p class="text-xs text-gray-500 mb-6">Registre suas vendas, compras, despesas fixas ou custos.</p>
+                        
+                        <form id="form-lancamento" onsubmit="adicionarLancamento(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Tipo de Movimentação</label>
+                                <select id="lanc-tipo" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                    <option value="venda">Venda (Receita)</option>
+                                    <option value="despesa">Despesa Operacional / Gasto</option>
+                                    <option value="custo">Custo de Produção</option>
+                                    <option value="compra">Compra de Insumos/Estoque</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Descrição</label>
+                                <input type="text" id="lanc-desc" required placeholder="Ex: Bolo de chocolate / Compra de embalagens" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Valor (R$)</label>
+                                    <input type="number" step="0.01" id="lanc-valor" required placeholder="0,00" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Data</label>
+                                    <input type="date" id="lanc-data" required class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Categoria</label>
+                                <select id="lanc-categoria" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                    <option value="Alimentação">Alimentação</option>
+                                    <option value="Vestuário">Vestuário</option>
+                                    <option value="Beleza">Beleza</option>
+                                    <option value="Serviços">Serviços</option>
+                                    <option value="Artesanato">Artesanato</option>
+                                    <option value="Operacional">Operacional / Despesa Fixa</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full bg-primary hover:bg-darkBlue text-white font-semibold py-3 rounded-xl transition shadow-sm text-sm">
+                                Salvar Lançamento
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- ABA 5: RELATÓRIOS FINANCEIROS -->
+                <section id="tab-relatorios" class="tab-content hidden space-y-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-darkBlue">Relatórios e Gráficos Automáticos</h3>
+                        <p class="text-xs text-gray-500">Análise visual simplificada do seu desempenho financeiro.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Gráfico de Receitas vs Despesas -->
+                        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                            <h4 class="font-bold text-darkBlue text-sm mb-4">Receitas vs Despesas</h4>
+                                <div class="h-64 flex items-center justify-center">
+                                <canvas id="chartReceitaDespesa"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico por Categoria -->
+                        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                            <h4 class="font-bold text-darkBlue text-sm mb-4">Movimentações por Categoria</h4>
+                            <div class="h-64 flex items-center justify-center">
+                                <canvas id="chartCategoria"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ABA 6: CALCULADORA DE LUCRO -->
+                <section id="tab-calculadora" class="tab-content hidden space-y-6">
+                    <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl border border-gray-200 shadow-sm">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="bg-softBlue text-primary p-3 rounded-xl">
+                                <i class="fa-solid fa-calculator text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-darkBlue">Calculadora de Lucro</h3>
+                                <p class="text-xs text-gray-500">Descubra exatamente quanto sobra por produto vendido.</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Preço de Venda (R$)</label>
+                                <input type="number" step="0.01" id="calc-preco" oninput="calcularLucro()" placeholder="Ex: 50.00" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Custo de Aquisição ou Produção (R$)</label>
+                                <input type="number" step="0.01" id="calc-custo" oninput="calcularLucro()" placeholder="Ex: 20.00" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Despesas Operacionais Proporcionais (R$)</label>
+                                <input type="number" step="0.01" id="calc-despesa" oninput="calcularLucro()" placeholder="Ex: 5.00" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                            </div>
+
+                            <div class="bg-softBlue p-5 rounded-xl border border-blue-100 mt-6 space-y-2">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-600 font-medium">Lucro Líquido Unitário:</span>
+                                    <span id="res-lucro-valor" class="font-bold text-darkBlue text-lg">R$ 0,00</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-600 font-medium">Margem de Lucro:</span>
+                                    <span id="res-margem" class="font-bold text-emerald-600 text-base">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Produto -->
+    <div id="productModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="font-bold text-darkBlue text-lg">Novo Produto / Serviço</h3>
+                <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form id="form-produto" onsubmit="salvarProduto(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nome do Estabelecimento / Loja</label>
+                    <input type="text" id="prod-loja" required placeholder="Ex: Doces & Sabores VB" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nome do Produto ou Serviço</label>
+                    <input type="text" id="prod-nome" required placeholder="Ex: Bolo Caseiro de Chocolate" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Preço (R$)</label>
+                        <input type="number" step="0.01" id="prod-preco" required placeholder="0,00" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Categoria</label>
+                        <select id="prod-cat" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Vestuário">Vestuário</option>
+                            <option value="Beleza">Beleza</option>
+                            <option value="Serviços">Serviços</option>
+                            <option value="Artesanato">Artesanato</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Descrição Detalhada</label>
+                    <textarea id="prod-desc" rows="2" placeholder="Fale um pouco sobre o produto..." class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Local / Endereço em Várzea Branca</label>
+                    <input type="text" id="prod-local" placeholder="Ex: Centro, Próximo à Praça Principal" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Link da Imagem (URL ou Foto ilustrativa)</label>
+                    <input type="url" id="prod-img" placeholder="https://exemplo.com/foto.jpg" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                </div>
+                <div class="pt-2 flex space-x-3">
+                    <button type="button" onclick="closeProductModal()" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 rounded-xl transition text-sm">Cancelar</button>
+                    <button type="submit" class="w-1/2 bg-primary hover:bg-darkBlue text-white font-semibold py-3 rounded-xl transition text-sm">Publicar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script de Funcionalidades -->
+    <script>
+        let produtos = [
+            {
+                id: 1,
+                loja: "Doces & Sabores VB",
+                nome: "Bolo Caseiro de Chocolate",
+                preco: 35.00,
+                categoria: "Alimentação",
+                descricao: "Bolo fofinho com cobertura generosa de chocolate artesanal.",
+                localizacao: "Centro, Várzea Branca",
+                imagem: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 2,
+                loja: "Ateliê Arte & Charme",
+                nome: "Colar Artesanal com Pedra Lilás",
+                preco: 45.00,
+                categoria: "Artesanato",
+                descricao: "Peça exclusiva feita à mão com acabamento prateado.",
+                localizacao: "Bairro Novo, Várzea Branca",
+                imagem: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 3,
+                loja: "Moda & Estilo VB",
+                nome: "Vestido Casual Floral",
+                preco: 89.90,
+                categoria: "Vestuário",
+                descricao: "Confortável e ideal para o clima da nossa cidade.",
+                localizacao: "Comercial, Várzea Branca",
+                imagem: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=600&q=80"
+            }
+        ];
+
+        let lancamentos = [
+            { id: 1, descricao: "Venda de Bolos", categoria: "Alimentação", data: "2026-11-01", tipo: "venda", valor: 105.00 },
+            { id: 2, descricao: "Compra de Cacau e Farinha", categoria: "Alimentação", data: "2026-11-02", tipo: "compra", valor: 40.00 },
+            { id: 3, descricao: "Taxa de Internet / Divulgação", categoria: "Operacional", data: "2026-11-05", tipo: "despesa", valor: 30.00 }
+        ];
+
+        let currentCategory = 'todos';
+        let chartRDInstance = null;
+        let chartCatInstance = null;
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('bg-softBlue', 'text-primary');
+                el.classList.add('text-gray-600', 'hover:bg-gray-50');
+            });
+
+            const activeMenu = document.getElementById(`menu-${tabId}`);
+            if (activeMenu) {
+                activeMenu.classList.remove('text-gray-600', 'hover:bg-gray-50');
+                activeMenu.classList.add('bg-softBlue', 'text-primary');
+            }
+
+            if (tabId === 'painel') atualizarPainel();
+            if (tabId === 'produtos') renderizarMeusProdutos();
+            if (tabId === 'relatorios') renderizarGraficos();
+        }
+
+        function renderCatalog(filter = 'todos', search = '') {
+            const grid = document.getElementById('catalog-grid');
+            grid.innerHTML = '';
+
+            const filtered = produtos.filter(p => {
+                const matchCat = filter === 'todos' || p.categoria === filter;
+                const matchSearch = p.nome.toLowerCase().includes(search.toLowerCase()) || 
+                                    p.loja.toLowerCase().includes(search.toLowerCase()) ||
+                                    p.descricao.toLowerCase().includes(search.toLowerCase());
+                return matchCat && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400 text-sm">Nenhum produto encontrado.</div>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <div class="h-48 overflow-hidden bg-gray-100 relative">
+                            <img src="${p.imagem}" alt="${p.nome}" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-darkBlue font-semibold text-[11px] px-2.5 py-1 rounded-full shadow-sm">${p.categoria}</span>
+                        </div>
+                        <div class="p-5">
+                            <p class="text-xs text-primary font-bold uppercase tracking-wider mb-1"><i class="fa-solid fa-store mr-1"></i>${p.loja}</p>
+                            <h4 class="font-bold text-darkBlue text-base mb-1">${p.nome}</h4>
+                            <p class="text-xs text-gray-500 mb-3 line-clamp-2">${p.descricao}</p>
+                            <p class="text-xs text-gray-400"><i class="fa-solid fa-location-dot mr-1"></i>${p.localizacao}</p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0 flex items-center justify-between border-t border-gray-100 mt-4">
+                        <span class="text-lg font-extrabold text-darkBlue">R$ ${p.preco.toFixed(2)}</span>
+                        <a href="https://wa.me/?text=Olá! Vi seu produto *${encodeURIComponent(p.nome)}* na Vitrine VB e gostaria de mais informações." target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
+                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                            <span>Contato</span>
+                        </a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+            });
+            event.target.classList.remove('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+            event.target.classList.add('bg-primary', 'text-white', 'shadow-sm');
+            
+            const searchVal = document.getElementById('searchInput').value;
+            renderCatalog(cat, searchVal);
+        }
+
+        function filterCatalog() {
+            const searchVal = document.getElementById('searchInput').value;
+            renderCatalog(currentCategory, searchVal);
+        }
+
+        function atualizarPainel() {
+            let totalReceita = 0;
+            let totalDespesas = 0;
+            let qtdVendas = 0;
+
+            lancamentos.forEach(l => {
+                if (l.tipo === 'venda') {
+                    totalReceita += l.valor;
+                    qtdVendas++;
+                } else {
+                    totalDespesas += l.valor;
+                }
+            });
+
+            const lucroLiquido = totalReceita - totalDespesas;
+
+            document.getElementById('resumo-receita').innerText = `R$ ${totalReceita.toFixed(2)}`;
+            document.getElementById('resumo-despesas').innerText = `R$ ${totalDespesas.toFixed(2)}`;
+            document.getElementById('resumo-lucro').innerText = `R$ ${lucroLiquido.toFixed(2)}`;
+            document.getElementById('resumo-vendas').innerText = qtdVendas;
+
+            const tbody = document.getElementById('tabela-movimentacoes');
+            tbody.innerHTML = '';
+
+            const ultimas = [...lancamentos].reverse().slice(0, 5);
+            ultimas.forEach(l => {
+                const isReceita = l.tipo === 'venda';
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-medium text-darkBlue">${l.descricao}</td>
+                    <td class="py-3 px-4 text-gray-500">${l.categoria}</td>
+                    <td class="py-3 px-4 text-gray-500">${l.data}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold ${isReceita ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}">
+                            ${l.tipo.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-right font-bold ${isReceita ? 'text-emerald-600' : 'text-red-600'}">
+                        ${isReceita ? '+' : '-'} R$ ${l.valor.toFixed(2)}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function adicionarLancamento(e) {
+            e.preventDefault();
+            const novo = {
+                id: lancamentos.length + 1,
+                tipo: document.getElementById('lanc-tipo').value,
+                descricao: document.getElementById('lanc-desc').value,
+                valor: parseFloat(document.getElementById('lanc-valor').value),
+                data: document.getElementById('lanc-data').value,
+                categoria: document.getElementById('lanc-categoria').value
+            };
+
+            lancamentos.push(novo);
+            document.getElementById('form-lancamento').reset();
+            switchTab('painel');
+        }
+
+        function renderizarMeusProdutos() {
+            const grid = document.getElementById('meus-produtos-grid');
+            grid.innerHTML = '';
+
+            produtos.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <div class="h-40 overflow-hidden bg-gray-100 relative">
+                            <img src="${p.imagem}" alt="${p.nome}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <span class="text-[11px] font-semibold text-primary bg-softBlue px-2.5 py-1 rounded-full">${p.categoria}</span>
+                            <h4 class="font-bold text-darkBlue text-sm mt-2">${p.nome}</h4>
+                            <p class="text-xs text-gray-500 mt-1">${p.descricao}</p>
+                            <p class="text-sm font-extrabold text-darkBlue mt-3">R$ ${p.preco.toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 border-t border-gray-100 flex justify-between items-center mt-3">
+                        <span class="text-[11px] text-gray-400"><i class="fa-solid fa-check-circle text-emerald-600 mr-1"></i>Ativo no catálogo</span>
+                        <button onclick="removerProduto(${p.id})" class="text-xs text-red-500 hover:text-red-700 font-semibold"><i class="fa-solid fa-trash mr-1"></i>Remover</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openProductModal() {
+            document.getElementById('productModal').classList.remove('hidden');
+            document.getElementById('productModal').classList.add('flex');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('flex');
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        function salvarProduto(e) {
+            e.preventDefault();
+            const novoP = {
+                const novoP = {
+                id: produtos.length + 1,
+                loja: document.getElementById('prod-loja').value,
+                nome: document.getElementById('prod-nome').value,
+                preco: parseFloat(document.getElementById('prod-preco').value),
+                categoria: document.getElementById('prod-cat').value,
+                descricao: document.getElementById('prod-desc').value,
+                localizacao: document.getElementById('prod-local').value || 'Várzea Branca',
+                imagem: document.getElementById('prod-img').value || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80'
+            };
+
+            produtos.push(novoP);
+            document.getElementById('form-produto').reset();
+            closeProductModal();
+            renderCatalog();
+            renderizarMeusProdutos();
+        }
+
+        function removerProduto(id) {
+            produtos = produtos.filter(p => p.id !== id);
+            renderizarMeusProdutos();
+            renderCatalog();
+        }
+
+        function calcularLucro() {
+            const preco = parseFloat(document.getElementById('calc-preco').value) || 0;
+            const custo = parseFloat(document.getElementById('calc-custo').value) || 0;
+            const despesa = parseFloat(document.getElementById('calc-despesa').value) || 0;
+
+            const lucroLiquido = preco - custo - despesa;
+            const margem = preco > 0 ? (lucroLiquido / preco) * 100 : 0;
+
+            const elLucro = document.getElementById('res-lucro-valor');
+            elLucro.innerText = `R$ ${lucroLiquido.toFixed(2)}`;
+            elLucro.className = `font-bold text-lg ${lucroLiquido >= 0 ? 'text-darkBlue' : 'text-red-600'}`;
+
+            document.getElementById('res-margem').innerText = `${margem.toFixed(1)}%`;
+        }
+
+        function renderizarGraficos() {
+            let totalVendas = 0;
+            let totalGastos = 0;
+            let catCount = {};
+
+            lancamentos.forEach(l => {
+                if (l.tipo === 'venda') totalVendas += l.valor;
+                else totalGastos += l.valor;
+
+                catCount[l.categoria] = (catCount[l.categoria] || 0) + l.valor;
+            });
+
+            const ctxRD = document.getElementById('chartReceitaDespesa').getContext('2d');
+            if (chartRDInstance) chartRDInstance.destroy();
+            chartRDInstance = new Chart(ctxRD, {
+                type: 'bar',
+                data: {
+                    labels: ['Receitas (Vendas)', 'Custos & Despesas'],
+                    datasets: [{
+                        data: [totalVendas, totalGastos],
+                        backgroundColor: ['#155EEF', '#EF4444'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            const ctxCat = document.getElementById('chartCategoria').getContext('2d');
+            if (chartCatInstance) chartCatInstance.destroy();
+            chartCatInstance = new Chart(ctxCat, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(catCount),
+                    datasets: [{
+                        data: Object.values(catCount),
+                        backgroundColor: ['#155EEF', '#0B3B91', '#38BDF8', '#6366F1', '#10B981']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        window.onload = function() {
+            renderCatalog();
+            const hoje = new Date().toISOString().split('T')[0];
+            const dataInput = document.getElementById('lanc-data');
+            if(dataInput) dataInput.value = hoje;
+        };
+    </script>
 </body>
 </html>
