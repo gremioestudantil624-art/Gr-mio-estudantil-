@@ -28,43 +28,52 @@
 </head>
 <body class="bg-lightBg text-customText font-sans antialiased min-h-screen flex flex-col">
 
-    <div class="flex h-screen overflow-hidden">
+    <div class="flex h-screen overflow-hidden relative">
         
-        <!-- Menu Lateral (Desktop) -->
-        <aside class="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 z-20">
-            <div class="p-6 border-b border-gray-100 flex items-center space-x-3">
-                <div class="bg-primary text-white p-2.5 rounded-xl shadow-md">
-                    <i class="fa-solid fa-store text-xl"></i>
+        <!-- Overlay para fechar o menu no celular -->
+        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
+
+        <!-- Menu Lateral (Responsivo: Gaveta no mobile, fixo no desktop) -->
+        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 bg-white border-r border-gray-200 z-40">
+            <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-primary text-white p-2.5 rounded-xl shadow-md">
+                        <i class="fa-solid fa-store text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg text-darkBlue leading-tight">Vitrine VB</h1>
+                        <span class="text-xs text-gray-500 font-medium">Várzea Branca</span>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="font-bold text-lg text-darkBlue leading-tight">Vitrine VB</h1>
-                    <span class="text-xs text-gray-500 font-medium">Várzea Branca</span>
-                </div>
+                <!-- Botão fechar no mobile -->
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-gray-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
 
             <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
                 <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Menu Principal</p>
-                <a href="#" onclick="switchTab('inicio')" id="menu-inicio" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors bg-softBlue text-primary">
+                <a href="#" onclick="switchTab('inicio'); toggleSidebarMobile();" id="menu-inicio" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors bg-softBlue text-primary">
                     <i class="fa-solid fa-house w-5"></i>
                     <span>Início & Catálogo</span>
                 </a>
-                <a href="#" onclick="switchTab('painel')" id="menu-painel" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="switchTab('painel'); toggleSidebarMobile();" id="menu-painel" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
                     <i class="fa-solid fa-chart-pie w-5"></i>
                     <span>Painel do Empreendedor</span>
                 </a>
-                <a href="#" onclick="switchTab('produtos')" id="menu-produtos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="switchTab('produtos'); toggleSidebarMobile();" id="menu-produtos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
                     <i class="fa-solid fa-box-open w-5"></i>
                     <span>Meus Produtos</span>
                 </a>
-                <a href="#" onclick="switchTab('lancamentos')" id="menu-lancamentos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="switchTab('lancamentos'); toggleSidebarMobile();" id="menu-lancamentos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
                     <i class="fa-solid fa-file-invoice-dollar w-5"></i>
                     <span>Lançamentos</span>
                 </a>
-                <a href="#" onclick="switchTab('relatorios')" id="menu-relatorios" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="switchTab('relatorios'); toggleSidebarMobile();" id="menu-relatorios" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
                     <i class="fa-solid fa-chart-line w-5"></i>
                     <span>Relatórios Financeiros</span>
                 </a>
-                <a href="#" onclick="switchTab('calculadora')" id="menu-calculadora" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="switchTab('calculadora'); toggleSidebarMobile();" id="menu-calculadora" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
                     <i class="fa-solid fa-calculator w-5"></i>
                     <span>Calculadora de Lucro</span>
                 </a>
@@ -73,7 +82,7 @@
             <div class="p-4 border-t border-gray-100">
                 <div class="bg-softBlue p-3 rounded-xl flex items-center space-x-3">
                     <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
-                        GA
+                        GP
                     </div>
                     <div class="overflow-hidden">
                         <p class="text-xs font-bold text-darkBlue truncate">Gustavo Paes</p>
@@ -88,11 +97,17 @@
             
             <!-- Barra Superior (Mobile e Desktop header) -->
             <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6 z-10">
-                <div class="flex items-center space-x-3 md:hidden">
-                    <div class="bg-primary text-white p-2 rounded-lg">
-                        <i class="fa-solid fa-store"></i>
+                <div class="flex items-center space-x-3">
+                    <!-- Botão Hambúrguer para abrir o menu no mobile -->
+                    <button onclick="toggleSidebar()" class="md:hidden text-gray-600 hover:text-primary text-lg p-2">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="hidden sm:flex items-center space-x-3 md:hidden">
+                        <div class="bg-primary text-white p-2 rounded-lg">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                        <span class="font-bold text-darkBlue">Vitrine VB</span>
                     </div>
-                    <span class="font-bold text-darkBlue">Vitrine VB</span>
                 </div>
 
                 <div class="hidden md:block">
@@ -283,7 +298,7 @@
                         <!-- Gráfico de Receitas vs Despesas -->
                         <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                             <h4 class="font-bold text-darkBlue text-sm mb-4">Receitas vs Despesas</h4>
-                                <div class="h-64 flex items-center justify-center">
+                            <div class="h-64 flex items-center justify-center">
                                 <canvas id="chartReceitaDespesa"></canvas>
                             </div>
                         </div>
@@ -441,6 +456,19 @@
         let currentCategory = 'todos';
         let chartRDInstance = null;
         let chartCatInstance = null;
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function toggleSidebarMobile() {
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
+        }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -628,7 +656,6 @@
         function salvarProduto(e) {
             e.preventDefault();
             const novoP = {
-                const novoP = {
                 id: produtos.length + 1,
                 loja: document.getElementById('prod-loja').value,
                 nome: document.getElementById('prod-nome').value,
