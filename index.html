@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitrine VB - Conectando negócios, valorizando nossa cidade</title>
+    <title> conecta VB - Conectando negócios, valorizando nossa cidade</title>
     <!-- Tailwind CSS para estilização moderna -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js para os gráficos financeiros -->
@@ -18,7 +18,7 @@
                         primary: '#155EEF',
                         darkBlue: '#0B3B91',
                         softBlue: '#EAF1FF',
-                        lightBg: '#FFFFFF', // Fundo estritamente branco conforme solicitado
+                        lightBg: '#FFFFFF',
                         customText: '#202B3C'
                     }
                 }
@@ -36,7 +36,7 @@
                     <i class="fa-solid fa-lock"></i>
                 </div>
                 <h3 class="font-bold text-darkBlue text-xl">Acesso Restrito & Confidencial</h3>
-                <p class="text-xs text-gray-500 mt-1">Cada empreendedor possui seus dados financeiros protegidos (LGPD).</p>
+                <p class="text-xs text-gray-500 mt-1">Cada empreendedor possui seus dados financeiros protegidos.</p>
             </div>
             
             <form onsubmit="fazerLogin(event)" class="space-y-4">
@@ -77,7 +77,6 @@
                         <span class="text-xs text-blue-200 font-medium">Várzea Branca • PI</span>
                     </div>
                 </div>
-                <!-- Botão fechar no mobile -->
                 <button onclick="toggleSidebar()" class="md:hidden text-blue-200 hover:text-white">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
@@ -85,29 +84,29 @@
 
             <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
                 <p class="px-3 text-[11px] font-bold text-blue-200 uppercase tracking-wider mb-2">Comércio Público</p>
-                <a href="#" onclick="switchTab('inicio'); toggleSidebarMobile();" id="menu-inicio" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all bg-white/15 text-white shadow-sm">
+                <a href="javascript:void(0)" onclick="switchTab('inicio'); toggleSidebarMobile();" id="menu-inicio" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all bg-white/15 text-white shadow-sm">
                     <i class="fa-solid fa-house w-5"></i>
                     <span>Início & Catálogo</span>
                 </a>
 
                 <p class="px-3 text-[11px] font-bold text-blue-200 uppercase tracking-wider mt-6 mb-2">Gestão Confidencial</p>
-                <a href="#" onclick="verificarAcesso('painel'); toggleSidebarMobile();" id="menu-painel" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
+                <a href="javascript:void(0)" onclick="verificarAcesso('painel'); toggleSidebarMobile();" id="menu-painel" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
                     <i class="fa-solid fa-chart-pie w-5"></i>
                     <span>Painel do Empreendedor</span>
                 </a>
-                <a href="#" onclick="verificarAcesso('produtos'); toggleSidebarMobile();" id="menu-produtos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
+                <a href="javascript:void(0)" onclick="verificarAcesso('produtos'); toggleSidebarMobile();" id="menu-produtos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
                     <i class="fa-solid fa-box-open w-5"></i>
                     <span>Meus Produtos</span>
                 </a>
-                <a href="#" onclick="verificarAcesso('lancamentos'); toggleSidebarMobile();" id="menu-lancamentos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
+                <a href="javascript:void(0)" onclick="verificarAcesso('lancamentos'); toggleSidebarMobile();" id="menu-lancamentos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
                     <i class="fa-solid fa-file-invoice-dollar w-5"></i>
                     <span>Lançamentos</span>
                 </a>
-                <a href="#" onclick="verificarAcesso('relatorios'); toggleSidebarMobile();" id="menu-relatorios" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
+                <a href="javascript:void(0)" onclick="verificarAcesso('relatorios'); toggleSidebarMobile();" id="menu-relatorios" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
                     <i class="fa-solid fa-chart-line w-5"></i>
                     <span>Relatórios Financeiros</span>
                 </a>
-                <a href="#" onclick="verificarAcesso('calculadora'); toggleSidebarMobile();" id="menu-calculadora" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
+                <a href="javascript:void(0)" onclick="verificarAcesso('calculadora'); toggleSidebarMobile();" id="menu-calculadora" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
                     <i class="fa-solid fa-calculator w-5"></i>
                     <span>Calculadora de Lucro</span>
                 </a>
@@ -116,7 +115,7 @@
             <div class="p-4 border-t border-blue-600/40">
                 <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl flex items-center justify-between border border-white/10">
                     <div class="flex items-center space-x-3 overflow-hidden">
-                        <div class="w-8 h-8 rounded-full bg-white text-darkBlue flex items-center justify-center font-bold text-xs shadow-md">
+                        <div class="w-8 h-8 rounded-full bg-white text-darkBlue flex items-center justify-center font-bold text-xs shadow-md avatar-initials">
                             GP
                         </div>
                         <div class="overflow-hidden">
@@ -132,10 +131,8 @@
         <!-- Conteúdo Principal -->
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-white">
             
-            <!-- Barra Superior (Header) -->
             <header class="bg-white border-b border-gray-100 h-16 flex items-center justify-between px-4 md:px-6 z-10 shadow-xs">
                 <div class="flex items-center space-x-3">
-                    <!-- Botão Hambúrguer para celular -->
                     <button onclick="toggleSidebar()" class="md:hidden text-darkBlue hover:text-primary text-xl p-2">
                         <i class="fa-solid fa-bars"></i>
                     </button>
@@ -148,7 +145,7 @@
                 </div>
 
                 <div class="hidden md:block">
-                    <h2 id="page-title" class="font-bold text-darkBlue text-base">Plataforma Digital de Comércio e Gestão Local</h2>
+                    <h2 class="font-bold text-darkBlue text-base">Plataforma Digital de Comércio e Gestão Local</h2>
                     <p class="text-[11px] text-gray-400">Desenvolvido com ênfase em Empreendedorismo e Gestão Empresarial.</p>
                 </div>
 
@@ -161,19 +158,16 @@
                 </div>
             </header>
 
-            <!-- Área de Abas Dinâmicas -->
             <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-white space-y-6">
                 
-                <!-- ABA 1: INÍCIO E CATÁLOGO PÚBLICO -->
+                <!-- ABA 1: INÍCIO -->
                 <section id="tab-inicio" class="tab-content space-y-6">
-                    <!-- Banner com Degradê Profissional -->
                     <div class="bg-gradient-to-r from-darkBlue via-blue-700 to-primary text-white p-6 md:p-10 rounded-3xl shadow-xl relative overflow-hidden">
                         <div class="relative z-10 max-w-3xl">
                             <span class="bg-white/20 backdrop-blur-md text-[11px] font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-white/20">Projeto Destaque • Feira de Profissões</span>
                             <h2 class="text-2xl md:text-4xl font-extrabold mt-4 mb-3">Conectando pequenos negócios, valorizando nossa cidade</h2>
                             <p class="text-blue-100 text-sm md:text-base mb-6 leading-relaxed">Uma solução tecnológica integrada que une vitrine pública digital e inteligência financeira para impulsionar os empreendedores de Várzea Branca.</p>
                             
-                            <!-- Barra de Pesquisa Avançada -->
                             <div class="bg-white p-2.5 rounded-2xl shadow-lg flex items-center space-x-2 border border-white/30">
                                 <i class="fa-solid fa-search text-primary pl-3"></i>
                                 <input type="text" id="searchInput" onkeyup="filterCatalog()" placeholder="Pesquise por produto, serviço ou nome da loja..." class="w-full text-sm text-customText focus:outline-none bg-transparent py-2">
@@ -181,7 +175,6 @@
                         </div>
                     </div>
 
-                    <!-- Filtros por Categoria com Degradê no ativo -->
                     <div class="flex items-center space-x-2 overflow-x-auto pb-2 pt-2">
                         <button onclick="filterCategory('todos')" class="cat-btn bg-gradient-to-r from-darkBlue to-primary text-white text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition shadow-md">Todos</button>
                         <button onclick="filterCategory('Alimentação')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Alimentação</button>
@@ -191,13 +184,10 @@
                         <button onclick="filterCategory('Artesanato')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Artesanato</button>
                     </div>
 
-                    <!-- Grid de Produtos -->
-                    <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Preenchido via JavaScript -->
-                    </div>
+                    <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                 </section>
 
-                <!-- ABA 2: PAINEL DO EMPREENDEDOR -->
+                <!-- ABA 2: PAINEL -->
                 <section id="tab-painel" class="tab-content hidden space-y-6">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>
@@ -210,31 +200,25 @@
                         </button>
                     </div>
 
-                    <!-- Cards de Resumo com Degradês Suaves -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="bg-gradient-to-br from-white to-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm">
                             <p class="text-xs font-medium text-gray-500">Receita Total</p>
                             <h4 id="resumo-receita" class="text-2xl font-bold text-darkBlue mt-1">R$ 0,00</h4>
-                            <span class="text-[11px] text-emerald-600 font-semibold mt-2 inline-block"><i class="fa-solid fa-arrow-trend-up"></i> Vendas registradas</span>
                         </div>
                         <div class="bg-gradient-to-br from-white to-red-50/50 p-5 rounded-2xl border border-red-100 shadow-sm">
                             <p class="text-xs font-medium text-gray-500">Custos & Despesas</p>
                             <h4 id="resumo-despesas" class="text-2xl font-bold text-red-600 mt-1">R$ 0,00</h4>
-                            <span class="text-[11px] text-gray-400 font-semibold mt-2 inline-block">Gastos operacionais</span>
                         </div>
                         <div class="bg-gradient-to-br from-white to-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm">
                             <p class="text-xs font-medium text-gray-500">Lucro Líquido</p>
                             <h4 id="resumo-lucro" class="text-2xl font-bold text-primary mt-1">R$ 0,00</h4>
-                            <span class="text-[11px] text-emerald-600 font-semibold mt-2 inline-block">Resultado financeiro</span>
                         </div>
                         <div class="bg-gradient-to-br from-white to-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm">
                             <p class="text-xs font-medium text-gray-500">Qtd. de Vendas</p>
                             <h4 id="resumo-vendas" class="text-2xl font-bold text-darkBlue mt-1">0</h4>
-                            <span class="text-[11px] text-gray-400 font-semibold mt-2 inline-block">Itens comercializados</span>
                         </div>
                     </div>
 
-                    <!-- Tabela de Movimentações Recentes -->
                     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                         <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                             <h4 class="font-bold text-darkBlue text-sm">Últimas Movimentações Confidenciais</h4>
@@ -251,31 +235,25 @@
                                         <th class="py-3 px-4 text-right">Valor</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabela-movimentacoes" class="divide-y divide-gray-100 text-sm">
-                                    <!-- Preenchido via JavaScript -->
-                                </tbody>
+                                <tbody id="tabela-movimentacoes" class="divide-y divide-gray-100 text-sm"></tbody>
                             </table>
                         </div>
                     </div>
                 </section>
 
-                <!-- ABA 3: MEUS PRODUTOS -->
+                <!-- ABA 3: PRODUTOS -->
                 <section id="tab-produtos" class="tab-content hidden space-y-6">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>
                             <h3 class="text-xl font-bold text-darkBlue">Gerenciamento de Produtos</h3>
-                            <p class="text-xs text-gray-500">Cadastre e administre o que é exibido instantaneamente no catálogo público.</p>
+                            <p class="text-xs text-gray-500">Cadastre e administre o que é exibido no catálogo público.</p>
                         </div>
                         <button onclick="openProductModal()" class="bg-gradient-to-r from-darkBlue to-primary text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
                             <i class="fa-solid fa-plus"></i>
                             <span>Adicionar Novo Produto</span>
                         </button>
                     </div>
-
-                    <!-- Lista de Produtos do Empreendedor -->
-                    <div id="meus-produtos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Preenchido via JavaScript -->
-                    </div>
+                    <div id="meus-produtos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                 </section>
 
                 <!-- ABA 4: LANÇAMENTOS -->
@@ -296,7 +274,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">Descrição</label>
-                                <input type="text" id="lanc-desc" required placeholder="Ex: Bolo de chocolate / Compra de embalagens" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                                <input type="text" id="lanc-desc" required placeholder="Ex: Bolo de chocolate" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
@@ -326,7 +304,7 @@
                     </div>
                 </section>
 
-                <!-- ABA 5: RELATÓRIOS FINANCEIROS -->
+                <!-- ABA 5: RELATÓRIOS -->
                 <section id="tab-relatorios" class="tab-content hidden space-y-6">
                     <div>
                         <h3 class="text-xl font-bold text-darkBlue">Relatórios e Gráficos Automáticos</h3>
@@ -334,7 +312,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Gráfico de Receitas vs Despesas -->
                         <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                             <h4 class="font-bold text-darkBlue text-sm mb-4">Receitas vs Despesas</h4>
                             <div class="h-64 flex items-center justify-center">
@@ -342,7 +319,6 @@
                             </div>
                         </div>
 
-                        <!-- Gráfico por Categoria -->
                         <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                             <h4 class="font-bold text-darkBlue text-sm mb-4">Movimentações por Categoria</h4>
                             <div class="h-64 flex items-center justify-center">
@@ -352,7 +328,7 @@
                     </div>
                 </section>
 
-                <!-- ABA 6: CALCULADORA DE LUCRO -->
+                <!-- ABA 6: CALCULADORA -->
                 <section id="tab-calculadora" class="tab-content hidden space-y-6">
                     <div class="max-w-xl mx-auto bg-white p-8 rounded-3xl border border-gray-100 shadow-xl">
                         <div class="flex items-center space-x-3 mb-4">
@@ -437,10 +413,10 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Local / Endereço em Várzea Branca</label>
-                    <input type="text" id="prod-local" placeholder="Ex: Centro, Próximo à Praça Principal" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                    <input type="text" id="prod-local" placeholder="Ex: Centro" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Link da Imagem (URL ou Foto ilustrativa)</label>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Link da Imagem (URL)</label>
                     <input type="url" id="prod-img" placeholder="https://exemplo.com/foto.jpg" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
                 </div>
                 <div class="pt-2 flex space-x-3">
@@ -451,7 +427,7 @@
         </div>
     </div>
 
-    <!-- Script de Funcionalidades -->
+    <!-- Script Robusto e Sem Travamentos -->
     <script>
         let produtos = [
             {
@@ -489,7 +465,6 @@
             }
         ];
 
-        // Lançamentos isolados por usuário para total confidencialidade
         let dadosEmpreendedores = {
             gustavo: {
                 nome: "Gustavo Paes",
@@ -528,8 +503,10 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
+            if(sidebar && overlay) {
+                sidebar.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
+            }
         }
 
         function toggleSidebarMobile() {
@@ -553,34 +530,42 @@
         }
 
         function abrirLogin() {
-            document.getElementById('login-screen').classList.remove('hidden');
+            const loginScreen = document.getElementById('login-screen');
+            if(loginScreen) loginScreen.classList.remove('hidden');
         }
 
         function fecharLogin() {
-            document.getElementById('login-screen').classList.add('hidden');
+            const loginScreen = document.getElementById('login-screen');
+            if(loginScreen) loginScreen.classList.add('hidden');
         }
 
         function fazerLogin(e) {
-            e.preventDefault();
-            const perfilSelect = document.getElementById('login-perfil').value;
-            usuarioAtualKey = perfilSelect;
+            if(e) e.preventDefault();
+            const perfilSelect = document.getElementById('login-perfil');
+            if(!perfilSelect) return;
+            
+            usuarioAtualKey = perfilSelect.value;
             usuarioAutenticado = true;
             fecharLogin();
             
             const dadosUser = dadosEmpreendedores[usuarioAtualKey];
-            document.getElementById('user-name-display').innerText = dadosUser.nome;
-            document.getElementById('user-status-display').innerText = "Empreendedor Logado";
-            
-            // Atualizar iniciais no avatar
-            const avatarEl = document.querySelector('aside .rounded-full');
-            if(avatarEl) avatarEl.innerText = dadosUser.iniciais;
+            const nameDisp = document.getElementById('user-name-display');
+            const statusDisp = document.getElementById('user-status-display');
+            const avatarEl = document.querySelector('.avatar-initials');
+            const authAction = document.getElementById('btn-auth-action');
 
-            document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-right-from-bracket" title="Sair"></i>';
-            document.getElementById('btn-auth-action').setAttribute('onclick', 'fazerLogout()');
+            if(nameDisp) nameDisp.innerText = dadosUser.nome;
+            if(statusDisp) statusDisp.innerText = "Empreendedor Logado";
+            if(avatarEl) avatarEl.innerText = dadosUser.iniciais;
+            if(authAction) {
+                authAction.innerHTML = '<i class="fa-solid fa-right-from-bracket" title="Sair"></i>';
+                authAction.setAttribute('onclick', 'fazerLogout()');
+            }
 
             if (abaDestinoPendente) {
-                switchTab(abaDestinoPendente);
+                let destino = abaDestinoPendente;
                 abaDestinoPendente = null;
+                switchTab(destino);
             } else {
                 switchTab('painel');
             }
@@ -589,12 +574,19 @@
         function fazerLogout() {
             usuarioAutenticado = false;
             usuarioAtualKey = null;
-            document.getElementById('user-name-display').innerText = "Visitante";
-            document.getElementById('user-status-display').innerText = "Modo Público";
-            const avatarEl = document.querySelector('aside .rounded-full');
+            
+            const nameDisp = document.getElementById('user-name-display');
+            const statusDisp = document.getElementById('user-status-display');
+            const avatarEl = document.querySelector('.avatar-initials');
+            const authAction = document.getElementById('btn-auth-action');
+
+            if(nameDisp) nameDisp.innerText = "Visitante";
+            if(statusDisp) statusDisp.innerText = "Modo Público";
             if(avatarEl) avatarEl.innerText = "GP";
-            document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-right-to-bracket"></i>';
-            document.getElementById('btn-auth-action').setAttribute('onclick', 'abrirLogin()');
+            if(authAction) {
+                authAction.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i>';
+                authAction.setAttribute('onclick', 'abrirLogin()');
+            }
             switchTab('inicio');
         }
 
@@ -604,8 +596,9 @@
                 return;
             }
 
-            documen            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if(targetTab) targetTab.classList.remove('hidden');
 
             document.querySelectorAll('.nav-item').forEach(el => {
                 el.classList.remove('bg-white/15', 'text-white', 'shadow-sm');
@@ -625,6 +618,7 @@
 
         function renderCatalog(filter = 'todos', search = '') {
             const grid = document.getElementById('catalog-grid');
+            if(!grid) return;
             grid.innerHTML = '';
 
             const filtered = produtos.filter(p => {
@@ -674,20 +668,24 @@
                 btn.classList.remove('bg-gradient-to-r', 'from-darkBlue', 'to-primary', 'text-white', 'shadow-md');
                 btn.classList.add('bg-gray-50', 'text-gray-600', 'border', 'border-gray-200');
             });
-            event.target.classList.remove('bg-gray-50', 'text-gray-600', 'border', 'border-gray-200');
-            event.target.classList.add('bg-gradient-to-r', 'from-darkBlue', 'to-primary', 'text-white', 'shadow-md');
+            if(event && event.currentTarget) {
+                event.currentTarget.classList.remove('bg-gray-50', 'text-gray-600', 'border', 'border-gray-200');
+                event.currentTarget.classList.add('bg-gradient-to-r', 'from-darkBlue', 'to-primary', 'text-white', 'shadow-md');
+            }
             
-            const searchVal = document.getElementById('searchInput').value;
+            const searchInput = document.getElementById('searchInput');
+            const searchVal = searchInput ? searchInput.value : '';
             renderCatalog(cat, searchVal);
         }
 
         function filterCatalog() {
-            const searchVal = document.getElementById('searchInput').value;
+            const searchInput = document.getElementById('searchInput');
+            const searchVal = searchInput ? searchInput.value : '';
             renderCatalog(currentCategory, searchVal);
         }
 
         function atualizarPainel() {
-            if (!usuarioAtualKey) return;
+            if (!usuarioAtualKey || !dadosEmpreendedores[usuarioAtualKey]) return;
             const lancamentosUser = dadosEmpreendedores[usuarioAtualKey].lancamentos;
 
             let totalReceita = 0;
@@ -705,12 +703,18 @@
 
             const lucroLiquido = totalReceita - totalDespesas;
 
-            document.getElementById('resumo-receita').innerText = `R$ ${totalReceita.toFixed(2)}`;
-            document.getElementById('resumo-despesas').innerText = `R$ ${totalDespesas.toFixed(2)}`;
-            document.getElementById('resumo-lucro').innerText = `R$ ${lucroLiquido.toFixed(2)}`;
-            document.getElementById('resumo-vendas').innerText = qtdVendas;
+            const elRec = document.getElementById('resumo-receita');
+            const elDesp = document.getElementById('resumo-despesas');
+            const elLuc = document.getElementById('resumo-lucro');
+            const elVend = document.getElementById('resumo-vendas');
+
+            if(elRec) elRec.innerText = `R$ ${totalReceita.toFixed(2)}`;
+            if(elDesp) elDesp.innerText = `R$ ${totalDespesas.toFixed(2)}`;
+            if(elLuc) elLuc.innerText = `R$ ${lucroLiquido.toFixed(2)}`;
+            if(elVend) elVend.innerText = qtdVendas;
 
             const tbody = document.getElementById('tabela-movimentacoes');
+            if(!tbody) return;
             tbody.innerHTML = '';
 
             const ultimas = [...lancamentosUser].reverse().slice(0, 5);
@@ -739,13 +743,15 @@
             e.preventDefault();
             if (!usuarioAtualKey) return;
 
+            const tipo = document.getElementById('lanc-tipo').value;
+            const desc = document.getElementById('lanc-desc').value;
+            const valor = parseFloat(document.getElementById('lanc-valor').value);
+            const data = document.getElementById('lanc-data').value;
+            const categoria = document.getElementById('lanc-categoria').value;
+
             const novo = {
                 id: dadosEmpreendedores[usuarioAtualKey].lancamentos.length + 1,
-                tipo: document.getElementById('lanc-tipo').value,
-                descricao: document.getElementById('lanc-desc').value,
-                valor: parseFloat(document.getElementById('lanc-valor').value),
-                data: document.getElementById('lanc-data').value,
-                categoria: document.getElementById('lanc-categoria').value
+                tipo, descricao: desc, valor, data, categoria
             };
 
             dadosEmpreendedores[usuarioAtualKey].lancamentos.push(novo);
@@ -756,6 +762,7 @@
         function renderizarMeusProdutos() {
             if (!usuarioAtualKey) return;
             const grid = document.getElementById('meus-produtos-grid');
+            if(!grid) return;
             grid.innerHTML = '';
 
             const produtosUser = produtos.filter(p => p.responsavel === usuarioAtualKey);
@@ -790,13 +797,19 @@
         }
 
         function openProductModal() {
-            document.getElementById('productModal').classList.remove('hidden');
-            document.getElementById('productModal').classList.add('flex');
+            const modal = document.getElementById('productModal');
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
         }
 
         function closeProductModal() {
-            document.getElementById('productModal').classList.remove('flex');
-            document.getElementById('productModal').classList.add('hidden');
+            const modal = document.getElementById('productModal');
+            if(modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
         }
 
         function salvarProduto(e) {
@@ -837,14 +850,19 @@
             const margem = preco > 0 ? (lucroLiquido / preco) * 100 : 0;
 
             const elLucro = document.getElementById('res-lucro-valor');
-            elLucro.innerText = `R$ ${lucroLiquido.toFixed(2)}`;
-            elLucro.className = `font-bold text-lg ${lucroLiquido >= 0 ? 'text-darkBlue' : 'text-red-600'}`;
+            const elMargem = document.getElementById('res-margem');
 
-            document.getElementById('res-margem').innerText = `${margem.toFixed(1)}%`;
+            if(elLucro) {
+                elLucro.innerText = `R$ ${lucroLiquido.toFixed(2)}`;
+                elLucro.className = `font-bold text-lg ${lucroLiquido >= 0 ? 'text-darkBlue' : 'text-red-600'}`;
+            }
+            if(elMargem) {
+                elMargem.innerText = `${margem.toFixed(1)}%`;
+            }
         }
 
         function renderizarGraficos() {
-            if (!usuarioAtualKey) return;
+            if (!usuarioAtualKey || !dadosEmpreendedores[usuarioAtualKey]) return;
             const lancamentosUser = dadosEmpreendedores[usuarioAtualKey].lancamentos;
 
             let totalVendas = 0;
@@ -858,49 +876,55 @@
                 catCount[l.categoria] = (catCount[l.categoria] || 0) + l.valor;
             });
 
-            const ctxRD = document.getElementById('chartReceitaDespesa').getContext('2d');
-            if (chartRDInstance) chartRDInstance.destroy();
-            chartRDInstance = new Chart(ctxRD, {
-                type: 'bar',
-                data: {
-                    labels: ['Receitas (Vendas)', 'Custos & Despesas'],
-                    datasets: [{
-                        data: [totalVendas, totalGastos],
-                        backgroundColor: ['#155EEF', '#EF4444'],
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } }
-                }
-            });
+            const canvasRD = document.getElementById('chartReceitaDespesa');
+            if (canvasRD) {
+                const ctxRD = canvasRD.getContext('2d');
+                if (chartRDInstance) chartRDInstance.destroy();
+                chartRDInstance = new Chart(ctxRD, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Receitas (Vendas)', 'Custos & Despesas'],
+                        datasets: [{
+                            data: [totalVendas, totalGastos],
+                            backgroundColor: ['#155EEF', '#EF4444'],
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
 
-            const ctxCat = document.getElementById('chartCategoria').getContext('2d');
-            if (chartCatInstance) chartCatInstance.destroy();
-            chartCatInstance = new Chart(ctxCat, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(catCount),
-                    datasets: [{
-                        data: Object.values(catCount),
-                        backgroundColor: ['#155EEF', '#0B3B91', '#38BDF8', '#6366F1', '#10B981']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
+            const canvasCat = document.getElementById('chartCategoria');
+            if (canvasCat) {
+                const ctxCat = canvasCat.getContext('2d');
+                if (chartCatInstance) chartCatInstance.destroy();
+                chartCatInstance = new Chart(ctxCat, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(catCount),
+                        datasets: [{
+                            data: Object.values(catCount),
+                            backgroundColor: ['#155EEF', '#0B3B91', '#38BDF8', '#6366F1', '#10B981']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
         }
 
-        window.onload = function() {
+        window.addEventListener('DOMContentLoaded', function() {
             renderCatalog();
             const hoje = new Date().toISOString().split('T')[0];
             const dataInput = document.getElementById('lanc-data');
             if(dataInput) dataInput.value = hoje;
-        };
+        });
     </script>
 </body>
 </html>
