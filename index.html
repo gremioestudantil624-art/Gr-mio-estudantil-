@@ -28,6 +28,34 @@
 </head>
 <body class="bg-lightBg text-customText font-sans antialiased min-h-screen flex flex-col">
 
+    <!-- Tela de Login do Empreendedor / Administrador -->
+    <div id="login-screen" class="fixed inset-0 bg-darkBlue/90 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-8 space-y-6">
+            <div class="text-center">
+                <div class="bg-softBlue text-primary w-12 h-12 rounded-2xl mx-auto flex items-center justify-center text-xl mb-3">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="font-bold text-darkBlue text-xl">Área Restrita do Empreendedor</h3>
+                <p class="text-xs text-gray-500 mt-1">Acesso seguro e confidencial para gestão financeira.</p>
+            </div>
+            
+            <form onsubmit="fazerLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">E-mail ou Usuário</label>
+                    <input type="text" id="login-user" required value="gustavo@varzeabranca.com" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Senha de Acesso</label>
+                    <input type="password" id="login-pass" required value="123456" class="w-full text-sm bg-lightBg border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                </div>
+                <button type="submit" class="w-full bg-primary hover:bg-darkBlue text-white font-semibold py-3 rounded-xl transition shadow-sm text-sm">
+                    Entrar no Painel Privado
+                </button>
+            </form>
+            <button onclick="fecharLogin()" class="w-full text-xs text-gray-400 hover:text-gray-600 text-center">Voltar ao Catálogo Público</button>
+        </div>
+    </div>
+
     <div class="flex h-screen overflow-hidden relative">
         
         <!-- Overlay para fechar o menu no celular -->
@@ -52,42 +80,47 @@
             </div>
 
             <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Menu Principal</p>
+                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Comércio Público</p>
                 <a href="#" onclick="switchTab('inicio'); toggleSidebarMobile();" id="menu-inicio" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors bg-softBlue text-primary">
                     <i class="fa-solid fa-house w-5"></i>
                     <span>Início & Catálogo</span>
                 </a>
-                <a href="#" onclick="switchTab('painel'); toggleSidebarMobile();" id="menu-painel" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+
+                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2">Gestão Confidencial</p>
+                <a href="#" onclick="verificarAcesso('painel'); toggleSidebarMobile();" id="menu-painel" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
                     <i class="fa-solid fa-chart-pie w-5"></i>
                     <span>Painel do Empreendedor</span>
                 </a>
-                <a href="#" onclick="switchTab('produtos'); toggleSidebarMobile();" id="menu-produtos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="verificarAcesso('produtos'); toggleSidebarMobile();" id="menu-produtos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
                     <i class="fa-solid fa-box-open w-5"></i>
                     <span>Meus Produtos</span>
                 </a>
-                <a href="#" onclick="switchTab('lancamentos'); toggleSidebarMobile();" id="menu-lancamentos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="verificarAcesso('lancamentos'); toggleSidebarMobile();" id="menu-lancamentos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
                     <i class="fa-solid fa-file-invoice-dollar w-5"></i>
                     <span>Lançamentos</span>
                 </a>
-                <a href="#" onclick="switchTab('relatorios'); toggleSidebarMobile();" id="menu-relatorios" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="verificarAcesso('relatorios'); toggleSidebarMobile();" id="menu-relatorios" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
                     <i class="fa-solid fa-chart-line w-5"></i>
                     <span>Relatórios Financeiros</span>
                 </a>
-                <a href="#" onclick="switchTab('calculadora'); toggleSidebarMobile();" id="menu-calculadora" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
+                <a href="#" onclick="verificarAcesso('calculadora'); toggleSidebarMobile();" id="menu-calculadora" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors text-gray-600 hover:bg-gray-50">
                     <i class="fa-solid fa-calculator w-5"></i>
                     <span>Calculadora de Lucro</span>
                 </a>
             </nav>
 
             <div class="p-4 border-t border-gray-100">
-                <div class="bg-softBlue p-3 rounded-xl flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
-                        GP
+                <div class="bg-softBlue p-3 rounded-xl flex items-center justify-between">
+                    <div class="flex items-center space-x-3 overflow-hidden">
+                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">
+                            GP
+                        </div>
+                        <div class="overflow-hidden">
+                            <p class="text-xs font-bold text-darkBlue truncate" id="user-name-display">Visitante</p>
+                            <p class="text-[10px] text-gray-500 truncate" id="user-status-display">Modo Público</p>
+                        </div>
                     </div>
-                    <div class="overflow-hidden">
-                        <p class="text-xs font-bold text-darkBlue truncate">Gustavo Paes</p>
-                        <p class="text-[11px] text-gray-500 truncate">Empreendedor Local</p>
-                    </div>
+                    <button onclick="abrirLogin()" id="btn-auth-action" class="text-xs text-primary font-bold hover:underline" title="Fazer login"><i class="fa-solid fa-right-to-bracket"></i></button>
                 </div>
             </div>
         </aside>
@@ -96,17 +129,17 @@
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             
             <!-- Barra Superior (Mobile e Desktop header) -->
-            <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6 z-10">
+            <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4 md:px-6 z-10">
                 <div class="flex items-center space-x-3">
                     <!-- Botão Hambúrguer para abrir o menu no mobile -->
                     <button onclick="toggleSidebar()" class="md:hidden text-gray-600 hover:text-primary text-lg p-2">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    <div class="hidden sm:flex items-center space-x-3 md:hidden">
-                        <div class="bg-primary text-white p-2 rounded-lg">
+                    <div class="flex items-center space-x-2 md:hidden">
+                        <div class="bg-primary text-white p-1.5 rounded-lg text-sm">
                             <i class="fa-solid fa-store"></i>
                         </div>
-                        <span class="font-bold text-darkBlue">Vitrine VB</span>
+                        <span class="font-bold text-darkBlue text-sm">Vitrine VB</span>
                     </div>
                 </div>
 
@@ -116,9 +149,10 @@
                 </div>
 
                 <div class="flex items-center space-x-3">
-                    <button onclick="switchTab('painel')" class="bg-primary hover:bg-darkBlue text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center space-x-2">
+                    <button onclick="verificarAcesso('painel')" class="bg-primary hover:bg-darkBlue text-white text-xs font-semibold px-3 py-2 md:px-4 md:py-2.5 rounded-xl transition shadow-sm flex items-center space-x-2">
                         <i class="fa-solid fa-user-gear"></i>
-                        <span>Área do Empreendedor</span>
+                        <span class="hidden sm:inline">Área do Empreendedor</span>
+                        <span class="sm:hidden">Gestão</span>
                     </button>
                 </div>
             </header>
@@ -128,16 +162,16 @@
                 
                 <!-- ABA 1: INÍCIO E CATÁLOGO PÚBLICO -->
                 <section id="tab-inicio" class="tab-content space-y-6">
-                    <div class="bg-gradient-to-r from-darkBlue to-primary text-white p-8 rounded-2xl shadow-lg relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-darkBlue to-primary text-white p-6 md:p-8 rounded-2xl shadow-lg relative overflow-hidden">
                         <div class="relative z-10 max-w-2xl">
                             <span class="bg-white/20 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Comércio Local</span>
-                            <h2 class="text-3xl font-extrabold mt-3 mb-2">Descubra e valorize quem empreende em Várzea Branca</h2>
+                            <h2 class="text-2xl md:text-3xl font-extrabold mt-3 mb-2">Descubra e valorize quem empreende em Várzea Branca</h2>
                             <p class="text-gray-100 text-sm md:text-base mb-6">Encontre produtos incríveis, serviços essenciais e fortaleça a economia da nossa cidade.</p>
                             
                             <!-- Barra de Pesquisa -->
                             <div class="bg-white p-2 rounded-xl shadow-md flex items-center space-x-2">
                                 <i class="fa-solid fa-search text-gray-400 pl-3"></i>
-                                <input type="text" id="searchInput" onkeyup="filterCatalog()" placeholder="O que você está procurando? (Ex: Bolo, Roupas, Manutenção...)" class="w-full text-sm text-customText focus:outline-none bg-transparent py-2">
+                                <input type="text" id="searchInput" onkeyup="filterCatalog()" placeholder="O que você está procurando? (Ex: Bolo, Roupas...)" class="w-full text-sm text-customText focus:outline-none bg-transparent py-2">
                             </div>
                         </div>
                     </div>
@@ -163,7 +197,7 @@
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>
                             <h3 class="text-xl font-bold text-darkBlue">Painel de Gestão Financeira</h3>
-                            <p class="text-xs text-gray-500">Acompanhe o desempenho do seu negócio em tempo real.</p>
+                            <p class="text-xs text-gray-500">Área confidencial e restrita ao empreendedor autenticado.</p>
                         </div>
                         <button onclick="switchTab('lancamentos')" class="bg-primary hover:bg-darkBlue text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
                             <i class="fa-solid fa-plus"></i>
@@ -198,7 +232,7 @@
                     <!-- Tabela de Movimentações Recentes -->
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                         <div class="p-5 border-b border-gray-100 flex items-center justify-between">
-                            <h4 class="font-bold text-darkBlue text-sm">Últimas Movimentações</h4>
+                            <h4 class="font-bold text-darkBlue text-sm">Últimas Movimentações Confidenciais</h4>
                             <button onclick="switchTab('lancamentos')" class="text-xs font-semibold text-primary hover:underline">Ver todas</button>
                         </div>
                         <div class="overflow-x-auto">
@@ -243,7 +277,7 @@
                 <section id="tab-lancamentos" class="tab-content hidden space-y-6">
                     <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl border border-gray-200 shadow-sm">
                         <h3 class="text-xl font-bold text-darkBlue mb-2">Novo Lançamento Financeiro</h3>
-                        <p class="text-xs text-gray-500 mb-6">Registre suas vendas, compras, despesas fixas ou custos.</p>
+                        <p class="text-xs text-gray-500 mb-6">Registre suas vendas, compras, despesas fixas ou custos de forma segura.</p>
                         
                         <form id="form-lancamento" onsubmit="adicionarLancamento(event)" class="space-y-4">
                             <div>
@@ -291,7 +325,7 @@
                 <section id="tab-relatorios" class="tab-content hidden space-y-6">
                     <div>
                         <h3 class="text-xl font-bold text-darkBlue">Relatórios e Gráficos Automáticos</h3>
-                        <p class="text-xs text-gray-500">Análise visual simplificada do seu desempenho financeiro.</p>
+                        <p class="text-xs text-gray-500">Análise visual simplificada e confidencial do seu desempenho financeiro.</p>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -456,6 +490,8 @@
         let currentCategory = 'todos';
         let chartRDInstance = null;
         let chartCatInstance = null;
+        let usuarioAutenticado = false;
+        let abaDestinoPendente = null;
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -470,7 +506,61 @@
             }
         }
 
+        function verificarAcesso(tabId) {
+            if (tabId === 'inicio') {
+                switchTab('inicio');
+                return;
+            }
+
+            if (!usuarioAutenticado) {
+                abaDestinoPendente = tabId;
+                abrirLogin();
+            } else {
+                switchTab(tabId);
+            }
+        }
+
+        function abrirLogin() {
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        function fecharLogin() {
+            document.getElementById('login-screen').classList.add('hidden');
+        }
+
+        function fazerLogin(e) {
+            e.preventDefault();
+            usuarioAutenticado = true;
+            fecharLogin();
+            
+            document.getElementById('user-name-display').innerText = "Gustavo Paes";
+            document.getElementById('user-status-display').innerText = "Empreendedor Logado";
+            document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-right-from-bracket" title="Sair"></i>';
+            document.getElementById('btn-auth-action').setAttribute('onclick', 'fazerLogout()');
+
+            if (abaDestinoPendente) {
+                switchTab(abaDestinoPendente);
+                abaDestinoPendente = null;
+            } else {
+                switchTab('painel');
+            }
+        }
+
+        function fazerLogout() {
+            usuarioAutenticado = false;
+            document.getElementById('user-name-display').innerText = "Visitante";
+            document.getElementById('user-status-display').innerText = "Modo Público";
+            document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-right-to-bracket"></i>';
+            document.getElementById('btn-auth-action').setAttribute('onclick', 'abrirLogin()');
+            switchTab('inicio');
+        }
+
         function switchTab(tabId) {
+            if (tabId !== 'inicio' && !usuarioAutenticado) {
+                verificarAcesso(tabId);
+                return;
+            }
+
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
