@@ -1,1027 +1,1197 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conecta VB - Conectando negócios, valorizando nossa cidade</title>
+    <title>CONECTA VB - Várzea Branca–PI</title>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js para gráficos -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- FontAwesome -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#155EEF',
-                        darkBlue: '#0B3B91',
-                        softBlue: '#EAF1FF',
-                        lightBg: '#FFFFFF',
-                        customText: '#202B3C'
-                    }
-                }
-            }
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-brand {
+            background: linear-gradient(135deg, #1e40af 0%, #059669 100%);
         }
-    </script>
+        .gradient-text {
+            background: linear-gradient(135deg, #1e40af 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
 </head>
-<body class="bg-white text-customText font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-gray-50 text-gray-800 h-full flex flex-col font-sans antialiased">
 
-    <!-- Modal de Autenticação Global (Login / Cadastro) -->
-    <div id="auth-screen" class="fixed inset-0 bg-darkBlue/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden p-8 space-y-6 border border-blue-100">
-            <div class="text-center">
-                <div class="bg-gradient-to-tr from-darkBlue to-primary text-white w-14 h-14 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 shadow-lg">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <h3 id="auth-title" class="font-bold text-darkBlue text-xl">Acesso Global do Empreendedor</h3>
-                <p id="auth-subtitle" class="text-xs text-gray-500 mt-1">Entre com sua conta ou cadastre seu negócio na plataforma.</p>
-            </div>
-
-            <!-- Abas Login / Cadastro -->
-            <div class="flex bg-gray-100 p-1 rounded-xl">
-                <button type="button" onclick="alternarModoAuth('login')" id="btn-tab-login" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-darkBlue shadow-xs">Entrar</button>
-                <button type="button" onclick="alternarModoAuth('cadastro')" id="btn-tab-cadastro" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-gray-500">Cadastrar Negócio</button>
-            </div>
-            
-            <form id="form-auth" onsubmit="processarAuth(event)" class="space-y-4">
-                <div id="campo-nome-container" class="hidden">
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nome do Empreendedor</label>
-                    <input type="text" id="auth-nome" placeholder="Ex: Ana Souza" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
-                </div>
-                <div id="campo-loja-container" class="hidden">
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nome da Loja / Negócio</label>
-                    <input type="text" id="auth-loja" placeholder="Ex: Ana Artesanatos" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">E-mail ou Identificador</label>
-                    <input type="text" id="auth-email" required placeholder="Ex: gustavo@vb.com" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Senha de Acesso Secreta</label>
-                    <input type="password" id="auth-senha" required placeholder="••••••••" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
-                </div>
-                <button type="submit" id="auth-submit-btn" class="w-full bg-gradient-to-r from-darkBlue to-primary hover:opacity-95 text-white font-semibold py-3 rounded-xl transition shadow-md text-sm">
-                    Acessar Painel Privado
-                </button>
-            </form>
-            <button onclick="fecharAuth()" class="w-full text-xs text-gray-400 hover:text-gray-600 text-center">Voltar ao Catálogo Público</button>
-        </div>
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed top-5 right-5 z-50 transform translate-y-[-200%] transition-transform duration-300 bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-xl flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-lg"></i>
+        <span id="toast-msg" class="font-medium">Ação realizada com sucesso!</span>
     </div>
 
-    <div class="flex h-screen overflow-hidden relative">
-        
-        <!-- Overlay menu celular -->
-        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden"></div>
-
-        <!-- Menu Lateral -->
-        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 bg-gradient-to-b from-darkBlue to-primary text-white border-r border-blue-800 z-40 shadow-xl">
-            <div class="p-6 border-b border-blue-600/40 flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-white/10 backdrop-blur-md text-white p-2.5 rounded-xl shadow-inner border border-white/20">
-                        <i class="fa-solid fa-store text-xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="font-bold text-lg text-white leading-tight">Conecta VB</h1>
-                        <span class="text-xs text-blue-200 font-medium">Várzea Branca • PI</span>
-                    </div>
+    <!-- HEADER / NAVBAR -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo & Title -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('inicio')">
+                <div class="w-12 h-12 rounded-xl gradient-brand flex items-center justify-center text-white shadow-md overflow-hidden">
+                    <img src="logo.png" alt="Logo" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="w-full h-full hidden items-center justify-center"><i class="fa-solid fa-store text-xl"></i></div>
                 </div>
-                <button onclick="toggleSidebar()" class="md:hidden text-blue-200 hover:text-white">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight gradient-text">CONECTA VB</h1>
+                    <p class="text-xs font-medium text-gray-500 uppercase tracking-widest hidden sm:block">Várzea Branca · PI</p>
+                </div>
             </div>
 
-            <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-                <p class="px-3 text-[11px] font-bold text-blue-200 uppercase tracking-wider mb-2">Comércio Público</p>
-                <a href="javascript:void(0)" onclick="switchTab('inicio'); toggleSidebarMobile();" id="menu-inicio" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all bg-white/15 text-white shadow-sm">
-                    <i class="fa-solid fa-house w-5"></i>
-                    <span>Início & Catálogo</span>
-                </a>
-
-                <p class="px-3 text-[11px] font-bold text-blue-200 uppercase tracking-wider mt-6 mb-2">Gestão Confidencial</p>
-                <a href="javascript:void(0)" onclick="verificarAcesso('painel'); toggleSidebarMobile();" id="menu-painel" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
-                    <i class="fa-solid fa-chart-pie w-5"></i>
-                    <span>Painel do Empreendedor</span>
-                </a>
-                <a href="javascript:void(0)" onclick="verificarAcesso('produtos'); toggleSidebarMobile();" id="menu-produtos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
-                    <i class="fa-solid fa-box-open w-5"></i>
-                    <span>Meus Produtos</span>
-                </a>
-                <a href="javascript:void(0)" onclick="verificarAcesso('lancamentos'); toggleSidebarMobile();" id="menu-lancamentos" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
-                    <i class="fa-solid fa-file-invoice-dollar w-5"></i>
-                    <span>Lançamentos</span>
-                </a>
-                <a href="javascript:void(0)" onclick="verificarAcesso('relatorios'); toggleSidebarMobile();" id="menu-relatorios" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
-                    <i class="fa-solid fa-chart-line w-5"></i>
-                    <span>Relatórios Financeiros</span>
-                </a>
-                <a href="javascript:void(0)" onclick="switchTab('calculadora'); toggleSidebarMobile();" id="menu-calculadora" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all text-blue-100 hover:bg-white/10">
-                    <i class="fa-solid fa-calculator w-5"></i>
-                    <span>Calculadora Tradicional</span>
-                </a>
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-2">
+                <button onclick="switchTab('inicio')" id="nav-btn-inicio" class="nav-btn px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-emerald-50 text-emerald-700">Início</button>
+                <button onclick="switchTab('catalogo')" id="nav-btn-catalogo" class="nav-btn px-4 py-2 rounded-xl font-semibold text-sm text-gray-600 hover:bg-gray-100 transition-all">Catálogo</button>
+                <button onclick="checkAdminAccess()" id="nav-btn-painel" class="nav-btn px-4 py-2 rounded-xl font-semibold text-sm text-gray-600 hover:bg-gray-100 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-xs text-amber-600"></i> Área do Comerciante
+                </button>
             </nav>
 
-            <div class="p-4 border-t border-blue-600/40">
-                <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl flex items-center justify-between border border-white/10">
-                    <div class="flex items-center space-x-3 overflow-hidden">
-                        <div class="w-8 h-8 rounded-full bg-white text-darkBlue flex items-center justify-center font-bold text-xs shadow-md avatar-initials">
-                            CV
-                        </div>
-                        <div class="overflow-hidden">
-                            <p class="text-xs font-bold text-white truncate" id="user-name-display">Visitante</p>
-                            <p class="text-[10px] text-blue-200 truncate" id="user-status-display">Modo Público</p>
-                        </div>
-                    </div>
-                    <button onclick="abrirAuth('login')" id="btn-auth-action" class="text-xs text-white font-bold hover:bg-white/20 p-2 rounded-lg transition" title="Fazer login"><i class="fa-solid fa-right-to-bracket"></i></button>
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl text-gray-600 hover:bg-gray-100 focus:outline-none">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-200 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('inicio'); toggleMobileMenu();" class="block w-full text-left px-4 py-3 rounded-xl font-semibold text-gray-700 hover:bg-gray-50">Início</button>
+            <button onclick="switchTab('catalogo'); toggleMobileMenu();" class="block w-full text-left px-4 py-3 rounded-xl font-semibold text-gray-700 hover:bg-gray-50">Catálogo de Produtos</button>
+            <button onclick="checkAdminAccess(); toggleMobileMenu();" class="block w-full text-left px-4 py-3 rounded-xl font-semibold text-emerald-700 bg-emerald-50"><i class="fa-solid fa-lock text-xs mr-2"></i> Área do Comerciante</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ================= TAB: INÍCIO ================= -->
+        <section id="tab-inicio" class="space-y-12">
+            <!-- Hero Card -->
+            <div class="gradient-brand rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden flex flex-col items-center text-center">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -left-10 -top-10 w-64 h-64 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none"></div>
+                
+                <span class="bg-white/20 text-white text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4 backdrop-blur-sm">Comércio Local · Várzea Branca - PI</span>
+                <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 max-w-3xl">Impulsione o seu negócio e descubra o melhor da nossa terra</h2>
+                <p class="text-lg sm:text-xl text-emerald-50 max-w-2xl mb-8 font-light">Vitrine pública de produtos e gestão financeira completa para comerciantes de Várzea Branca.</p>
+                
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="switchTab('catalogo')" class="bg-white text-emerald-800 font-bold px-8 py-4 rounded-2xl shadow-lg hover:bg-emerald-50 transition-all flex items-center gap-3">
+                        <i class="fa-solid fa-bag-shopping"></i> Explorar Catálogo
+                    </button>
+                    <button onclick="checkAdminAccess()" class="bg-emerald-700/80 hover:bg-emerald-700 text-white border border-white/30 font-bold px-8 py-4 rounded-2xl shadow-lg transition-all flex items-center gap-3 backdrop-blur-sm">
+                        <i class="fa-solid fa-user-shield"></i> Acessar Painel / Cadastrar
+                    </button>
                 </div>
             </div>
-        </aside>
 
-        <!-- Conteúdo Principal -->
-        <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-white">
-            
-            <header class="bg-white border-b border-gray-100 h-16 flex items-center justify-between px-4 md:px-6 z-10 shadow-xs">
-                <div class="flex items-center space-x-3">
-                    <button onclick="toggleSidebar()" class="md:hidden text-darkBlue hover:text-primary text-xl p-2">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                    <div class="flex items-center space-x-2 md:hidden">
-                        <div class="bg-gradient-to-r from-darkBlue to-primary text-white p-2 rounded-lg text-sm shadow-md">
-                            <i class="fa-solid fa-store"></i>
-                        </div>
-                        <span class="font-bold text-darkBlue text-sm">Conecta VB</span>
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-store"></i>
                     </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Vitrine Pública</h3>
+                    <p class="text-gray-600 text-sm">Divulgue seus produtos para toda a cidade com fotos, descrições detalhadas e botão direto para contato via WhatsApp.</p>
                 </div>
-
-                <div class="hidden md:block">
-                    <h2 class="font-bold text-darkBlue text-base">Plataforma Global de Comércio e Gestão Local</h2>
-                    <p class="text-[11px] text-gray-400">Segurança avançada e isolamento total de dados por senha.</p>
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Gestão Financeira</h3>
+                    <p class="text-gray-600 text-sm">Acompanhe receitas, custos, despesas e lucros em tempo real com gráficos profissionais e relatórios detalhados.</p>
                 </div>
-
-                <div class="flex items-center space-x-3">
-                    <button onclick="verificarAcesso('painel')" class="bg-gradient-to-r from-darkBlue to-primary hover:opacity-95 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-md flex items-center space-x-2">
-                        <i class="fa-solid fa-user-shield"></i>
-                        <span class="hidden sm:inline">Painel do Empreendedor</span>
-                        <span class="sm:hidden">Gestão</span>
-                    </button>
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Ferramentas de Apoio</h3>
+                    <p class="text-gray-600 text-sm">Utilize calculadoras, calendário de vendas e o simulador de investimentos para projetar o crescimento do seu negócio.</p>
                 </div>
-            </header>
+            </div>
+        </section>
 
-            <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-white space-y-6">
-                
-                <!-- ABA 1: INÍCIO -->
-                <section id="tab-inicio" class="tab-content space-y-6">
-                    <div class="bg-gradient-to-r from-darkBlue via-blue-700 to-primary text-white p-6 md:p-10 rounded-3xl shadow-xl relative overflow-hidden">
-                        <div class="relative z-10 max-w-3xl">
-                            <span class="bg-white/20 backdrop-blur-md text-[11px] font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-white/20">Plataforma Global • Várzea Branca</span>
-                            <h2 class="text-2xl md:text-4xl font-extrabold mt-4 mb-3">Conectando pequenos negócios com segurança total</h2>
-                            <p class="text-blue-100 text-sm md:text-base mb-6 leading-relaxed">Cadastre seu negócio, proteja suas finanças com senha exclusiva e divulgue seus produtos para toda a cidade instantaneamente.</p>
-                            
-                            <div class="bg-white p-2.5 rounded-2xl shadow-lg flex items-center space-x-2 border border-white/30">
-                                <i class="fa-solid fa-search text-primary pl-3"></i>
-                                <input type="text" id="searchInput" onkeyup="filterCatalog()" placeholder="Pesquise por produto, serviço ou nome da loja..." class="w-full text-sm text-customText focus:outline-none bg-transparent py-2">
-                            </div>
-                        </div>
+        <!-- ================= TAB: CATÁLOGO PÚBLICO ================= -->
+        <section id="tab-catalogo" class="hidden space-y-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-gray-900">Catálogo de Produtos</h2>
+                    <p class="text-gray-500 text-sm">Conheça o que os comerciantes de Várzea Branca estão oferecendo.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <input type="text" id="catalog-search" oninput="renderCatalog()" placeholder="Buscar produto..." class="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-full sm:w-64">
+                    <select id="catalog-category" onchange="renderCatalog()" class="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="">Todas as categorias</option>
+                        <option value="Alimentação">Alimentação</option>
+                        <option value="Vestuário">Vestuário</option>
+                        <option value="Eletrônicos">Eletrônicos</option>
+                        <option value="Serviços">Serviços</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Injetado via JS -->
+            </div>
+        </section>
+
+        <!-- ================= TAB: ÁREA DO COMERCIANTE (PROTEGIDA) ================= -->
+        <section id="tab-painel" class="hidden space-y-8">
+            <!-- Header do Painel & Sub-abas -->
+            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl gradient-brand flex items-center justify-center text-white text-2xl shadow-md">
+                        <i class="fa-solid fa-user-tie"></i>
                     </div>
-
-                    <div class="flex items-center space-x-2 overflow-x-auto pb-2 pt-2">
-                        <button onclick="filterCategory('todos')" class="cat-btn bg-gradient-to-r from-darkBlue to-primary text-white text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition shadow-md">Todos</button>
-                        <button onclick="filterCategory('Alimentação')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Alimentação</button>
-                        <button onclick="filterCategory('Vestuário')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Vestuário</button>
-                        <button onclick="filterCategory('Beleza')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Beleza</button>
-                        <button onclick="filterCategory('Serviços')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Serviços</button>
-                        <button onclick="filterCategory('Artesanato')" class="cat-btn bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap transition border border-gray-200">Artesanato</button>
-                    </div>
-
-                    <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-                </section>
-
-                <!-- ABA 2: PAINEL -->
-                <section id="tab-painel" class="tab-content hidden space-y-6">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div>
-                            <h3 class="text-xl font-bold text-darkBlue">Painel de Gestão Financeira Global</h3>
-                            <p class="text-xs text-gray-500">Seus dados financeiros são confidenciais e protegidos pela sua senha.</p>
-                        </div>
-                        <button onclick="switchTab('lancamentos')" class="bg-gradient-to-r from-darkBlue to-primary text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Novo Lançamento</span>
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="bg-gradient-to-br from-white to-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm">
-                            <p class="text-xs font-medium text-gray-500">Receita Total</p>
-                            <h4 id="resumo-receita" class="text-2xl font-bold text-darkBlue mt-1">R$ 0,00</h4>
-                        </div>
-                        <div class="bg-gradient-to-br from-white to-red-50/50 p-5 rounded-2xl border border-red-100 shadow-sm">
-                            <p class="text-xs font-medium text-gray-500">Custos & Despesas</p>
-                            <h4 id="resumo-despesas" class="text-2xl font-bold text-red-600 mt-1">R$ 0,00</h4>
-                        </div>
-                        <div class="bg-gradient-to-br from-white to-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm">
-                            <p class="text-xs font-medium text-gray-500">Lucro Líquido</p>
-                            <h4 id="resumo-lucro" class="text-2xl font-bold text-primary mt-1">R$ 0,00</h4>
-                        </div>
-                        <div class="bg-gradient-to-br from-white to-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm">
-                            <p class="text-xs font-medium text-gray-500">Qtd. de Vendas</p>
-                            <h4 id="resumo-vendas" class="text-2xl font-bold text-darkBlue mt-1">0</h4>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                        <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                            <h4 class="font-bold text-darkBlue text-sm">Suas Últimas Movimentações</h4>
-                            <button onclick="switchTab('lancamentos')" class="text-xs font-semibold text-primary hover:underline">Ver todas</button>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-gray-50 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
-                                        <th class="py-3 px-4">Descrição</th>
-                                        <th class="py-3 px-4">Categoria</th>
-                                        <th class="py-3 px-4">Data</th>
-                                        <th class="py-3 px-4">Tipo</th>
-                                        <th class="py-3 px-4 text-right">Valor</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabela-movimentacoes" class="divide-y divide-gray-100 text-sm"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- ABA 3: PRODUTOS -->
-                <section id="tab-produtos" class="tab-content hidden space-y-6">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div>
-                            <h3 class="text-xl font-bold text-darkBlue">Gerenciamento de Produtos</h3>
-                            <p class="text-xs text-gray-500">Cadastre e administre os produtos do seu negócio na vitrine pública.</p>
-                        </div>
-                        <button onclick="openProductModal()" class="bg-gradient-to-r from-darkBlue to-primary text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Adicionar Novo Produto</span>
-                        </button>
-                    </div>
-                    <div id="meus-produtos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-                </section>
-
-                             <!-- ABA 4: LANÇAMENTOS -->
-                <section id="tab-lancamentos" class="tab-content hidden space-y-6">
-                    <div class="max-w-xl mx-auto bg-white p-8 rounded-3xl border border-gray-100 shadow-xl">
-                        <h3 class="text-xl font-bold text-darkBlue mb-2">Novo Lançamento Financeiro</h3>
-                        <p class="text-xs text-gray-500 mb-6">Registre suas vendas, compras ou despesas com segurança absoluta.</p>
-                        
-                        <form id="form-lancamento" onsubmit="adicionarLancamento(event)" class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">Tipo de Movimentação</label>
-                                <select id="lanc-tipo" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
-                                    <option value="venda">Venda (Receita)</option>
-                                    <option value="despesa">Despesa Operacional / Gasto</option>
-                                    <option value="custo">Custo de Produção</option>
-                                    <option value="compra">Compra de Insumos/Estoque</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">Descrição</label>
-                                <input type="text" id="lanc-desc" required placeholder="Ex: Venda de Lotes / Compra de Embalagens" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Valor (R$)</label>
-                                    <input type="number" step="0.01" id="lanc-valor" required placeholder="0,00" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Data</label>
-                                    <input type="date" id="lanc-data" required class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">Categoria</label>
-                                <select id="lanc-categoria" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
-                                    <option value="Alimentação">Alimentação</option>
-                                    <option value="Vestuário">Vestuário</option>
-                                    <option value="Beleza">Beleza</option>
-                                    <option value="Serviços">Serviços</option>
-                                    <option value="Artesanato">Artesanato</option>
-                                    <option value="Operacional">Operacional / Despesa Fixa</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="w-full bg-gradient-to-r from-darkBlue to-primary text-white font-semibold py-3 rounded-xl transition shadow-md text-sm">
-                                Salvar Lançamento
-                            </button>
-                        </form>
-                    </div>
-                </section>
-
-                <!-- ABA 5: RELATÓRIOS -->
-                <section id="tab-relatorios" class="tab-content hidden space-y-6">
                     <div>
-                        <h3 class="text-xl font-bold text-darkBlue">Relatórios e Gráficos Automáticos</h3>
-                        <p class="text-xs text-gray-500">Análise visual e confidencial do seu desempenho financeiro.</p>
+                        <h2 class="text-xl font-bold text-gray-900" id="merchant-welcome-name">Painel do Comerciante</h2>
+                        <p class="text-xs text-gray-500">Gerenciamento completo e seguro do seu negócio</p>
+                    </div>
+                </div>
+                <button onclick="logoutAdmin()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 w-fit">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair da Conta
+                </button>
+            </div>
+
+            <!-- Sub-abas do Painel -->
+            <div class="flex flex-wrap gap-2 border-b border-gray-200 pb-4">
+                <button onclick="switchSubTab('produtos')" id="subtab-btn-produtos" class="subtab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition-all bg-emerald-600 text-white shadow-sm">
+                    <i class="fa-solid fa-box mr-2"></i> Meus Produtos
+                </button>
+                <button onclick="switchSubTab('financeiro')" id="subtab-btn-financeiro" class="subtab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition-all bg-white text-gray-600 hover:bg-gray-100">
+                    <i class="fa-solid fa-chart-line mr-2"></i> Gestão Financeira
+                </button>
+                <button onclick="switchSubTab('calendario')" id="subtab-btn-calendario" class="subtab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition-all bg-white text-gray-600 hover:bg-gray-100">
+                    <i class="fa-solid fa-calendar-days mr-2"></i> Calendário de Vendas
+                </button>
+                <button onclick="switchSubTab('calculadora')" id="subtab-btn-calculadora" class="subtab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition-all bg-white text-gray-600 hover:bg-gray-100">
+                    <i class="fa-solid fa-calculator mr-2"></i> Calculadora
+                </button>
+                <button onclick="switchSubTab('simulador')" id="subtab-btn-simulador" class="subtab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition-all bg-white text-gray-600 hover:bg-gray-100">
+                    <i class="fa-solid fa-chart-pie mr-2"></i> Simulador de Investimentos
+                </button>
+            </div>
+
+            <!-- 1. MEUS PRODUTOS -->
+            <div id="subtab-produtos" class="space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-gray-900">Gerenciamento de Produtos</h3>
+                    <button onclick="openProductModal()" class="gradient-brand text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:opacity-95 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Novo Produto
+                    </button>
+                </div>
+                <div id="merchant-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Injetado via JS -->
+                </div>
+            </div>
+
+            <!-- 2. GESTÃO FINANCEIRA -->
+            <div id="subtab-financeiro" class="hidden space-y-8">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-gray-900">Painel Financeiro & Resultados</h3>
+                    <button onclick="openExpenseModal()" class="bg-gray-900 hover:bg-gray-800 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-receipt"></i> Registrar Custo / Despesa / Capital
+                    </button>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Receita Geral</p>
+                        <h4 class="text-2xl font-extrabold text-emerald-600" id="kpi-receita">R$ 0,00</h4>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Custos</p>
+                        <h4 class="text-2xl font-extrabold text-amber-600" id="kpi-custos">R$ 0,00</h4>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Despesas</p>
+                        <h4 class="text-2xl font-extrabold text-rose-600" id="kpi-despesas">R$ 0,00</h4>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Lucro Líquido</p>
+                        <h4 class="text-2xl font-extrabold text-blue-600" id="kpi-lucro">R$ 0,00</h4>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Capital Inicial</p>
+                        <h4 class="text-2xl font-extrabold text-purple-600" id="kpi-capital">R$ 0,00</h4>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                        <h4 class="text-base font-bold text-gray-900 mb-4">Receitas vs Despesas (Mensal)</h4>
+                        <div class="h-72"><canvas id="financeChart1"></canvas></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                        <h4 class="text-base font-bold text-gray-900 mb-4">Composição de Gastos</h4>
+                        <div class="h-72 flex justify-center"><canvas id="financeChart2"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Lançamentos Table -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200 font-bold text-gray-900">Histórico de Lançamentos Financeiros</div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                                <tr>
+                                    <th class="px-6 py-3">Data</th>
+                                    <th class="px-6 py-3">Tipo</th>
+                                    <th class="px-6 py-3">Descrição</th>
+                                    <th class="px-6 py-3">Valor</th>
+                                    <th class="px-6 py-3 text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expenses-table-body" class="divide-y divide-gray-200">
+                                <!-- Injetado via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. CALENDÁRIO DE VENDAS -->
+            <div id="subtab-calendario" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Registrar Nova Venda</h3>
+                    <form onsubmit="handleSaleSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Data da Venda</label>
+                            <input type="date" id="sale-date" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Produto</label>
+                            <select id="sale-product" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <!-- Preenchido via JS -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Quantidade</label>
+                            <input type="number" id="sale-qty" min="1" value="1" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                                              <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Valor Total Recebido (R$)</label>
+                            <input type="number" step="0.01" id="sale-total" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Descrição / Cliente</label>
+                            <input type="text" id="sale-desc" placeholder="Ex: Venda à vista para João" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div class="sm:col-span-2 flex items-end">
+                            <button type="submit" class="w-full gradient-brand text-white font-semibold px-6 py-2.5 rounded-xl shadow-md hover:opacity-95 transition-all">
+                                <i class="fa-solid fa-cart-plus mr-2"></i> Registrar Venda no Calendário
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Histórico de Vendas -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200 font-bold text-gray-900">Histórico de Vendas Registradas</div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                                <tr>
+                                    <th class="px-6 py-3">Data</th>
+                                    <th class="px-6 py-3">Produto</th>
+                                    <th class="px-6 py-3">Qtd</th>
+                                    <th class="px-6 py-3">Valor Total</th>
+                                    <th class="px-6 py-3">Descrição</th>
+                                    <th class="px-6 py-3 text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sales-table-body" class="divide-y divide-gray-200">
+                                <!-- Injetado via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. CALCULADORA -->
+            <div id="subtab-calculadora" class="hidden space-y-6">
+                <div class="max-w-md mx-auto bg-white p-6 rounded-3xl border border-gray-200 shadow-lg">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 text-center">Calculadora Comercial</h3>
+                    <div class="mb-4">
+                        <input type="text" id="calc-screen" readonly class="w-full bg-gray-900 text-white text-right text-3xl font-mono px-4 py-4 rounded-2xl shadow-inner tracking-wider" value="0">
+                    </div>
+                    <div class="grid grid-cols-4 gap-3">
+                        <button onclick="calcClear()" class="bg-rose-100 text-rose-700 font-bold py-3.5 rounded-xl hover:bg-rose-200 transition-all">C</button>
+                        <button onclick="calcAppend('%')" class="bg-gray-100 text-gray-700 font-bold py-3.5 rounded-xl hover:bg-gray-200 transition-all">%</button>
+                        <button onclick="calcAppend('/')" class="bg-gray-100 text-gray-700 font-bold py-3.5 rounded-xl hover:bg-gray-200 transition-all">÷</button>
+                        <button onclick="calcAppend('*')" class="bg-emerald-100 text-emerald-700 font-bold py-3.5 rounded-xl hover:bg-emerald-200 transition-all">×</button>
+
+                        <button onclick="calcAppend('7')" class="bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-100 transition-all">7</button>
+                        <button onclick="calcAppend('8')" class="bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-100 transition-all">8</button>
+                        <button onclick="calcAppend('9')" class="bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-100 transition-all">9</button>
+                        <button onclick="calcAppend('-')" class="bg-emerald-100 text-emerald-700 font-bold py-3.5 rounded-xl hover:bg-emerald-200 transition-all">-</button>
+
+                        <button onclick="calcAppend('4')" class="bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-100 transition-all">4</button>
+                        <button onclick="calcAppend('5')" class="bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-100 transition-all">5</button>
+                        <button onclick="calcAppend('6')" class="bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-100 transition-all">6</button>
+                        <button onclick="calcAppend('+')" class="bg-emerald-100 text-emerald-700 font-bold py-3.5 rounded-xl hover:bg-emerald-200 transition-all">+</button>
+
+                        <button onclick="calcAppend('1')" class="bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-100 transition-all">1</button>
+                        <button onclick="calcAppend('2')" class="bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-100 transition-all">2</button>
+                        <button onclick="calcAppend('3')" class="bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-100 transition-all">3</button>
+                        <button onclick="calcCompute()" class="row-span-2 gradient-brand text-white font-bold py-3.5 rounded-xl shadow-md hover:opacity-95 transition-all flex items-center justify-center">=</button>
+
+                        <button onclick="calcAppend('0')" class="col-span-2 bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-100 transition-all">0</button>
+                        <button onclick="calcAppend('.')" class="bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-100 transition-all">.</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. SIMULADOR DE INVESTIMENTOS -->
+            <div id="subtab-simulador" class="hidden space-y-8">
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Simulador de Viabilidade de Negócios</h3>
+                    <form onsubmit="handleSimulation(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Capital Disponível (R$)</label>
+                            <input type="number" step="0.01" id="sim-capital" value="1000" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Custo de Ingredientes/Matéria (R$)</label>
+                            <input type="number" step="0.01" id="sim-custo-unit" value="5.00" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Embalagens por Unidade (R$)</label>
+                            <input type="number" step="0.01" id="sim-embalagem" value="1.00" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Despesas Fixas Adicionais (R$)</label>
+                            <input type="number" step="0.01" id="sim-despesas" value="150.00" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Qtd. que Pretende Produzir</label>
+                            <input type="number" id="sim-qtd-produzir" value="200" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Preço de Venda Unitário (R$)</label>
+                            <input type="number" step="0.01" id="sim-preco-venda" value="15.00" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Qtd. Estimada de Vendas</label>
+                            <input type="number" id="sim-qtd-vendas" value="180" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full gradient-brand text-white font-semibold px-6 py-2.5 rounded-xl shadow-md hover:opacity-95 transition-all">
+                                <i class="fa-solid fa-chart-line mr-2"></i> Simular Cenário
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Simulation Results -->
+                <div id="sim-results" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Investimento Necessário</p>
+                            <h4 class="text-2xl font-extrabold text-gray-900" id="res-investimento">R$ 0,00</h4>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Custo por Unidade</p>
+                            <h4 class="text-2xl font-extrabold text-amber-600" id="res-custo-unit">R$ 0,00</h4>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Receita Projetada</p>
+                            <h4 class="text-2xl font-extrabold text-emerald-600" id="res-receita">R$ 0,00</h4>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Lucro / Prejuízo</p>
+                            <h4 class="text-2xl font-extrabold" id="res-lucro">R$ 0,00</h4>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                            <h4 class="font-bold text-darkBlue text-sm mb-4">Receitas vs Despesas</h4>
-                            <div class="h-64 flex items-center justify-center">
-                                <canvas id="chartReceitaDespesa"></canvas>
-                            </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm text-center">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Margem de Lucro</p>
+                            <h4 class="text-xl font-extrabold text-blue-600" id="res-margem">0%</h4>
                         </div>
-
-                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                            <h4 class="font-bold text-darkBlue text-sm mb-4">Movimentações por Categoria</h4>
-                            <div class="h-64 flex items-center justify-center">
-                                <canvas id="chartCategoria"></canvas>
-                            </div>
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm text-center">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Ponto de Equilíbrio (Break-even)</p>
+                            <h4 class="text-xl font-extrabold text-purple-600" id="res-breakeven">0 unidades</h4>
                         </div>
-                    </div>
-                </section>
-
-                <!-- ABA 6: CALCULADORA TRADICIONAL -->
-                <section id="tab-calculadora" class="tab-content hidden space-y-6">
-                    <div class="max-w-md mx-auto bg-gray-900 p-6 rounded-3xl shadow-2xl border border-gray-800 text-white">
-                        <div class="flex items-center justify-between mb-4 px-2">
-                            <div class="flex items-center space-x-2">
-                                <div class="bg-primary text-white p-2 rounded-xl text-xs">
-                                    <i class="fa-solid fa-calculator"></i>
-                                </div>
-                                <h3 class="font-bold text-sm text-gray-200">Calculadora Tradicional</h3>
-                            </div>
-                            <span class="text-[10px] bg-gray-800 text-blue-400 px-2.5 py-1 rounded-full font-mono">Conecta VB</span>
-                        </div>
-
-                        <!-- Visor da Calculadora -->
-                        <div class="bg-black/60 p-4 rounded-2xl mb-4 border border-gray-800 text-right">
-                            <div id="calc-history" class="text-xs text-gray-400 h-5 font-mono overflow-hidden"></div>
-                            <div id="calc-display" class="text-3xl font-extrabold text-white font-mono tracking-wider overflow-x-auto">0</div>
-                        </div>
-
-                        <!-- Teclado da Calculadora -->
-                        <div class="grid grid-cols-4 gap-2.5">
-                            <button onclick="calcClear()" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 font-bold py-3 rounded-xl transition text-sm">C</button>
-                            <button onclick="calcBack()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-3 rounded-xl transition text-sm"><i class="fa-solid fa-delete-left"></i></button>
-                            <button onclick="calcAppend('%')" class="bg-gray-800 hover:bg-gray-700 text-primary font-bold py-3 rounded-xl transition text-sm">%</button>
-                            <button onclick="calcAppend('/')" class="bg-primary hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition text-sm">÷</button>
-                            
-                            <button onclick="calcAppend('7')" class="bg-gray-800/60 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition text-base">7</button>
-                            <button onclick="calcAppend('8')" class="bg-gray-800/60 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition text-base">8</button>
-                            <button onclick="calcAppend('9')" class="bg-gray-800/60 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition text-base">9</button>
-                            <button onclick="calcAppend('*')" class="bg-primary hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition text-sm">×</button>
-                            
-                            <button onclick="calcAppend('4')" class="bg-gray-800/60 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition text-base">4</button>
-                            <button onclick="calcAppend('5')" class="bg-gray-800/60 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition text-base">5</button>
-                            <button onclick="calcAppend('6')" class="bg-gray-800/60 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition text-base">6</button>
-                            <button onclick="calcAppend('-')" class="bg-primary hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition text-sm">-</button>
-                            
-                            <button onclick="calcAppend('1')" class="bg-gray-800/60 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition text-base">1</button>
-                            <button onclick="calcAppend('2')" class="bg-gray-800/60 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition text-base">2</button>
-                            <button onclick="calcAppend('3')" class="bg-gray-800/60 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition text-base">3</button>
-                            <button onclick="calcAppend('+')" class="bg-primary hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition text-sm">+</button>
-                            
-                            <button onclick="calcAppend('0')" class="col-span-2 bg-gray-800/60 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition text-base">0</button>
-                            <button onclick="calcAppend('.')" class="bg-gray-800/60 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition text-base">.</button>
-                            <button onclick="calcCalculate()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition text-base shadow-lg">=</button>
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm text-center">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Viabilidade</p>
+                            <h4 class="text-xl font-extrabold" id="res-status">-</h4>
                         </div>
                     </div>
-                </section>
 
-            </main>
+                    <!-- Cenários Otimista, Moderado, Conservador -->
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                        <h4 class="text-base font-bold text-gray-900 mb-4">Análise de Cenários</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="scenarios-grid">
+                            <!-- Injetado via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-200 mt-12 py-8 text-center text-sm text-gray-500">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="font-bold text-gray-700">CONECTA VB — Várzea Branca, Piauí</p>
+            <p class="mt-1">Plataforma de Comércio Local e Gestão Financeira para Empreendedores.</p>
+        </div>
+    </footer>
+
+    <!-- MODAL: LOGIN / CADASTRO DE COMERCIANTE -->
+    <div id="auth-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-2xl gradient-brand text-white flex items-center justify-center text-2xl mx-auto mb-3 shadow-md">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold text-gray-900" id="auth-title">Área do Comerciante</h3>
+                <p class="text-gray-500 text-xs mt-1" id="auth-subtitle">Informe suas credenciais ou cadastre-se</p>
+            </div>
+
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div id="auth-name-group" class="hidden">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nome do Negócio / Comerciante</label>
+                    <input type="text" id="auth-input-name" placeholder="Ex: Loja da Maria" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Usuário / Login (ex: adm)</label>
+                    <input type="text" id="auth-input-user" required placeholder="Ex: adm" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Senha (ex: 123)</label>
+                    <input type="password" id="auth-input-pass" required placeholder="••••••" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <button type="submit" id="auth-submit-btn" class="w-full gradient-brand text-white font-bold py-3.5 rounded-xl shadow-md hover:opacity-95 transition-all">Entrar no Painel</button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-xs font-semibold text-emerald-600 hover:underline">Não tem conta? Cadastre-se agora</button>
+            </div>
         </div>
     </div>
 
-    <!-- Modal Adicionar Produto -->
-    <div id="productModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center z-50 p-4">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-            <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                <h3 class="font-bold text-darkBlue text-lg">Novo Produto / Serviço</h3>
-                <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-            <form id="form-produto" onsubmit="salvarProduto(event)" class="p-6 space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nome do Estabelecimento / Loja</label>
-                    <input type="text" id="prod-loja" required placeholder="Ex: Doces & Sabores VB" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nome do Produto ou Serviço</label>
-                    <input type="text" id="prod-nome" required placeholder="Ex: Bolo Caseiro de Chocolate" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
-                </div>
+    <!-- MODAL: CADASTRO / EDIÇÃO DE PRODUTO -->
+    <div id="product-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-8 shadow-2xl relative my-8">
+            <button onclick="closeProductModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-xl font-extrabold text-gray-900 mb-6" id="product-modal-title">Cadastrar Novo Produto</h3>
+
+            <form onsubmit="handleProductSubmit(event)" class="space-y-4">
+                <input type="hidden" id="prod-edit-id">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Preço (R$)</label>
-                        <input type="number" step="0.01" id="prod-preco" required placeholder="0,00" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Nome do Produto</label>
+                        <input type="text" id="prod-name" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Categoria</label>
-                        <select id="prod-cat" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                        <select id="prod-cat" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                             <option value="Alimentação">Alimentação</option>
                             <option value="Vestuário">Vestuário</option>
-                            <option value="Beleza">Beleza</option>
+                            <option value="Eletrônicos">Eletrônicos</option>
                             <option value="Serviços">Serviços</option>
-                            <option value="Artesanato">Artesanato</option>
+                            <option value="Outros">Outros</option>
                         </select>
                     </div>
                 </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Preço (R$)</label>
+                        <input type="number" step="0.01" id="prod-price" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Localização do Vendedor</label>
+                        <input type="text" id="prod-location" value="Várzea Branca - PI" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Descrição Detalhada</label>
-                    <textarea id="prod-desc" rows="2" placeholder="Fale um pouco sobre o produto..." class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary"></textarea>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Foto de Capa (Selecione do Dispositivo)</label>
+                    <input type="file" id="prod-img-file" accept="image/*" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
                 </div>
+
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Local / Endereço em Várzea Branca</label>
-                    <input type="text" id="prod-local" placeholder="Ex: Centro" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                    <label cclass="block text-xs font-semibold text-gray-600 mb-1">Link do WhatsApp para Contato (com DDD)</label>
+                    <input type="text" id="prod-whatsapp" placeholder="Ex: 5589999999999" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
+
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Link da Imagem (URL)</label>
-                    <input type="url" id="prod-img" placeholder="https://exemplo.com/foto.jpg" class="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Link de Vídeo de Apresentação (YouTube/Drive)</label>
+                    <input type="url" id="prod-video" placeholder="https://..." class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
-                <div class="pt-2 flex space-x-3">
-                    <button type="button" onclick="closeProductModal()" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 rounded-xl transition text-sm">Cancelar</button>
-                    <button type="submit" class="w-1/2 bg-gradient-to-r from-darkBlue to-primary text-white font-semibold py-3 rounded-xl transition shadow-md text-sm">Publicar</button>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Descrição Completa</label>
+                    <textarea id="prod-desc" rows="3" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
                 </div>
+
+                <button type="submit" class="w-full gradient-brand text-white font-bold py-3.5 rounded-xl shadow-md hover:opacity-95 transition-all">Salvar Produto</button>
             </form>
         </div>
     </div>
 
-    <!-- Script Global e Seguro -->
+    <!-- MODAL: LANÇAMENTO FINANCEIRO -->
+    <div id="expense-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl relative">
+            <button onclick="closeExpenseModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-xl font-extrabold text-gray-900 mb-6">Registrar Lançamento Financeiro</h3>
+
+            <form onsubmit="handleExpenseSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Tipo de Lançamento</label>
+                    <select id="exp-type" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="Custo">Custo (Gastos diretos com produtos)</option>
+                        <option value="Despesa">Despesa (Gastos operacionais do negócio)</option>
+                        <option value="Capital">Capital Inicial (Valor investido)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Data</label>
+                    <input type="date" id="exp-date" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Descrição</label>
+                    <input type="text" id="exp-desc" placeholder="Ex: Compra de matéria-prima, Aluguel..." required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Valor (R$)</label>
+                    <input type="number" step="0.01" id="exp-val" required class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <button type="submit" class="w-full gradient-brand text-white font-bold py-3.5 rounded-xl shadow-md hover:opacity-95 transition-all">Salvar Lançamento</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        let empreendedoresDB = {
-            "gustavo@vb.com": {
-                senha: "123",
-                nome: "Gustavo Paes",
-                loja: "Doces & Sabores VB",
-                iniciais: "GP",
-                lancamentos: [
-                    { id: 1, descricao: "Venda de Bolos de Chocolate", categoria: "Alimentação", data: "2026-11-01", tipo: "venda", valor: 105.00 },
-                    { id: 2, descricao: "Compra de Cacau e Farinha", categoria: "Alimentação", data: "2026-11-02", tipo: "compra", valor: 40.00 }
-                ]
-            },
-            "maria@vb.com": {
-                senha: "123",
-                nome: "Maria Rita",
-                loja: "Ateliê Arte & Charme",
-                iniciais: "MR",
-                lancamentos: [
-                    { id: 1, descricao: "Venda de Colares Artesanais", categoria: "Artesanato", data: "2026-11-03", tipo: "venda", valor: 135.00 }
-                ]
-            }
+        // --- DATA STATE & LOCALSTORAGE ---
+        let db = JSON.parse(localStorage.getItem('conecta_vb_db')) || {
+            currentUser: null,
+            isAuthModeRegister: false,
+            merchants: [
+                { user: 'adm', pass: '123', name: 'Comércio Exemplo VB' }
+            ],
+            products: [
+                { id: '1', user: 'adm', name: 'Bolo Artesanal de Chocolate', cat: 'Alimentação', price: 45.00, location: 'Várzea Branca - PI', whatsapp: '5589999999999', video: '', desc: 'Bolo caseiro fresquinho, feito com ingredientes selecionados.', img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80' },
+                { id: '2', user: 'adm', name: 'Artesanato em Barro Regional', cat: 'Outros', price: 60.00, location: 'Várzea Branca - PI', whatsapp: '5589999999999', video: '', desc: 'Peça decorativa artesanal feita por ceramistas locais.', img: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=600&q=80' }
+            ],
+            sales: [
+                { id: '1', user: 'adm', date: '2026-11-01', product: 'Bolo Artesanal de Chocolate', qty: 2, total: 90.00, desc: 'Encomenda festiva' }
+            ],
+            expenses: [
+                { id: '1', user: 'adm', type: 'Capital', date: '2026-10-01', desc: 'Capital inicial investido', val: 1000.00 },
+                { id: '2', user: 'adm', type: 'Custo', date: '2026-11-02', desc: 'Ingredientes para bolos', val: 150.00 },
+                { id: '3', user: 'adm', type: 'Despesa', date: '2026-11-05', desc: 'Embalagens e sacolas', val: 60.00 }
+            ]
         };
 
-        let produtos = [
-            {
-                id: 1,
-                loja: "Doces & Sabores VB",
-                nome: "Bolo Caseiro de Chocolate",
-                preco: 35.00,
-                categoria: "Alimentação",
-                descricao: "Bolo fofinho com cobertura generosa de chocolate artesanal.",
-                localizacao: "Centro, Várzea Branca",
-                imagem: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80",
-                responsavelEmail: "gustavo@vb.com"
-            },
-            {
-                id: 2,
-                loja: "Ateliê Arte & Charme",
-                nome: "Colar Artesanal com Pedra Lilás",
-                preco: 45.00,
-                categoria: "Artesanato",
-                descricao: "Peça exclusiva feita à mão com acabamento prateado.",
-                localizacao: "Bairro Novo, Várzea Branca",
-                imagem: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80",
-                responsavelEmail: "maria@vb.com"
-            }
-        ];
-
-        let usuarioLogadoEmail = null;
-        let currentCategory = 'todos';
-        let chartRDInstance = null;
-        let chartCatInstance = null;
-        let abaDestinoPendente = null;
-        let modoAuthAtual = 'login';
-
-        // Lógica da Calculadora Tradicional
-        let calcValue = "0";
-        let calcExpr = "";
-
-        function calcAppend(val) {
-            if (calcValue === "0" && !isNaN(val)) {
-                calcValue = val;
-            } else {
-                calcValue += val;
-            }
-            updateCalcDisplay();
+        function saveDB() {
+            localStorage.setItem('conecta_vb_db', JSON.stringify(db));
         }
 
-        function calcClear() {
-            calcValue = "0";
-            calcExpr = "";
-            updateCalcDisplay();
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('translate-y-[-200%]');
+            setTimeout(() => {
+                toast.classList.add('translate-y-[-200%]');
+            }, 3000);
         }
 
-        function calcBack() {
-            if (calcValue.length > 1) {
-                calcValue = calcValue.slice(0, -1);
-            } else {
-                calcValue = "0";
-            }
-            updateCalcDisplay();
-        }
+        // --- NAVIGATION TABS ---
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
 
-        function calcCalculate() {
-            try {
-                let sanitized = calcValue.replace(/×/g, '*').replace(/÷/g, '/');
-                sanitized = sanitized.replace(/%/g, '/100');
-                
-                let result = eval(sanitized);
-                calcExpr = calcValue + " =";
-                calcValue = String(parseFloat(result.toFixed(4)));
-                updateCalcDisplay();
-            } catch (error) {
-                calcValue = "Erro";
-                updateCalcDisplay();
-                setTimeout(() => calcClear(), 1500);
-            }
-        }
-
-        function updateCalcDisplay() {
-            const display = document.getElementById('calc-display');
-            const history = document.getElementById('calc-history');
-            if(display) display.innerText = calcValue;
-            if(history) history.innerText = calcExpr;
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            if(sidebar && overlay) {
-                sidebar.classList.toggle('-translate-x-full');
-                overlay.classList.toggle('hidden');
-            }
-        }
-
-        function toggleSidebarMobile() {
-            if (window.innerWidth < 768) {
-                toggleSidebar();
-            }
-        }
-
-        function verificarAcesso(tabId) {
-            if (tabId === 'inicio' || tabId === 'calculadora') {
-                switchTab(tabId);
-                return;
-            }
-
-            if (!usuarioLogadoEmail) {
-                abaDestinoPendente = tabId;
-                abrirAuth('login');
-            } else {
-                switchTab(tabId);
-            }
-        }
-
-        function abrirAuth(modo) {
-            alternarModoAuth(modo);
-            const screen = document.getElementById('auth-screen');
-            if(screen) screen.classList.remove('hidden');
-        }
-
-        function fecharAuth() {
-            const screen = document.getElementById('auth-screen');
-            if(screen) screen.classList.add('hidden');
-        }
-
-        function alternarModoAuth(modo) {
-            modoAuthAtual = modo;
-            const btnLogin = document.getElementByI            const btnLogin = document.getElementById('btn-tab-login');
-            const btnCad = document.getElementById('btn-tab-cadastro');
-            const nomeContainer = document.getElementById('campo-nome-container');
-            const lojaContainer = document.getElementById('campo-loja-container');
-            const title = document.getElementById('auth-title');
-            const subtitle = document.getElementById('auth-subtitle');
-            const submitBtn = document.getElementById('auth-submit-btn');
-
-            if (modo === 'login') {
-                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-darkBlue shadow-xs";
-                btnCad.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-gray-500";
-                nomeContainer.classList.add('hidden');
-                lojaContainer.classList.add('hidden');
-                title.innerText = "Acesso Global do Empreendedor";
-                subtitle.innerText = "Entre com seu e-mail e senha secreta.";
-                submitBtn.innerText = "Acessar Painel Privado";
-            } else {
-                btnCad.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-darkBlue shadow-xs";
-                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-gray-500";
-                nomeContainer.classList.remove('hidden');
-                lojaContainer.classList.remove('hidden');
-                title.innerText = "Cadastre Seu Negócio";
-                subtitle.innerText = "Crie sua conta global e comece a gerenciar.";
-                submitBtn.innerText = "Criar Conta e Acessar";
-            }
-        }
-
-        function processarAuth(e) {
-            e.preventDefault();
-            const email = document.getElementById('auth-email').value.trim().toLowerCase();
-            const senha = document.getElementById('auth-senha').value;
-
-            if (modoAuthAtual === 'login') {
-                if (empreendedoresDB[email] && empreendedoresDB[email].senha === senha) {
-                    fazerLoginSucesso(email);
-                } else {
-                    alert("E-mail ou senha incorretos. Verifique seus dados.");
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-50', 'text-emerald-700');
+                btn.classList.add('text-gray-600');
+            });
+            if(tabId !== 'painel') {
+                const activeBtn = document.getElementById('nav-btn-' + tabId);
+                if(activeBtn) {
+                    activeBtn.classList.add('bg-emerald-50', 'text-emerald-700');
+                    activeBtn.classList.remove('text-gray-600');
                 }
-            } else {
-                const nome = document.getElementById('auth-nome').value.trim();
-                const loja = document.getElementById('auth-loja').value.trim();
-
-                if (!nome || !loja) {
-                    alert("Por favor, preencha o nome e o nome da loja.");
-                    return;
-                }
-
-                if (empreendedoresDB[email]) {
-                    alert("Este e-mail já está cadastrado. Faça login.");
-                    return;
-                }
-
-                const partes = nome.split(' ');
-                const iniciais = partes.length > 1 ? (partes[0][0] + partes[1][0]).toUpperCase() : partes[0].substring(0,2).toUpperCase();
-
-                empreendedoresDB[email] = {
-                    senha: senha,
-                    nome: nome,
-                    loja: loja,
-                    iniciais: iniciais,
-                    lancamentos: []
-                };
-
-                fazerLoginSucesso(email);
             }
+
+            if(tabId === 'catalogo') renderCatalog();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function fazerLoginSucesso(email) {
-            usuarioLogadoEmail = email;
-            fecharAuth();
-            document.getElementById('form-auth').reset();
+        function switchSubTab(subId) {
+            document.querySelectorAll('#tab-painel > div:not(:first-child):not(.flex)').forEach(el => el.classList.add('hidden'));
+            document.getElementById('subtab-' + subId).classList.remove('hidden');
 
-            const dadosUser = empreendedoresDB[email];
-            document.getElementById('user-name-display').innerText = dadosUser.nome;
-            document.getElementById('user-status-display').innerText = dadosUser.loja;
-            
-            const avatarEl = document.querySelector('.avatar-initials');
-            if(avatarEl) avatarEl.innerText = dadosUser.iniciais;
+            document.querySelectorAll('.subtab-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-gray-600');
+            });
+            const activeBtn = document.getElementById('subtab-btn-' + subId);
+            activeBtn.classList.add('bg-emerald-600', 'text-white', 'shadow-sm');
+            activeBtn.classList.remove('bg-white', 'text-gray-600');
 
-            const authAction = document.getElementById('btn-auth-action');
-            if(authAction) {
-                authAction.innerHTML = '<i class="fa-solid fa-right-from-bracket" title="Sair"></i>';
-                authAction.setAttribute('onclick', 'fazerLogout()');
-            }
+            if(subId === 'produtos') renderMerchantProducts();
+            if(subId === 'financeiro') { renderFinancials(); initCharts(); }
+            if(subId === 'calendario') renderSales();
+        }
 
-            if (abaDestinoPendente) {
-                let destino = abaDestinoPendente;
-                abaDestinoPendente = null;
-                switchTab(destino);
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- AUTH SYSTEM ---
+        function checkAdminAccess() {
+            if(!db.currentUser) {
+                document.getElementById('auth-modal').classList.remove('hidden');
             } else {
                 switchTab('painel');
+                switchSubTab('produtos');
             }
         }
 
-        function fazerLogout() {
-            usuarioLogadoEmail = null;
-            document.getElementById('user-name-display').innerText = "Visitante";
-            document.getElementById('user-status-display').innerText = "Modo Público";
-            
-            const avatarEl = document.querySelector('.avatar-initials');
-            if(avatarEl) avatarEl.innerText = "CV";
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
 
-            const authAction = document.getElementById('btn-auth-action');
-            if(authAction) {
-                authAction.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i>';
-                authAction.setAttribute('onclick', "abrirAuth('login')");
+        function toggleAuthMode() {
+            db.isAuthModeRegister = !db.isAuthModeRegister;
+            const title = document.getElementById('auth-title');
+            const sub = document.getElementById('auth-subtitle');
+            const nameGrp = document.getElementById('auth-name-group');
+            const btn = document.getElementById('auth-submit-btn');
+            const toggleBtn = document.getElementById('auth-toggle-btn');
+
+            if(db.isAuthModeRegister) {
+                title.innerText = 'Cadastro de Comerciante';
+                sub.innerText = 'Crie sua conta para gerenciar seu negócio';
+                nameGrp.classList.remove('hidden');
+                btn.innerText = 'Cadastrar e Entrar';
+                toggleBtn.innerText = 'Já tem uma conta? Faça login';
+            } else {
+                title.innerText = 'Área do Comerciante';
+                sub.innerText = 'Informe suas credenciais ou cadastre-se';
+                nameGrp.classList.add('hidden');
+                btn.innerText = 'Entrar no Painel';
+                toggleBtn.innerText = 'Não tem conta? Cadastre-se agora';
             }
-            switchTab('inicio');
         }
 
-        function switchTab(tabId) {
-            if (tabId !== 'inicio' && tabId !== 'calculadora' && !usuarioLogadoEmail) {
-                verificarAcesso(tabId);
-                return;
-            }
-
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            const targetTab = document.getElementById(`tab-${tabId}`);
-            if(targetTab) targetTab.classList.remove('hidden');
-
-            document.querySelectorAll('.nav-item').forEach(el => {
-                el.classList.remove('bg-white/15', 'text-white', 'shadow-sm');
-                el.classList.add('text-blue-100', 'hover:bg-white/10');
-            });
-
-            const activeMenu = document.getElementById(`menu-${tabId}`);
-            if (activeMenu) {
-                activeMenu.classList.remove('text-blue-100', 'hover:bg-white/10');
-                activeMenu.classList.add('bg-white/15', 'text-white', 'shadow-sm');
-            }
-
-            if (tabId === 'painel') atualizarPainel();
-            if (tabId === 'produtos') renderizarMeusProdutos();
-            if (tabId === 'relatorios') renderizarGraficos();
-        }
-
-        function renderCatalog(filter = 'todos', search = '') {
-            const grid = document.getElementById('catalog-grid');
-            if(!grid) return;
-            grid.innerHTML = '';
-
-            const filtered = produtos.filter(p => {
-                const matchCat = filter === 'todos' || p.categoria === filter;
-                const matchSearch = p.nome.toLowerCase().includes(search.toLowerCase()) || 
-                                    p.loja.toLowerCase().includes(search.toLowerCase()) ||
-                                    p.descricao.toLowerCase().includes(search.toLowerCase());
-                return matchCat && matchSearch;
-            });
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400 text-sm">Nenhum produto encontrado.</div>`;
-                return;
-            }
-
-            filtered.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between';
-                card.innerHTML = `
-                    <div>
-                        <div class="h-48 overflow-hidden bg-gray-50 relative">
-                            <img src="${p.imagem}" alt="${p.nome}" class="w-full h-full object-cover">
-                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-darkBlue font-semibold text-[11px] px-3 py-1 rounded-full shadow-sm">${p.categoria}</span>
-                        </div>
-                        <div class="p-5">
-                            <p class="text-xs text-primary font-bold uppercase tracking-wider mb-1"><i class="fa-solid fa-store mr-1"></i>${p.loja}</p>
-                            <h4 class="font-bold text-darkBlue text-base mb-1">${p.nome}</h4>
-                            <p class="text-xs text-gray-500 mb-3 line-clamp-2">${p.descricao}</p>
-                            <p class="text-xs text-gray-400"><i class="fa-solid fa-location-dot mr-1"></i>${p.localizacao}</p>
-                        </div>
-                    </div>
-                    <div class="p-5 pt-0 flex items-center justify-between border-t border-gray-50 mt-4">
-                        <span class="text-lg font-extrabold text-darkBlue">R$ ${p.preco.toFixed(2)}</span>
-                        <a href="https://wa.me/?text=Olá! Vi seu produto *${encodeURIComponent(p.nome)}* na Conecta VB e gostaria de mais informações." target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
-                            <i class="fa-brands fa-whatsapp text-sm"></i>
-                            <span>Contato</span>
-                        </a>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function filterCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('bg-gradient-to-r', 'from-darkBlue', 'to-primary', 'text-white', 'shadow-md');
-                btn.classList.add('bg-gray-50', 'text-gray-600', 'border', 'border-gray-200');
-            });
-            if(event && event.currentTarget) {
-                event.currentTarget.classList.remove('bg-gray-50', 'text-gray-600', 'border', 'border-gray-200');
-                event.currentTarget.classList.add('bg-gradient-to-r', 'from-darkBlue', 'to-primary', 'text-white', 'shadow-md');
-            }
-            
-            const searchInput = document.getElementById('searchInput');
-            const searchVal = searchInput ? searchInput.value : '';
-            renderCatalog(cat, searchVal);
-        }
-
-        function filterCatalog() {
-            const searchInput = document.getElementById('searchInput');
-            const searchVal = searchInput ? searchInput.value : '';
-            renderCatalog(currentCategory, searchVal);
-        }
-
-        function atualizarPainel() {
-            if (!usuarioLogadoEmail || !empreendedoresDB[usuarioLogadoEmail]) return;
-            const lancamentosUser = empreendedoresDB[usuarioLogadoEmail].lancamentos;
-
-            let totalReceita = 0;
-            let totalDespesas = 0;
-            let qtdVendas = 0;
-
-            lancamentosUser.forEach(l => {
-                if (l.tipo === 'venda') {
-                    totalReceita += l.valor;
-                    qtdVendas++;
-                } else {
-                    totalDespesas += l.valor;
-                }
-            });
-
-            const lucroLiquido = totalReceita - totalDespesas;
-
-            const elRec = document.getElementById('resumo-receita');
-            const elDesp = document.getElementById('resumo-despesas');
-            const elLuc = document.getElementById('resumo-lucro');
-            const elVend = document.getElementById('resumo-vendas');
-
-            if(elRec) elRec.innerText = `R$ ${totalReceita.toFixed(2)}`;
-            if(elDesp) elDesp.innerText = `R$ ${totalDespesas.toFixed(2)}`;
-            if(elLuc) elLuc.innerText = `R$ ${lucroLiquido.toFixed(2)}`;
-            if(elVend) elVend.innerText = qtdVendas;
-
-            const tbody = document.getElementById('tabela-movimentacoes');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-
-            const ultimas = [...lancamentosUser].reverse().slice(0, 5);
-            ultimas.forEach(l => {
-                const isReceita = l.tipo === 'venda';
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50/50';
-                tr.innerHTML = `
-                    <td class="py-3 px-4 font-medium text-darkBlue">${l.descricao}</td>
-                    <td class="py-3 px-4 text-gray-500">${l.categoria}</td>
-                    <td class="py-3 px-4 text-gray-500">${l.data}</td>
-                    <td class="py-3 px-4">
-                        <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold ${isReceita ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}">
-                            ${l.tipo.toUpperCase()}
-                        </span>
-                    </td>
-                    <td class="py-3 px-4 text-right font-bold ${isReceita ? 'text-emerald-600' : 'text-red-600'}">
-                        ${isReceita ? '+' : '-'} R$ ${l.valor.toFixed(2)}
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function adicionarLancamento(e) {
+        function handleAuthSubmit(e) {
             e.preventDefault();
-            if (!usuarioLogadoEmail) return;
+            const user = document.getElementById('auth-input-user').value.trim();
+            const pass = document.getElementById('auth-input-pass').value.trim();
+            const name = document.getElementById('auth-input-name').value.trim();
 
-            const tipo = document.getElementById('lanc-tipo').value;
-            const desc = document.getElementById('lanc-desc').value;
-            const valor = parseFloat(document.getElementById('lanc-valor').value);
-            const data = document.getElementById('lanc-data').value;
-            const categoria = document.getElementById('lanc-categoria').value;
-
-            const novo = {
-                id: empreendedoresDB[usuarioLogadoEmail].lancamentos.length + 1,
-                tipo, descricao: desc, valor, data, categoria
-            };
-
-            empreendedoresDB[usuarioLogadoEmail].lancamentos.push(novo);
-            document.getElementById('form-lancamento').reset();
-            switchTab('painel');
+            if(db.isAuthModeRegister) {
+                if(db.merchants.some(m => m.user === user)) {
+                    alert('Este usuário já existe. Escolha outro.');
+                    return;
+                }
+                db.merchants.push({ user, pass, name: name || user });
+                db.currentUser = user;
+                saveDB();
+                closeAuthModal();
+                showToast('Conta criada com sucesso!');
+                switchTab('painel');
+                switchSubTab('produtos');
+            } else {
+                const found = db.merchants.find(m => m.user === user && m.pass === pass);
+                if(found) {
+                    db.currentUser = user;
+                    saveDB();
+                    closeAuthModal();
+                    showToast('Bem-vindo de volta!');
+                    switchTab('painel');
+                    switchSubTab('produtos');
+                } else {
+                    alert('Usuário ou senha incorretos.');
+                }
+            }
         }
 
-        function renderizarMeusProdutos() {
-            if (!usuarioLogadoEmail) return;
-            const grid = document.getElementById('meus-produtos-grid');
-            if(!grid) return;
-            grid.innerHTML = '';
+        function logoutAdmin() {
+            db.currentUser = null;
+            saveDB();
+            switchTab('inicio');
+            showToast('Sessão encerrada.');
+        }
 
-            const produtosUser = produtos.filter(p => p.responsavelEmail === usuarioLogadoEmail);
+        // --- PUBLIC CATALOG ---
+        function renderCatalog() {
+            const grid = document.getElementById('catalog-grid');
+            const search = document.getElementById('catalog-search').value.toLowerCase();
+            const cat = document.getElementById('catalog-category').value;
 
-            if (produtosUser.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400 text-sm">Nenhum produto cadastrado por você ainda.</div>`;
+            let filtered = db.products.filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(search) || p.desc.toLowerCase().includes(search);
+                const matchCat = cat === '' || p.cat === cat;
+                return matchSearch && matchCat;
+            });
+
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400"><i class="fa-solid fa-box-open text-4xl mb-3"></i><p>Nenhum produto encontrado.</p></div>`;
                 return;
             }
 
-            produtosUser.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex flex-col justify-between';
-                card.innerHTML = `
-                    <div>
-                        <div class="h-40 overflow-hidden bg-gray-50 relative">
-                            <img src="${p.imagem}" alt="${p.nome}" class="w-full h-full object-cover">
+            grid.innerHTML = filtered.map(p => `
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
+                    <div class="h-48 bg-gray-100 overflow-hidden relative">
+                        <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-xs font-bold px-3 py-1 rounded-full text-gray-800">${p.cat}</span>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex justify-between items-start mb-1">
+                                <h3 class="font-bold text-gray-900 text-base line-clamp-1">${p.name}</h3>
+                                <span class="font-extrabold text-emerald-600 text-lg">R$ ${p.price.toFixed(2)}</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-2"><i class="fa-solid fa-location-dot mr-1 text-emerald-600"></i> ${p.location}</p>
+                            <p class="text-gray-600 text-sm line-clamp-2">${p.desc}</p>
                         </div>
-                        <div class="p-4">
-                            <span class="text-[11px] font-semibold text-primary bg-blue-50 px-3 py-1 rounded-full">${p.categoria}</span>
-                            <h4 class="font-bold text-darkBlue text-sm mt-2">${p.nome}</h4>
-                            <p class="text-xs text-gray-500 mt-1">${p.descricao}</p>
-                            <p class="text-sm font-extrabold text-darkBlue mt-3">R$ ${p.preco.toFixed(2)}</p>
+                        <div class="pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
+                            ${p.video ? `<a href="${p.video}" target="_blank" class="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1"><i class="fa-solid fa-play"></i> Vídeo</a>` : '<span></span>'}
+                            <a href="https://wa.me/${p.whatsapp}?text=Olá! Vi seu produto ${encodeURIComponent(p.name)} no CONECTA VB e tenho interesse." target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all flex items-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+                            </a>
                         </div>
                     </div>
-                    <div class="p-4 pt-0 border-t border-gray-50 flex justify-between items-center mt-3">
-                        <span class="text-[11px] text-gray-400"><i class="fa-solid fa-check-circle text-emerald-600 mr-1"></i>Ativo na vitrine</span>
-                        <button onclick="removerProduto(${p.id})" class="text-xs text-red-500 hover:text-red-700 font-semibold"><i class="fa-solid fa-trash mr-1"></i>Remover</button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
+                </div>
+            `).join('');
         }
 
-        function openProductModal() {
-            const modal = document.getElementById('productModal');
-            if(modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
+        // --- MERCHANT PRODUCTS CRUD ---
+        let currentImageBase64 = '';
+
+        document.getElementById('prod-img-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentImageBase64 = event.target.result;
+                };
+                reader.readAsDataURL(file);
             }
-            if(usuarioLogadoEmail && empreendedoresDB[usuarioLogadoEmail]) {
-                const lojaInput = document.getElementById('prod-loja');
-                if(lojaInput) lojaInput.value = empreendedoresDB[usuarioLogadoEmail].loja;
+        });
+
+        function renderMerchantProducts() {
+            const grid = document.getElementById('merchant-products-grid');
+            const myProducts = db.products.filter(p => p.user === db.currentUser);
+            
+            const merchantObj = db.merchants.find(m => m.user === db.currentUser);
+            if(merchantObj) {
+                document.getElementById('merchant-welcome-name').innerText = 'Painel de ' + merchantObj.name;
+            }
+
+            if(myProducts.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400"><i class="fa-solid fa-box-archive text-4xl mb-3"></i><p>Você ainda não cadastrou nenhum produto.</p></div>`;
+                return;
+            }
+
+            grid.innerHTML = myProducts.map(p => `
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col">
+                    <div class="h-40 bg-gray-100 relative">
+                        <img src="${p.img}" class="w-full h-full object-cover">
+                        <span class="absolute top-3 left-3 bg-white/90 text-xs font-bold px-2.5 py-1 rounded-full">${p.cat}</span>
+                    </div>
+                    <div class="p-4 flex-grow flex flex-col justify-between space-y-3">
+                        <div>
+                            <h4 class="font-bold text-gray-900">${p.name}</h4>
+                            <p class="text-emerald-600 font-extrabold text-sm">R$ ${p.price.toFixed(2)}</p>
+                            <p class="text-gray-500 text-xs line-clamp-2 mt-1">${p.desc}</p>
+                        </div>
+                        <div class="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                            <button onclick="editProduct('${p.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-lg"><i class="fa-solid fa-pen mr-1"></i> Editar</button>
+                            <button onclick="deleteProduct('${p.id}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold px-3 py-1.5 rounded-lg"><i class="fa-solid fa-trash mr-1"></i> Excluir</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            const prodSelect = document.getElementById('sale-product');
+            prodSelect.innerHTML = myProducts.map(p => `<option value="${p.name}">${p.name} (R$ ${p.price.toFixed(2)})</option>`).join('');
+        }
+
+        function openProductModal(editId = null) {
+            document.getElementById('product-modal').classList.remove('hidden');
+            currentImageBase64 = '';
+            if(editId) {
+                document.getElementById('product-modal-title').innerText = 'Editar Produto';
+                const p = db.products.find(item => item.id === editId);
+                document.getElementById('prod-edit-id').value = p.id;
+                document.getElementById('prod-name').value = p.name;
+                document.getElementById('prod-cat').value = p.cat;
+                document.getElementById('prod-price').value = p.price;
+                document.getElementById('prod-location').value = p.location;
+                document.getElementById('prod-whatsapp').value = p.whatsapp;
+                document.getElementById('prod-video').value = p.video || '';
+                document.getElementById('prod-desc').value = p.desc;
+                currentImageBase64 = p.img;
+            } else {
+                document.getElementById('product-modal-title').innerText = 'Cadastrar Novo Produto';
+                document.getElementById('prod-edit-id').value = '';
+                document.getElementById('prod-name').value = '';
+                document.getElementById('prod-price').value = '';
+                document.getElementById('prod-whatsapp').value = '';
+                document.getElementById('prod-video').value = '';
+                document.getElementById('prod-desc').value = '';
+                document.getElementById('prod-img-file').value = '';
             }
         }
 
         function closeProductModal() {
-            const modal = document.getElementById('productModal');
-            if(modal) {
-                modal.classList.remove('flex');
-                modal.classList.add('hidden');
+            document.getElementById('product-modal').classList.add('hidden');
+        }
+
+        function handleProductSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('prod-edit-id').value;
+            const name = document.getElementById('prod-name').value;
+            const cat = document.getElementById('prod-cat').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const location = document.getElementById('prod-location').value;
+            const whatsapp = document.getElementById('prod-whatsapp').value;
+            const video = document.getElementById('prod-video').value;
+            const desc = document.getElementById('prod-desc').value;
+            const img = currentImageBase64 || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80';
+
+            if(editId) {
+                const p = db.products.find(item => item.id === editId);
+                p.name = name; p.cat = cat; p.price = price; p.location = location; p.whatsapp = whatsapp; p.video = video; p.desc = desc; p.img = img;
+                showToast('Produto atualizado com sucessso!');
+            } else {
+                const newP = {
+                    id: Date.now().toString(),
+                    user: db.currentUser,
+                    name, cat, price, location, whatsapp, video, desc, img
+                };
+                db.products.push(newP);
+                showToast('Produto cadastrado com sucesso!');
+            }
+
+            saveDB();
+            closeProductModal();
+            renderMerchantProducts();
+        }
+
+        function editProduct(id) {
+            openProductModal(id);
+        }
+
+        function deleteProduct(id) {
+            if(confirm('Tem certeza que deseja excluir este produto?')) {
+                db.products = db.products.filter(p => p.id !== id);
+                saveDB();
+                renderMerchantProducts();
+                showToast('Produto excluído.');
             }
         }
 
-        function salvarProduto(e) {
+        // --- FINANCIAL MANAGEMENT & CHARTS ---
+        function openExpenseModal() {
+            document.getElementById('expense-modal').classList.remove('hidden');
+            document.getElementById('exp-date').valueAsDate = new Date();
+        }
+
+        function closeExpenseModal() {
+            document.getElementById('expense-modal').classList.add('hidden');
+        }
+
+        function handleExpenseSubmit(e) {
             e.preventDefault();
-            if (!usuarioLogadoEmail) return;
+            const type = document.getElementById('exp-type').value;
+            const date = document.getElementById('exp-date').value;
+            const desc = document.getElementById('exp-desc').value;
+            const val = parseFloat(document.getElementById('exp-val').value);
 
-            const novoP = {
-                id: produtos.length + 1,
-                loja: document.getElementById('prod-loja').value,
-                nome: document.getElementById('prod-nome').value,
-                preco: parseFloat(document.getElementById('prod-preco').value),
-                categoria: document.getElementById('prod-cat').value,
-                descricao: document.getElementById('prod-desc').value,
-                localizacao: document.getElementById('prod-local').value || 'Várzea Branca',
-                imagem: document.getElementById('prod-img').value || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80',
-                responsavelEmail: usuarioLogadoEmail
-            };
-
-            produtos.push(novoP);
-            document.getElementById('form-produto').reset();
-            closeProductModal();
-            renderCatalog();
-            renderizarMeusProdutos();
-        }
-
-        function removerProduto(id) {
-            produtos = produtos.filter(p => p.id !== id);
-            renderizarMeusProdutos();
-            renderCatalog();
-        }
-
-        function renderizarGraficos() {
-            if (!usuarioLogadoEmail || !empreendedoresDB[usuarioLogadoEmail]) return;
-            const lancamentosUser = empreendedoresDB[usuarioLogadoEmail].lancamentos;
-
-            let totalVendas = 0;
-            let totalGastos = 0;
-            let catCount = {};
-
-            lancamentosUser.forEach(l => {
-                if (l.tipo === 'venda') totalVendas += l.valor;
-                else totalGastos += l.valor;
-
-                catCount[l.categoria] = (catCount[l.categoria] || 0) + l.valor;
+            db.expenses.push({
+                id: Date.now().toString(),
+                user: db.currentUser,
+                type, date, desc, val
             });
 
-            const canvasRD = document.getElementById('chartReceitaDespesa');
-            if (canvasRD) {
-                const ctxRD = canvasRD.getContext('2d');
-                if (chartRDInstance) chartRDInstance.destroy();
-                chartRDInstance = new Chart(ctxRD, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Receitas (Vendas)', 'Custos & Despesas'],
-                        datasets: [{
-                            data: [totalVendas, totalGastos],
-                            backgroundColor: ['#155EEF', '#EF4444'],
-                            borderRadius: 8
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } }
-                    }
-                });
+            saveDB();
+            closeExpenseModal();
+            renderFinancials();
+            initCharts();
+            showToast('Lançamento salvo com sucesso!');
+        }
+
+        function deleteExpense(id) {
+            db.expenses = db.expenses.filter(e => e.id !== id);
+            saveDB();
+            renderFinancials();
+            initCharts();
+            showToast('Lançamento removido.');
+        }
+
+        function renderFinancials() {
+            const mySales = db.sales.filter(s => s.user === db.currentUser);
+            const myExpenses = db.expenses.filter(e => e.user === db.currentUser);
+
+            const totalReceita = mySales.reduce((acc, s) => acc + s.total, 0);
+            const totalCustos = myExpenses.filter(e => e.type === 'Custo').reduce((acc, e) => acc + e.val, 0);
+            const totalDespesas = myExpenses.filter(e => e.type === 'Despesa').reduce((acc, e) => acc + e.val, 0);
+            const totalCapital = myExpenses.filter(e => e.type === 'Capital').reduce((acc, e) => acc + e.val, 0);
+            const lucroLiquido = totalReceita - (totalCustos + totalDespesas);
+
+            document.getElementById('kpi-receita').innerText = `R$ ${totalReceita.toFixed(2)}`;
+            document.getElementById('kpi-custos').innerText = `R$ ${totalCustos.toFixed(2)}`;
+            document.getElementById('kpi-despesas').innerText = `R$ ${totalDespesas.toFixed(2)}`;
+            const kpiLucro = document.getElementById('kpi-lucro');
+            kpiLucro.innerText = `R$ ${lucroLiquido.toFixed(2)}`;
+            kpiLucro.className = `text-2xl font-extrabold ${lucroLiquido >= 0 ? 'text-blue-600' : 'text-rose-600'}`;
+            document.getElementById('kpi-capital').innerText = `R$ ${totalCapital.toFixed(2)}`;
+
+            const tbody = document.getElementById('expenses-table-body');
+            const allItems = [
+                ...mySales.map(s => ({ id: s.id, date: s.date, type: 'Venda (Receita)', desc: s.product + ' (' + s.qty + 'x)', val: s.total, isSale: true })),
+                ...myExpenses.map(e => ({ id: e.id, date: e.date, type: e.type, desc: e.desc, val: e.val, isSale: false }))
+            ].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            if(allItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Nenhum lançamento financeiro registrado.</td></tr>`;
+                return;
             }
 
-            const canvasCat = document.getElementById('chartCategoria');
-            if (canvasCat) {
-                const ctxCat = canvasCat.getContext('2d');
-                if (chartCatInstance) chartCatInstance.destroy();
-                chartCatInstance = new Chart(ctxCat, {
-                    type: 'doughnut',
-                    data: {
-                        labels: Object.keys(catCount),
-                        datasets: [{
-                            data: Object.values(catCount),
-                            backgroundColor: ['#155EEF', '#0B3B91', '#38BDF8', '#6366F1', '#10B981']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maaintAspectRatio: false
-                    }
-                });
+            tbody.innerHTML = allItems.map(item => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-3 font-medium text-gray-900">${item.date}</td>
+                    <td class="px-6 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${item.isSale ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">${item.type}</span></td>
+                    <td class="px-6 py-3 text-gray-600">${item.desc}</td>
+                    <td class="px-6 py-3 font-bold ${item.isSale ? 'text-emerald-600' : 'text-rose-600'}">${item.isSale ? '+' : '-'} R$ ${item.val.toFixed(2)}</td>
+                    <td class="px-6 py-3 text-right">
+                        ${!item.isSale ? `<button onclick="deleteExpense('${item.id}')" class="text-rose-600 hover:text-rose-800 text-xs font-semibold"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        let chart1Instance = null;
+        let chart2Instance = null;
+
+        function initCharts() {
+            const mySales = db.sales.filter(s => s.user === db.currentUser);
+            const myExpenses = db.expenses.filter(e => e.user === db.currentUser);
+
+            const totalReceita = mySales.reduce((acc, s) => acc + s.total, 0);
+            const totalCustos = myExpenses.filter(e => e.type === 'Custo').reduce((acc, e) => acc + e.val, 0);
+            const totalDespesas = myExpenses.filter(e => e.type === 'Despesa').reduce((acc, e) => acc + e.val, 0);
+
+            const ctx1 = document.getElementById('financeChart1').getContext('2d');
+            if(chart1Instance) chart1Instance.destroy();
+            chart1Instance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Receita Geral', 'Custos', 'Despesas'],
+                    datasets: [{
+                        label: 'Valores em R$',
+                        data: [totalReceita, totalCustos, totalDespesas],
+                        backgroundColor: ['#059669', '#d97706', '#e11d48'],
+                        borderRadius: 12
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            const ctx2 = document.getElementById('financeChart2').getContext('2d');
+            if(chart2Instance) chart2Instance.destroy();
+            chart2Instance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Custos de Produtos', 'Despesas Operacionais'],
+                    datasets: [{
+                        data: [totalCustos, totalDespesas],
+                        backgroundColor: ['#d97706', '#e11d48'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        // --- CALENDAR / SALES SYSTEM ---
+        function handleSaleSubmit(e) {
+            e.preventDefault();
+            const date = document.getElementById('sale-date').value;
+            const product = document.getElementById('sale-product').value;
+            const qty = parseInt(document.getElementById('sale-qty').value);
+            const total = parseFloat(document.getElementById('sale-total').value);
+            const desc = document.getElementById('sale-desc').value;
+
+            db.sales.push({
+                id: Date.now().toString(),
+                user: db.currentUser,
+                date, product, qty, total, desc
+            });
+
+            saveDB();
+            renderSales();
+            showToast('Venda registrada com sucesso!');
+            e.target.reset();
+            document.getElementById('sale-date').valueAsDate = new Date();
+        }
+
+        function deleteSale(id) {
+            db.sales = db.sales.filter(s => s.id !== id);
+            saveDB();
+            renderSales();
+            showToast('Venda removida.');
+        }
+
+        function renderSales() {
+            const tbody = document.getElementById('sales-table-body');
+            const mySales = db.sales.filter(s => s.user === db.currentUser).sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            document.getElementById('sale-date').valueAsDate = new Date();
+
+            if(mySales.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Nenhuma venda registrada no calendário.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = mySales.map(s => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-3 font-medium text-gray-900">${s.date}</td>
+                    <td class="px-6 py-3 text-gray-800 font-semibold">${s.product}</td>
+                    <td class="px-6 py-3 text-gray-600">${s.qty}</td>
+                    <td class="px-6 py-3 font-bold text-emerald-600">R$ ${s.total.toFixed(2)}</td>
+                    <td class="px-6 py-3 text-gray-500">${s.desc || '-'}</td>
+                    <td class="px-6 py-3 text-right">
+                        <button onclick="deleteSale('${s.id}')" class="text-rose-600 hover:text-rose-800 text-xs font-semibold"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- CALCULATOR ---
+        let calcValue = '0';
+
+        function calcAppend(val) {
+            if(calcValue === '0' && !['+', '-', '*', '/', '%', '.'].includes(val)) {
+                calcValue = val;
+            } else {
+                calcValue += val;
+            }
+            document.getElementById('calc-screen').value = calcValue;
+        }
+
+        function calcClear() {
+            calcValue = '0';
+            document.getElementById('calc-screen').value = calcValue;
+        }
+
+        function calcCompute() {
+            try {
+                let expr = calcValue.replace(/%/g, '/100');
+                let res = eval(expr);
+                calcValue = res.toString();
+                document.getElementById('calc-screen').value = calcValue;
+            } catch(err) {
+                document.getElementById('calc-screen').value = 'Erro';
+                calcValue = '0';
             }
         }
 
-        window.addEventListener('DOMContentLoaded', function() {
-            renderCatalog();
-            const hoje = new Date().toISOString().split('T')[0];
-            const dataInput = document.getElementById('lanc-data');
-            if(dataInput) dataInput.value = hoje;
-        });
+        // --- INVESTMENT SIMULATOR ---
+        function handleSimulation(e) {
+            e.preventDefault();
+            const capital = parseFloat(document.getElementById('sim-capital').value);
+            const custoUnit = parseFloat(document.getElementById('sim-custo-unit').value);
+            const embalagem = parseFloat(document.getElementById('sim-embalagem').value);
+            const despesas = parseFloat(document.getElementById('sim-despesas').value);
+            const qtdProduzir = parseInt(document.getElementById('sim-qtd-produzir').value);
+            const precoVenda = parseFloat(document.getElementById('sim-preco-venda').value);
+            const qtdVendas = parseInt(document.getElementById('sim-qtd-vendas').value);
+
+            const totalCustoUnitario = custoUnit + embalagem;
+            const investimentoNecessario = (totalCustoUnitario * qtdProduzir) + despesas;
+            const receitaProjetada = precoVenda * qtdVendas;
+            const custoTotalVendas = (totalCustoUnitario * qtdVendas) + despesas;
+            const lucroLiquido = receitaProjetada - custoTotalVendas;
+            const margemLucro = receitaProjetada > 0 ? (lucroLiquido / receitaProjetada) * 100 : 0;
+            
+            const margemContribuicaoUnit = precoVenda - totalCustoUnitario;
+            const breakEven = margemContribuicaoUnit > 0 ? Math.ceil(despesas / margemContribuicaoUnit) : 0;
+
+            document.getElementById('res-investimento').innerText = `R$ ${investimentoNecessario.toFixed(2)}`;
+            document.getElementById('res-custo-unit').innerText = `R$ ${totalCustoUnitario.toFixed(2)}`;
+            document.getElementById('res-receita').innerText = `R$ ${receitaProjetada.toFixed(2)}`;
+            
+            const resLucro = document.getElementById('res-lucro');
+            resLucro.innerText = `R$ ${lucroLiquido.toFixed(2)}`;
+            resLucro.className = `text-2xl font-extrabold ${lucroLiquido >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+
+            document.getElementById('res-margem').innerText = `${margemLucro.toFixed(1)}%`;
+            document.getElementById('res-breakeven').innerText = `${breakEven} unidades`;
+
+            const resStatus = document.getElementById('res-status');
+            if(lucroLiquido > 0) {
+                resStatus.innerText = 'Altamente Viável';
+                resStatus.className = 'text-xl font-extrabold text-emerald-600';
+            } else {
+                resStatus.innerText = 'Ajustar Preços / Custos';
+                resStatus.className = 'text-xl font-extrabold text-rose-600';
+            }
+
+            const otimistaQtd = Math.round(qtdVendas * 1.2);
+            const otimistaLucro = (precoVenda * otimistaQtd) - ((totalCustoUnitario * otimistaQtd) + despesas);
+
+            const moderadoQtd = qtdVendas;
+            const moderadoLucro = lucroLiquido;
+
+            const conservadorQtd = Math.round(qtdVendas * 0.8);
+            const conservadorLucro = (precoVenda * conservadorQtd) - ((totalCustoUnitario * conservadorQtd) + despesas);
+
+            document.getElementById('scenarios-grid').innerHTML = `
+                <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+                    <h5 class="font-bold text-emerald-800 mb-1"><i class="fa-solid fa-arrow-trend-up mr-1"></i> Otimista (+20%)</h5>
+                    <p class="text-xs text-gray-600">Vendas: ${otimistaQtd} un.</p>
+                    <p class="text-sm font-extrabold text-emerald-700 mt-2">Lucro: R$ ${otimistaLucro.toFixed(2)}</p>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                    <h5 class="font-bold text-blue-800 mb-1"><i class="fa-solid fa-scale-balanced mr-1"></i> Moderado (Esperado)</h5>
+                    <p class="text-xs text-gray-600">Vendas: ${moderadoQtd} un.</p>
+                    <p class="text-sm font-extrabold text-blue-700 mt-2">Lucro: R$ ${moderadoLucro.toFixed(2)}</p>
+                </div>
+                <div class="bg-amber-50 p-4 rounded-xl border border-amber-100">
+                    <h5 class="font-bold text-amber-800 mb-1"><i class="fa-solid fa-arrow-trend-down mr-1"></i> Conservador (-20%)</h5>
+                    <p class="text-xs text-gray-600">Vendas: ${conservadorQtd} un.</p>
+                    <p class="text-sm font-extrabold text-amber-700 mt-2">Lucro: R$ ${conservadorLucro.toFixed(2)}</p>
+                </div>
+            `;
+
+            document.getElementById('sim-results').classList.remove('hidden');
+        }
+
+        renderCatalog();
     </script>
 </body>
 </html>
